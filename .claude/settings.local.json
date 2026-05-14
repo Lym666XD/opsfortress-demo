@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(netstat -ano)",
+      "Bash(netstat -ano -p tcp)",
+      "Bash(netsh interface *)",
+      "Bash(curl *)",
+      "Bash(nslookup opsfortress-demo.test)",
+      "Bash(\"C:/Users/User/.config/herd/bin/herd.bat\" parked-paths *)",
+      "Bash(\"C:/Users/User/.config/herd/bin/herd.bat\")",
+      "Bash(\"C:/Users/User/.config/herd/bin/herd.bat\" paths *)",
+      "Bash(\"C:/Users/User/.config/herd/bin/herd.bat\" links *)",
+      "Bash(\"C:/Users/User/.config/herd/bin/herd.bat\" link *)"
+    ]
+  }
+}
