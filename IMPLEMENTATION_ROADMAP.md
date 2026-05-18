@@ -407,14 +407,27 @@ Mitigation:
 
 ## Immediate Next Actions
 
-2026-05-18 update: the v0.3 migration-only reset has been generated and verified against local PostgreSQL. The next actions should stay backend-first until the application infrastructure matches the new schema.
+2026-05-18 update — after the M16 backend port and M16.1 DBML reconciliation
+both landed on `refactor`, the schema and backend infrastructure are now
+aligned with the authoritative v0.3 spec. The next actions should stay
+backend-first and importer-first.
 
-1. Port backend infrastructure to v0.3: UUID `users.id`, account context, business/workplace scoping, audit service, core models, and tests.
-2. Create a minimal v0.3 dev seeder/login path using `customer_accounts`, `business_entities`, `account_businesses`, `workplaces`, and the existing auth `users` table.
-3. Build the importer engine slice for approved source tabs: occupations, industries, tasks, task access maps, SWMS versions, worker steps, and prestart questions.
-4. Prove the first runtime path from imported content: worker task session, step read events, signature, prestart submission, evidence/audit/alert records.
-5. Delete obsolete scaffold tests rather than maintaining old and new schemas in parallel.
-6. Resume frontend/demo work only after the backend path above can create and query v0.3 data reliably.
+Done (no longer in scope):
+
+1. ~~Port backend infrastructure to v0.3~~ — M16 (`a5c51c3`).
+2. ~~Create minimal v0.3 dev seeder/login path~~ — `V03DemoSeeder` writes account → business → workplace → admin access → industry/occupation → task → SWMS slice. Login `admin@acme.test` / `password`.
+3. ~~Reconcile column naming to DBML~~ — M16.1 (`38d00c1`): `account_id` rename, tasks/occupations/industries reshape to DBML taxonomy, access flags widened to per-component enum, countries ISO cols nullable.
+4. ~~Delete obsolete scaffold tests~~ — done in M16; full suite is 44 passed / 2 skipped / 301 assertions.
+
+Active (M17 importer slice, see `MILESTONE.md`):
+
+5. M17 Slice 1: importer framework + `IndustriesTabImporter` for `RAW_All_Industry_Master` from SRC-001.
+6. M17 Slices 2–6: occupations, tasks, access maps, SWMS workbook (SRC-002/3/4), Global Business Identifiers (SRC-005).
+
+Then:
+
+7. Prove the first runtime path from imported content: worker task session → SWMS step events → signature → prestart submission → evidence/audit/alert records.
+8. Resume frontend/demo work only after the backend path above can create and query v0.3 data reliably.
 
 ## Final Recommendation
 

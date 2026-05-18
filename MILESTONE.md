@@ -27,7 +27,9 @@
 | M13 | Add PWA/offline groundwork | todo | Deferred |
 | M14 | Verify locally and document current behavior | done | App runs via Herd, build/tests pass, docs synced |
 | M15 | v0.3 schema reset migration pass | done | Fresh v0.3 migration set generated and verified against local PostgreSQL 14 on 2026-05-18 |
-| M16 | Port backend infrastructure to v0.3 schema | in-progress | UUID `users.id`, account context, access checks, audit service, models, seed/dev login, and tests must move off old tenant/business/task_pack names |
+| M16 | Port backend infrastructure to v0.3 schema | done | UUID `users.id`, `AccountContext` + scope + trait, audit service, v0.3 models, `V03DemoSeeder`, schema-contract + dev-seeder tests. Committed as `a5c51c3` on `refactor` 2026-05-18. |
+| M16.1 | Reconcile v0.3 schema to authoritative DBML | done | Renamed `customer_account_id → account_id` across 12 tables; reshaped `tasks/occupations/industries` to DBML `external_*_id` + `*_group/sub_group/leaf` taxonomy; widened `task_*_access` flags from boolean to per-component enum `full|conditional|supervised|none`; relaxed `countries` ISO cols to nullable. Carry-over fixes to `ProfileValidationRules` (UUID type) and `ProfileController::destroy` (forceDelete). Committed as `38d00c1` 2026-05-18. |
+| M17 | Build first importer slice | in-progress | Framework + Industries first (smallest tab from SRC-001 `RAW_All_Industry_Master`). Then occupations, tasks, access maps, SWMS workbook, Global Business Identifiers. See "M17 Importer Slice Plan" below. |
 
 ## Phase 0 Refactor — Decided 2026-05-12
 
@@ -313,27 +315,98 @@ M16 implementation decisions:
 - Access roles remain controlled strings on `user_business_access.permission_role` and `user_workplace_access.permission_role` for now: `worker`, `supervisor`, `manager`, `admin`, `platform_admin`.
 - Old schema-dependent tests should be deleted rather than maintained in parallel with the v0.3 schema.
 
+## M16.1 Schema Reconciliation — 2026-05-18
+
+After the M16 commit, an audit against `.localdoc/OpsFortress_MVP_ERD_v0_3_Updated.txt`
+(authoritative DBML) and `OpsFortress_MVP_Column_Level_Mapping_v0_3_Clean.xlsx`
+revealed that Codex's M16 column naming had drifted from the spec. Without
+reconciliation, every importer tab would have needed a per-column translation
+layer.
+
+Three reconciliation decisions were locked with the user before code:
+
+1. **Reconcile to DBML.** Rename Codex's columns rather than write translation logic.
+2. **Widen access flags to enum.** Source data carries `Yes` / `Conditional` /
+   `Show supervised` / `Management only`; boolean would lose that semantic.
+3. **Relax countries ISO cols.** SRC-005 (Global Business Identifiers) only
+   provides country name + identifier label, no ISO codes.
+
+What changed:
+
+| Area | Before (M16) | After (M16.1) |
+|---|---|---|
+| Account FK column | `customer_account_id` on 12 tables | `account_id` |
+| AccountContext API | `customerAccountId()` | `accountId()` |
+| User/AccountBusiness relation | `customerAccount()` | `account()` with explicit FK |
+| `tasks` columns | `task_code`, `slug`, `title`, `task_type`, `summary`, `status`, `source_*` | `external_task_id` (NOT NULL), `task_name`, `task_title`, `document_type`, `trade_industry`, `task_group`/`sub_group`/`leaf`, `task_candidate_key`, `active_status` |
+| `occupations` / `industries` | `parent_id`, `code`, `name`, `description`, `level`, `status`, `primary_industry_id` | `external_*_id`, `*_group/sub_group/leaf/candidate_key`, `active_status` |
+| `task_occupation_access` / `task_industry_access` | `access_level` enum + `is_primary` boolean | Per-component enum cols: `swms_view_access`, `pre_start_access`, `post_task_access`, `training_access`, `menu_visibility` ∈ `full|conditional|supervised|none` + check constraint |
+| `countries.iso_alpha2/iso_alpha3/numeric_code` | NOT NULL | nullable; `name` now unique so SRC-005 can seed by country name alone |
+| `ProfileValidationRules::profileRules` / `emailRules` | `?int $userId` | `int|string|null` (UUID compatible) |
+| `ProfileController::destroy` | `$user->delete()` | `$user->forceDelete()` (User now uses SoftDeletes; self-deletion should still hard-delete) |
+
+Verification:
+
+- `php artisan migrate:fresh --seed` clean
+- Full test suite: 44 passed / 2 skipped (intentional registration tests) / 301 assertions
+- `./vendor/bin/pint --test` passed
+
+Committed as `38d00c1` on `refactor`, following M16 `a5c51c3`.
+
+## M17 Importer Slice Plan — 2026-05-18
+
+Goal: prove the importer framework end-to-end with one minimal tab,
+then repeat the pattern for the rest. Allow-list driven from
+`OpsFortress_MVP_Importer_Source_File_Index_for_Yiming_v0_1_Clean.xlsx`.
+
+**Slice 1 — Framework + Industries** (active):
+
+- Source: SRC-001 `OpsFortress_Central_Occupation_Industry_Source_Pack_v4_schema_locked.xlsx`
+- Tab: `RAW_All_Industry_Master` (smallest, no FK lookups; upsert by `industry_candidate_key`)
+- Components to build:
+  - `app/Domain/Shared/Importer/Services/ImportRunner.php` — opens batch, dispatches per-tab importers, finalises status
+  - `app/Domain/Shared/Importer/Contracts/TabImporter.php` — `name()`, `validate(rows)`, `commit(rows)` contract every tab implements
+  - `app/Domain/Whs/Importer/Tabs/IndustriesTabImporter.php` — first implementation
+  - `php artisan opsf:import {path}` console command — slice 1 entry point
+- Tests (PG integration):
+  - Clean import from `.localdoc/OpsFortress_Central_Occupation_Industry_Source_Pack_v4_schema_locked.xlsx` produces N industries + 0 validation errors
+  - Re-running the same file is idempotent (upsert by candidate_key)
+  - Malformed row produces 0 industries written for that row + 1 `import_validation_results` row with `severity=error`
+- Out of scope for slice 1: any FK lookups, admin UI, queue dispatch, scheduling
+
+**Slice 2 — Occupations** (from same workbook):
+- Same pattern; introduces upsert + denormalized source (same occupation appears with multiple `task_id` values, importer dedupes by `occupation_candidate_key`)
+
+**Slice 3 — Tasks**: `RAW_All_Task_Register`. 34-source-cols dropped to ~9 target cols per column-mapping spec.
+
+**Slice 4 — Access maps**: `RAW_All_Task_Occupation_Access` + `RAW_All_Task_Industry_Access`. Introduces FK resolution (`task_id` + `occupation_id`/`industry_id`) and the enum coercion (`Yes`→`full`, `Conditional`→`conditional`, `Show supervised`→`supervised`).
+
+**Slice 5 — SWMS workbook**: SRC-002/003/004 (`SWMS_*_Concrete_Blocks.xls(m)`). Four P0 tabs: `WHSAPP_Task_Register`, `WHSAPP_SWMS_Data`, `WHSAPP_Worker_App_View_Map`, `WHSAPP_PreStart_SWMS_15`. Multi-tab single-workbook batch.
+
+**Slice 6 — Global Business Identifiers**: SRC-005, simplest schema, seeds `countries` + `business_identifier_types`.
+
 ## Current Product State
 
 Implemented (architecture + foundations):
 
-- v0.3 PostgreSQL schema migrations for account/business/workplace/access/content/import/runtime/evidence/audit tables
-- PostgreSQL schema contract test for v0.3 table presence, UUID PKs including `users.id`, key FKs, partial unique indexes, and audit hash-chain columns
-- Account-scoped backend context and middleware for v0.3 account-owned records
-- Idempotent v0.3 demo seeder with account, business entity, workplace, admin access, and a small WHS task/SWMS/prestart slice
-- v0.3 audit hash-chain service
-- Phase 0 hardening (partial unique indexes, public registration disabled, file-disk default fixed)
-- Starter auth/settings flows; demo admin can log in
+- v0.3 PostgreSQL schema migrations aligned to authoritative DBML (M16 + M16.1)
+- PostgreSQL schema contract test for v0.3 table presence, UUID PKs including `users.id`, key FKs, partial unique indexes, audit hash-chain columns, and renamed `account_id` FKs
+- Account-scoped backend context (`AccountContext::accountId()` API) and middleware for v0.3 account-owned records
+- Idempotent v0.3 demo seeder (`V03DemoSeeder`) writing account → business entity → workplace → admin access → industry/occupation → task → SWMS version + activity step + prestart question + workplace task setting
+- v0.3 audit hash-chain service on the renamed `account_id` column
+- Phase 0 hardening preserved (partial unique indexes, public registration disabled, file-disk default fixed)
+- Starter auth/settings flows; `admin@acme.test` / `password` logs in after `migrate:fresh --seed`
+- `ProfileController::destroy` uses `forceDelete()` for self-service account deletion under the new SoftDeletes-on-User regime
 
 Not implemented yet:
 
-- v0.3 admin controllers and policies
-- Importer services for approved workbook tabs
+- Importer services / artisan command / PG integration tests (M17 active)
+- v0.3 admin controllers and policies (deferred — build only when a real backend use case needs them)
 - Worker mobile task flow (M11)
 - Submission scoring, corrective actions, PDF generation (M12)
 - PWA / offline (M13)
 - spatie/laravel-permission (deferred to slice 2 evaluation)
-- Python Google Sheets → PG import script (separate track, starts when content packs stabilise)
+- Python Google Sheets → PG import script (separate track, may be obsoleted by the Laravel importer)
 
 ## Review Findings — Status
 
@@ -346,7 +419,11 @@ Not implemented yet:
 
 ## Immediate Next Actions
 
-1. Build the first importer service slice for the approved workbook/source-file tabs.
-2. Add importer validation tests that write into the v0.3 task/SWMS/prestart tables.
-3. Port or replace admin policies/controllers only when a real backend use case needs them.
-4. Keep frontend/dashboard expansion paused until importer-backed data can be loaded reliably.
+1. **M17 Slice 1 (active)**: build importer framework + `IndustriesTabImporter` against `RAW_All_Industry_Master` from SRC-001, with `import_batches` + `import_validation_results` writes and PG integration tests.
+2. M17 Slice 2: `OccupationsTabImporter` (introduces denormalized-source dedup by candidate key).
+3. M17 Slice 3: `TasksTabImporter` from `RAW_All_Task_Register`.
+4. M17 Slice 4: Access map importers (`task_occupation_access`, `task_industry_access`) — first time we exercise FK resolution + enum coercion (`Yes`→`full`, `Conditional`→`conditional`, `Show supervised`→`supervised`).
+5. M17 Slice 5: SWMS workbook importer for SRC-002/003/004 (`WHSAPP_Task_Register`, `WHSAPP_SWMS_Data`, `WHSAPP_Worker_App_View_Map`, `WHSAPP_PreStart_SWMS_15`).
+6. M17 Slice 6: Global Business Identifiers seed (SRC-005).
+7. Port or replace admin policies/controllers only when a real backend use case needs them.
+8. Keep frontend/dashboard expansion paused until importer-backed data can be loaded reliably.

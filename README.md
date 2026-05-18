@@ -92,7 +92,7 @@ The current major technical direction is:
 v0.3 Schema Reset + Importer-first P0
 ```
 
-As of 2026-05-18, the v0.3 migration and backend infrastructure pass has been generated and verified locally against PostgreSQL. The next work should build the importer-first P0 path.
+As of 2026-05-18, the v0.3 migration set, backend infrastructure pass (M16), and a follow-up schema reconciliation against the authoritative DBML in `.localdoc/` (M16.1) have all been committed to `refactor` and verified locally against PostgreSQL. The next work is the importer slice (M17) — see `MILESTONE.md` §M17 Importer Slice Plan.
 
 This means:
 
@@ -198,11 +198,12 @@ Local v0.3 dashboard login after seeding:
 
 See `MILESTONE.md` for the latest local verification status.
 
-Latest 2026-05-18 verification:
+Latest 2026-05-18 verification (after M16.1 DBML reconciliation):
 
 - `php artisan migrate:fresh --seed` passed against local PostgreSQL.
-- `php artisan test --filter=V03SchemaContractTest` passed with 5 tests / 158 assertions when run against PostgreSQL.
-- `php artisan test --filter=V03DevSeederTest` passed with 1 test / 11 assertions when run against PostgreSQL.
+- `php artisan test --filter=V03SchemaContractTest` passed with 5 tests / 158 assertions.
+- `php artisan test --filter=V03DevSeederTest` passed with 1 test / 11 assertions.
+- Full suite `php artisan test` passed with 44 / 2 skipped (intentional registration tests) / 301 assertions.
 - `./vendor/bin/pint --test` passed.
 - `php artisan route:list` passed; active app routes are home, preview, auth, dashboard, settings, storage, and health.
 
