@@ -359,25 +359,28 @@ Goal: prove the importer framework end-to-end with one minimal tab,
 then repeat the pattern for the rest. Allow-list driven from
 `OpsFortress_MVP_Importer_Source_File_Index_for_Yiming_v0_1_Clean.xlsx`.
 
-**Slice 1 — Framework + Industries** (active):
+**Slice 1 — Framework + Industries** (done, `0caf6ec` 2026-05-18):
 
 - Source: SRC-001 `OpsFortress_Central_Occupation_Industry_Source_Pack_v4_schema_locked.xlsx`
 - Tab: `RAW_All_Industry_Master` (smallest, no FK lookups; upsert by `industry_candidate_key`)
-- Components to build:
-  - `app/Domain/Shared/Importer/Services/ImportRunner.php` — opens batch, dispatches per-tab importers, finalises status
-  - `app/Domain/Shared/Importer/Contracts/TabImporter.php` — `name()`, `validate(rows)`, `commit(rows)` contract every tab implements
+- Built:
+  - `app/Domain/Shared/Importer/Contracts/TabImporter.php` — interface every tab implements
+  - `app/Domain/Shared/Importer/Services/WorkbookReader.php` — phpspreadsheet wrapper, header-keyed rows
+  - `app/Domain/Shared/Importer/Services/ImportRunner.php` — opens batch, dispatches per-tab importers, writes summary
   - `app/Domain/Whs/Importer/Tabs/IndustriesTabImporter.php` — first implementation
-  - `php artisan opsf:import {path}` console command — slice 1 entry point
-- Tests (PG integration):
-  - Clean import from `.localdoc/OpsFortress_Central_Occupation_Industry_Source_Pack_v4_schema_locked.xlsx` produces N industries + 0 validation errors
-  - Re-running the same file is idempotent (upsert by candidate_key)
-  - Malformed row produces 0 industries written for that row + 1 `import_validation_results` row with `severity=error`
-- Out of scope for slice 1: any FK lookups, admin UI, queue dispatch, scheduling
+  - `php artisan opsf:import {path} {--tab=*}` console command, allow-list-only
+- Tests: 5 PG integration cases / 40 assertions — clean import, idempotency, missing candidate_key error, unknown active_status warning, batch lifecycle
+- Real-source quirks surfaced and handled: duplicate `industry_candidate_key` (first wins + warning), duplicate `industry_record_id` across distinct candidate_keys (first keeps external_id, rest get null + warning), unrecognised `active_status` (defaults to inactive + warning), missing `industry_candidate_key` (error + skip)
 
-**Slice 2 — Occupations** (from same workbook):
-- Same pattern; introduces upsert + denormalized source (same occupation appears with multiple `task_id` values, importer dedupes by `occupation_candidate_key`)
+**Slice 2 — Occupations** (done, 2026-05-19):
 
-**Slice 3 — Tasks**: `RAW_All_Task_Register`. 34-source-cols dropped to ~9 target cols per column-mapping spec.
+- Source: same SRC-001 workbook, tab `RAW_All_Occupation_Master` (8 data rows)
+- `app/Domain/Whs/Importer/Tabs/OccupationsTabImporter.php` — mirrors Industries shape; upsert by `occupation_candidate_key`; same dedup quirks (`OCC-001` and `OCC-002` each appear in two rows against distinct candidate_keys)
+- Wired into `ImportCommand::allWiredTabImporters()`; `opsf:import` now imports both tabs in one run
+- Tests: 4 PG integration cases / 33 assertions
+- Outcome: importing SRC-001 end-to-end now reads 12 rows, writes 11 (3 industries + 8 occupations), 0 errors, 4 warnings — all expected dedup signals
+
+**Slice 3 — Tasks** (next): `RAW_All_Task_Register`. 34-source-cols dropped to ~9 target cols per column-mapping spec. New concept: `external_task_id` is NOT NULL in DBML (no candidate_key dedup fallback).
 
 **Slice 4 — Access maps**: `RAW_All_Task_Occupation_Access` + `RAW_All_Task_Industry_Access`. Introduces FK resolution (`task_id` + `occupation_id`/`industry_id`) and the enum coercion (`Yes`→`full`, `Conditional`→`conditional`, `Show supervised`→`supervised`).
 
@@ -419,9 +422,9 @@ Not implemented yet:
 
 ## Immediate Next Actions
 
-1. **M17 Slice 1 (active)**: build importer framework + `IndustriesTabImporter` against `RAW_All_Industry_Master` from SRC-001, with `import_batches` + `import_validation_results` writes and PG integration tests.
-2. M17 Slice 2: `OccupationsTabImporter` (introduces denormalized-source dedup by candidate key).
-3. M17 Slice 3: `TasksTabImporter` from `RAW_All_Task_Register`.
+1. ~~M17 Slice 1: framework + IndustriesTabImporter~~ done (`0caf6ec`).
+2. ~~M17 Slice 2: OccupationsTabImporter~~ done 2026-05-19.
+3. **M17 Slice 3 (active)**: `TasksTabImporter` from `RAW_All_Task_Register`. New concept: required `external_task_id` (no candidate_key fallback). After two repetitions of the same pattern, this is the right moment to evaluate whether the duplicated helpers (`coerceActiveStatus`, `stringOrNull`, `recordResult`) should be extracted.
 4. M17 Slice 4: Access map importers (`task_occupation_access`, `task_industry_access`) — first time we exercise FK resolution + enum coercion (`Yes`→`full`, `Conditional`→`conditional`, `Show supervised`→`supervised`).
 5. M17 Slice 5: SWMS workbook importer for SRC-002/003/004 (`WHSAPP_Task_Register`, `WHSAPP_SWMS_Data`, `WHSAPP_Worker_App_View_Map`, `WHSAPP_PreStart_SWMS_15`).
 6. M17 Slice 6: Global Business Identifiers seed (SRC-005).
