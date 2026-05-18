@@ -8,6 +8,8 @@
 
 The uploaded DBML confirms that the v0.3 schema direction is valid and materially different from the old demo schema.
 
+2026-05-18 update: the first Laravel/PostgreSQL migration pass based on this review has been generated and verified locally. The recommended implementation add-ons in section 4 were included, and `V03SchemaContractTest` now checks the migrated PostgreSQL schema.
+
 The DBML defines 31 tables across four groups:
 
 1. Core Platform / Onboarding P0

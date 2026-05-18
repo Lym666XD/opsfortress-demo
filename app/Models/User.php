@@ -3,49 +3,58 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use App\Domain\OpsFortress\Businesses\Models\Business;
-use App\Domain\OpsFortress\Permissions\Models\UserRole;
-use App\Domain\OpsFortress\Tenancy\Models\Tenant;
+use App\Domain\OpsFortress\Access\Models\UserBusinessAccess;
+use App\Domain\OpsFortress\Access\Models\UserWorkplaceAccess;
+use App\Domain\OpsFortress\Accounts\Models\CustomerAccount;
+use App\Domain\OpsFortress\BusinessEntities\Models\BusinessEntity;
+use App\Models\Concerns\UsesUuidPrimaryKey;
 use Database\Factories\UserFactory;
-use Illuminate\Database\Eloquent\Attributes\Fillable;
-use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\DB;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 
 /**
- * Note on tenancy: User is intentionally NOT using BelongsToTenant trait.
- * User is the bootstrap of tenant context — a user has a tenant_id, but
- * queries against the users table happen during login when no tenant
- * context exists yet. The global scope would prevent login itself.
+ * User is intentionally not globally account-scoped.
  *
- * Cross-tenant user listings (admin dashboards) are guarded at the
- * Policy / controller layer, not via global scope.
+ * Login must be able to find the user before AccountContext exists. Account
+ * boundaries for user management are enforced by policy/controller queries.
  */
-#[Fillable([
-    'tenant_id',
-    'business_id',
-    'first_name',
-    'last_name',
-    'name',
-    'email',
-    'mobile',
-    'employee_code',
-    'status',
-    'person_type',
-    'contractor_type',
-    'last_signed_in_at',
-    'password',
-])]
-#[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token', 'blockchain_id'])]
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, TwoFactorAuthenticatable;
+    use HasFactory, Notifiable, SoftDeletes, TwoFactorAuthenticatable, UsesUuidPrimaryKey;
+
+    protected $fillable = [
+        'customer_account_id',
+        'home_business_entity_id',
+        'first_name',
+        'last_name',
+        'name',
+        'email',
+        'mobile',
+        'employee_code',
+        'status',
+        'person_type',
+        'contractor_type',
+        'timezone',
+        'locale',
+        'metadata',
+        'last_signed_in_at',
+        'password',
+    ];
+
+    protected $hidden = [
+        'password',
+        'two_factor_secret',
+        'two_factor_recovery_codes',
+        'remember_token',
+        'blockchain_id',
+    ];
 
     /**
      * K1: User.blockchain_id is immutable once set. Same Kevin-driven rule as
@@ -74,80 +83,77 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            // FK int casts — PG's PDO driver returns BIGINT as string when
-            // the model is created from form input (not refreshed from DB).
-            'tenant_id' => 'integer',
-            'business_id' => 'integer',
             'email_verified_at' => 'datetime',
             'last_signed_in_at' => 'datetime',
             'password' => 'hashed',
             'two_factor_confirmed_at' => 'datetime',
+            'metadata' => 'array',
         ];
     }
 
-    public function tenant(): BelongsTo
+    public function customerAccount(): BelongsTo
     {
-        return $this->belongsTo(Tenant::class);
+        return $this->belongsTo(CustomerAccount::class);
     }
 
-    public function business(): BelongsTo
+    public function homeBusinessEntity(): BelongsTo
     {
-        return $this->belongsTo(Business::class);
+        return $this->belongsTo(BusinessEntity::class, 'home_business_entity_id');
     }
 
-    public function userRoles(): HasMany
+    public function businessAccesses(): HasMany
     {
-        return $this->hasMany(UserRole::class);
+        return $this->hasMany(UserBusinessAccess::class);
     }
 
-    /**
-     * Check if the user holds a given role by code (e.g. 'admin', 'worker').
-     *
-     * Audit hardening A4: the query explicitly filters user_roles.tenant_id
-     * to match this user's tenant_id. This defends against the edge case
-     * where a corrupted user_roles row links a user to a role in a different
-     * tenant — the global scope on UserRole is bypassed here (we go through
-     * raw DB queries because login & permission checks must work BEFORE
-     * TenantContext is set), so without this explicit filter the attacker-
-     * inserted row would pass.
-     *
-     * Pre-spatie helper. If permission complexity grows (custom permissions,
-     * cached lookups, multiple guards), revisit the "install spatie/laravel-
-     * permission" decision in MILESTONE.md.
-     */
+    public function workplaceAccesses(): HasMany
+    {
+        return $this->hasMany(UserWorkplaceAccess::class);
+    }
+
     public function hasRole(string $code): bool
     {
-        if ($this->tenant_id === null) {
+        if ($this->customer_account_id === null) {
             return false;
         }
 
-        return DB::table('user_roles')
-            ->join('roles', 'roles.id', '=', 'user_roles.role_id')
-            ->where('user_roles.user_id', $this->id)
-            ->where('user_roles.tenant_id', $this->tenant_id)
-            ->where('roles.code', $code)
-            ->exists();
+        foreach (['user_business_access', 'user_workplace_access'] as $table) {
+            $hasRole = DB::table($table)
+                ->where('customer_account_id', $this->customer_account_id)
+                ->where('user_id', $this->id)
+                ->where('access_status', 'active')
+                ->where('permission_role', $code)
+                ->exists();
+
+            if ($hasRole) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
-     * All role codes held by this user within their own tenant.
-     * Used by HandleInertiaRequests to expose roles to the frontend for
-     * conditional nav rendering. Backend authorization checks should go
-     * through Policies, not by reading this list.
-     *
      * @return array<int, string>
      */
     public function roleCodes(): array
     {
-        if ($this->tenant_id === null) {
+        if ($this->customer_account_id === null) {
             return [];
         }
 
-        return DB::table('user_roles')
-            ->join('roles', 'roles.id', '=', 'user_roles.role_id')
-            ->where('user_roles.user_id', $this->id)
-            ->where('user_roles.tenant_id', $this->tenant_id)
-            ->pluck('roles.code')
+        return DB::table('user_business_access')
+            ->where('customer_account_id', $this->customer_account_id)
+            ->where('user_id', $this->id)
+            ->where('access_status', 'active')
+            ->pluck('permission_role')
+            ->merge(
+                DB::table('user_workplace_access')
+                    ->where('customer_account_id', $this->customer_account_id)
+                    ->where('user_id', $this->id)
+                    ->where('access_status', 'active')
+                    ->pluck('permission_role'),
+            )
             ->unique()
             ->values()
             ->all();

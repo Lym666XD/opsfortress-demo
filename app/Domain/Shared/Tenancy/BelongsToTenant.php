@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Shared\Tenancy;
 
+use App\Domain\OpsFortress\Tenancy\Models\Tenant;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use RuntimeException;
 
@@ -51,6 +52,6 @@ trait BelongsToTenant
 
     public function tenant(): BelongsTo
     {
-        return $this->belongsTo(\App\Domain\OpsFortress\Tenancy\Models\Tenant::class);
+        return $this->belongsTo(Tenant::class);
     }
 }

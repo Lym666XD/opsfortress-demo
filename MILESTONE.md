@@ -26,6 +26,8 @@
 | M12 | Build compliance services and document jobs | todo | Scoring, audit trail, PDF generation |
 | M13 | Add PWA/offline groundwork | todo | Deferred |
 | M14 | Verify locally and document current behavior | done | App runs via Herd, build/tests pass, docs synced |
+| M15 | v0.3 schema reset migration pass | done | Fresh v0.3 migration set generated and verified against local PostgreSQL 14 on 2026-05-18 |
+| M16 | Port backend infrastructure to v0.3 schema | in-progress | UUID `users.id`, account context, access checks, audit service, models, seed/dev login, and tests must move off old tenant/business/task_pack names |
 
 ## Phase 0 Refactor — Decided 2026-05-12
 
@@ -229,20 +231,104 @@ resources/js/layouts/...                        # sidebar "Workplaces" link
 - End-to-end login confirmed: `admin@demo.test` / `password` → `/dashboard` renders with "Demo Admin" in sidebar
 - Herd serves the app at `http://opsfortress-demo.test`
 
+## v0.3 Schema Reset + Backend Infrastructure — 2026-05-18
+
+The first v0.3 backend pass is complete and verified locally against Homebrew PostgreSQL 14.
+
+Created migration groups:
+
+- `2026_05_18_000000_enable_postgres_extensions_and_prepare_v0_3_reset.php`
+- `2026_05_18_000001_create_platform_lookup_tables.php`
+- `2026_05_18_000002_create_customer_account_and_business_tables.php`
+- `2026_05_18_000003_create_users_and_access_tables.php`
+- `2026_05_18_000004_create_contractor_relationships.php`
+- `2026_05_18_000005_create_whs_master_content_tables.php`
+- `2026_05_18_000006_create_swms_content_tables.php`
+- `2026_05_18_000007_create_import_tracking_tables.php`
+- `2026_05_18_000008_create_runtime_tables.php`
+- `2026_05_18_000009_create_evidence_audit_alert_tables.php`
+- `2026_05_18_000010_create_p1_posttask_tables.php`
+- `2026_05_18_000011_create_p1_training_tables.php`
+
+Implemented in the backend infrastructure pass:
+
+- `users.id` is now a UUID primary key. The separate `users.uuid` column was removed from the v0.3 user extension plan.
+- User foreign keys across legacy and v0.3 migrations were updated to UUID-compatible foreign keys.
+- `AccountContext`, `AccountScope`, `BelongsToAccount`, and `SetAccountContext` replaced the active request-scoped tenant middleware path.
+- v0.3 Eloquent models were added for account/business/workplace/access/contractor/content/import/runtime/evidence/audit tables.
+- `AuditService` was ported to `audit_events.event_hash`, `previous_hash`, `hash_sequence`, and `event_payload`.
+- `DatabaseSeeder` now calls `V03DemoSeeder`, which creates one account, business entity, workplace, admin user, access rows, and a small demo WHS task/SWMS/prestart slice.
+- Obsolete tenant-era feature tests were deleted instead of maintained against dead schema.
+- Old `/admin/workplaces` routes were disabled; no new frontend/admin UI was developed in this pass.
+
+Verification commands/results:
+
+```bash
+php artisan migrate:fresh --seed
+```
+
+Result: all legacy scaffold migrations applied, old scaffold tables removed by the reset migration, all v0.3 migrations completed successfully, and `V03DemoSeeder` completed successfully.
+
+```bash
+DB_CONNECTION=pgsql DB_DATABASE=opsfortress_demo DB_USERNAME=postgres DB_PASSWORD=postgres php artisan test --filter=V03SchemaContractTest
+```
+
+Result: 5 tests passed, 158 assertions.
+
+```bash
+DB_CONNECTION=pgsql DB_DATABASE=opsfortress_demo DB_USERNAME=postgres DB_PASSWORD=postgres php artisan test --filter=V03DevSeederTest
+```
+
+Result: 1 test passed, 11 assertions.
+
+```bash
+./vendor/bin/pint --test
+```
+
+Result: passed.
+
+```bash
+php artisan route:list
+```
+
+Result: routes compile; active application routes are home, preview, auth, dashboard, settings, storage, and health routes.
+
+Local runtime checks:
+
+- PostgreSQL service: `brew services start postgresql@14`
+- Database: `opsfortress_demo`
+- Local role used by `.env`: `postgres` / `postgres`
+- Demo login created by the v0.3 seeder: `admin@acme.test` / `password`
+- `php artisan serve --host=127.0.0.1 --port=8000` serves the app.
+- `/dashboard` redirects unauthenticated users to `/login`; dashboard renders after login.
+
+Important caveat:
+
+- Some legacy implementation files remain as reference code, but active routes and seed/test paths now use the v0.3 account/business/workplace/task model. Do not re-enable legacy admin/workplace routes without porting them to v0.3 columns and policies.
+
+M16 implementation decisions:
+
+- `users.id` will be refactored to UUID now, not later. This is a deliberate early cost to avoid a larger auth/data migration after importer/runtime records depend on users.
+- `users.uuid` is no longer needed as a separate public identifier once `users.id` is UUID.
+- Access roles remain controlled strings on `user_business_access.permission_role` and `user_workplace_access.permission_role` for now: `worker`, `supervisor`, `manager`, `admin`, `platform_admin`.
+- Old schema-dependent tests should be deleted rather than maintained in parallel with the v0.3 schema.
+
 ## Current Product State
 
 Implemented (architecture + foundations):
 
-- Multi-tenant domain model (17 tables, 17 models in `app/Domain/...`)
-- `BelongsToTenant` trait + `TenantContext` singleton + `SetTenantContext` middleware
-- SHA-256 hash-chained audit (`audit_events` + `AuditService`)
-- Idempotent platform + demo seeders
+- v0.3 PostgreSQL schema migrations for account/business/workplace/access/content/import/runtime/evidence/audit tables
+- PostgreSQL schema contract test for v0.3 table presence, UUID PKs including `users.id`, key FKs, partial unique indexes, and audit hash-chain columns
+- Account-scoped backend context and middleware for v0.3 account-owned records
+- Idempotent v0.3 demo seeder with account, business entity, workplace, admin access, and a small WHS task/SWMS/prestart slice
+- v0.3 audit hash-chain service
 - Phase 0 hardening (partial unique indexes, public registration disabled, file-disk default fixed)
-- Starter auth/settings flows; demo admin/supervisor/worker can log in
+- Starter auth/settings flows; demo admin can log in
 
 Not implemented yet:
 
-- Any business CRUD controller (M10 slice 1 starts here)
+- v0.3 admin controllers and policies
+- Importer services for approved workbook tabs
 - Worker mobile task flow (M11)
 - Submission scoring, corrective actions, PDF generation (M12)
 - PWA / offline (M13)
@@ -260,6 +346,7 @@ Not implemented yet:
 
 ## Immediate Next Actions
 
-1. Build M10 Slice 1 — Add Workplace (active work, see plan above).
-2. After slice 1 lands: review whether `User::hasRole($code)` custom helper held up, or whether to install `spatie/laravel-permission` for slice 2.
-3. After M10 slices 1-3 land: M11 worker task flow (workplace sign-in → SWMS acknowledgement → pre-start submission).
+1. Build the first importer service slice for the approved workbook/source-file tabs.
+2. Add importer validation tests that write into the v0.3 task/SWMS/prestart tables.
+3. Port or replace admin policies/controllers only when a real backend use case needs them.
+4. Keep frontend/dashboard expansion paused until importer-backed data can be loaded reliably.

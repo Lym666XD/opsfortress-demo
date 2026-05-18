@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Shared\Audit\Services;
 
 use App\Domain\Shared\Audit\Models\AuditEvent;
+use App\Domain\Shared\Context\AccountContext;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;
@@ -37,7 +38,9 @@ use RuntimeException;
 final class AuditService
 {
     public const ANCHOR_SIGNATURE = 'HASH-001';
+
     public const ANCHOR_CLOSEOUT = 'HASH-002';
+
     public const ANCHOR_ADMIN_CONFIG = 'ADMIN';
 
     /**
@@ -48,36 +51,52 @@ final class AuditService
     public function record(
         Model $subject,
         string $anchor,
-        string $eventName,
+        string $eventType,
         array $payload,
-        ?int $userId = null,
-        ?int $businessId = null,
+        ?string $userId = null,
+        ?string $businessEntityId = null,
+        ?string $workplaceId = null,
+        ?string $customerAccountId = null,
     ): AuditEvent {
         if (! $subject->exists) {
             throw new RuntimeException('Cannot audit an unsaved subject.');
         }
 
-        return DB::transaction(function () use ($subject, $anchor, $eventName, $payload, $userId, $businessId) {
+        $context = app(AccountContext::class);
+        $customerAccountId ??= $subject->getAttribute('customer_account_id') ?? $context->customerAccountId();
+        $businessEntityId ??= $subject->getAttribute('business_entity_id') ?? $context->businessEntityId();
+        $workplaceId ??= $subject->getAttribute('workplace_id') ?? $context->workplaceId();
+
+        if ($customerAccountId === null) {
+            throw new RuntimeException('Cannot audit without a customer_account_id.');
+        }
+
+        return DB::transaction(function () use ($subject, $anchor, $eventType, $payload, $userId, $businessEntityId, $workplaceId, $customerAccountId) {
             $previous = AuditEvent::query()
+                ->where('customer_account_id', $customerAccountId)
                 ->where('subject_type', $subject::class)
                 ->where('subject_id', $subject->getKey())
-                ->orderByDesc('id')
+                ->orderByDesc('hash_sequence')
                 ->lockForUpdate()
                 ->first();
 
-            $previousHash = $previous?->hash;
+            $previousHash = $previous?->event_hash;
+            $sequence = ($previous?->hash_sequence ?? 0) + 1;
             $hash = $this->computeHash($payload, $previousHash);
 
             return AuditEvent::create([
-                'business_id' => $businessId,
+                'customer_account_id' => $customerAccountId,
+                'business_entity_id' => $businessEntityId,
+                'workplace_id' => $workplaceId,
                 'user_id' => $userId,
                 'subject_type' => $subject::class,
-                'subject_id' => $subject->getKey(),
+                'subject_id' => (string) $subject->getKey(),
+                'event_type' => $eventType,
                 'anchor' => $anchor,
-                'event_name' => $eventName,
-                'hash' => $hash,
                 'previous_hash' => $previousHash,
-                'payload' => $payload,
+                'event_hash' => $hash,
+                'hash_sequence' => $sequence,
+                'event_payload' => $payload,
                 'occurred_at' => now(),
             ]);
         });
@@ -89,22 +108,30 @@ final class AuditService
      */
     public function detectTampering(Model $subject): ?AuditEvent
     {
+        $customerAccountId = $subject->getAttribute('customer_account_id')
+            ?? app(AccountContext::class)->customerAccountId();
+
+        if ($customerAccountId === null) {
+            throw new RuntimeException('Cannot verify audit trail without a customer_account_id.');
+        }
+
         $events = AuditEvent::query()
+            ->where('customer_account_id', $customerAccountId)
             ->where('subject_type', $subject::class)
-            ->where('subject_id', $subject->getKey())
-            ->orderBy('id')
+            ->where('subject_id', (string) $subject->getKey())
+            ->orderBy('hash_sequence')
             ->get();
 
         $expectedPrevious = null;
 
         foreach ($events as $event) {
-            $expectedHash = $this->computeHash($event->payload, $expectedPrevious);
+            $expectedHash = $this->computeHash($event->event_payload, $expectedPrevious);
 
-            if ($event->hash !== $expectedHash || $event->previous_hash !== $expectedPrevious) {
+            if ($event->event_hash !== $expectedHash || $event->previous_hash !== $expectedPrevious) {
                 return $event;
             }
 
-            $expectedPrevious = $event->hash;
+            $expectedPrevious = $event->event_hash;
         }
 
         return null;

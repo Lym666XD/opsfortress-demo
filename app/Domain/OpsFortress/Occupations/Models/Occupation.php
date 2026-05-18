@@ -5,34 +5,25 @@ declare(strict_types=1);
 namespace App\Domain\OpsFortress\Occupations\Models;
 
 use App\Domain\OpsFortress\Industries\Models\Industry;
+use App\Models\Concerns\UsesUuidPrimaryKey;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-/**
- * Platform-level catalog. NOT tenant-scoped — same reasoning as Industry.
- * Per architecture record §4.6: "no occupation = no SWMS/SOP access".
- */
 class Occupation extends Model
 {
-    protected $table = 'occupations';
+    use SoftDeletes, UsesUuidPrimaryKey;
 
-    protected $fillable = [
-        'code',
-        'parent_id',
-        'industry_id',
-        'name',
-        'level',
-        'active',
-    ];
+    protected $guarded = [];
 
-    protected $casts = [
-        // FK int casts — PG's PDO driver returns BIGINT as string.
-        'parent_id' => 'integer',
-        'industry_id' => 'integer',
-        'level' => 'integer',
-        'active' => 'boolean',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'level' => 'integer',
+            'metadata' => 'array',
+        ];
+    }
 
     public function parent(): BelongsTo
     {
@@ -44,8 +35,8 @@ class Occupation extends Model
         return $this->hasMany(self::class, 'parent_id');
     }
 
-    public function industry(): BelongsTo
+    public function primaryIndustry(): BelongsTo
     {
-        return $this->belongsTo(Industry::class);
+        return $this->belongsTo(Industry::class, 'primary_industry_id');
     }
 }

@@ -170,29 +170,59 @@ training_responses
 
 ---
 
-## First Task Recommendation
+## 2026-05-18 Status
 
-For the first implementation task, do only this:
+The first two implementation tasks have been completed:
 
 ```text
 Generate fresh Laravel migrations for the v0.3 schema.
+Port backend infrastructure from the old scaffold naming to the v0.3 schema.
 ```
 
-Do not generate:
+Local verification completed:
 
 ```text
-models
-controllers
-seeders
-React pages
-importer services
-worker flow services
-PDF jobs
+php artisan migrate:fresh --seed
+DB_CONNECTION=pgsql DB_DATABASE=opsfortress_demo DB_USERNAME=postgres DB_PASSWORD=postgres php artisan test --filter=V03SchemaContractTest
+DB_CONNECTION=pgsql DB_DATABASE=opsfortress_demo DB_USERNAME=postgres DB_PASSWORD=postgres php artisan test --filter=V03DevSeederTest
+./vendor/bin/pint --test
 ```
 
-Those should come after migration review.
+The schema contract test passed with 5 tests and 158 assertions. The dev seeder test passed with 1 test and 11 assertions.
 
-Use `docs/CODEX_PROMPT_V0_3_MIGRATIONS.md` as the detailed task prompt.
+Important caveat: some legacy model files still exist as reference code. Active routes, seeders, and v0.3 tests now use the account/business/workplace/task schema.
+
+## Next Task Recommendation
+
+For the next implementation task, do only this:
+
+```text
+Build the first importer service slice against the verified v0.3 backend.
+```
+
+Recommended scope:
+
+```text
+refactor users.id to UUID now
+create v0.3 Eloquent models for core P0 tables
+adapt TenantContext -> AccountContext / PlatformContext
+adapt BelongsToTenant -> account/business/workplace scoping
+port AuditService to v0.3 audit_events fields
+create a minimal v0.3 dev seeder/login path
+delete old tests that depend on tenants/businesses/task_packs/activities/submissions
+```
+
+Do not build:
+
+```text
+React pages
+worker UI
+PDF jobs
+full importer UI
+new production workflow controllers
+```
+
+Those should come after the backend infrastructure can read/write the v0.3 tables reliably.
 
 ---
 
@@ -203,6 +233,7 @@ Use PostgreSQL and Laravel migrations.
 Requirements:
 
 - UUID primary keys for v0.3 domain tables.
+- `users.id` is also UUID in this repo after the 2026-05-18 backend infrastructure pass.
 - Prefer `pgcrypto` and `gen_random_uuid()` for database-generated UUIDs.
 - Use explicit foreign keys.
 - Use `jsonb` for structured JSON fields.
@@ -246,6 +277,16 @@ Do not delete historical docs unless explicitly instructed. Old docs contain use
 
 ---
 
+## Current Repo Status Addendum — 2026-05-18
+
+The v0.3 migration and backend infrastructure pass is complete locally:
+
+- `php artisan migrate:fresh --seed` passes against PostgreSQL.
+- `V03SchemaContractTest` and `V03DevSeederTest` pass against PostgreSQL.
+- `AccountContext` / `BelongsToAccount` is the active scoped-context pattern.
+- `V03DemoSeeder` creates `admin@acme.test` / `password`.
+- Frontend/admin UI development is paused; next work should be importer services and validation tests.
+
 ## Quality Bar
 
 After a coding task, report:
@@ -259,9 +300,9 @@ After a coding task, report:
 
 ---
 
-## Suggested Immediate Command to Agent
+## Previous Migration Command to Agent
 
-Use this as the immediate task prompt:
+The following prompt was used for the completed first pass and is now historical:
 
 ```text
 Read README.md, TARGET_ARCHITECTURE.md, docs/V0_3_SCHEMA_RESET_PLAN.md, docs/DBML_FINAL_REVIEW_2026_05_17.md, and docs/CODEX_PROMPT_V0_3_MIGRATIONS.md.
@@ -273,4 +314,26 @@ Use the DBML/spec direction as authoritative, include the add-ons recommended in
 Do not generate models, controllers, seeders, services, importer code, or UI files yet.
 
 After generating migrations, explain the migration order, assumptions, and any places where DBML was extended for implementation quality.
+```
+
+## Suggested Immediate Command to Agent
+
+Use this as the next task prompt:
+
+```text
+Read README.md, TARGET_ARCHITECTURE.md, MILESTONE.md, docs/V0_3_SCHEMA_RESET_PLAN.md, docs/DBML_FINAL_REVIEW_2026_05_17.md, and docs/CODEX_PROMPT_V0_3_MIGRATIONS.md.
+
+The v0.3 migrations now exist and have passed `php artisan migrate:fresh` against PostgreSQL plus `V03SchemaContractTest`.
+
+Do not build frontend pages or importer UI yet.
+
+Port the backend infrastructure to v0.3:
+- refactor `users.id` to UUID now and update all user foreign keys accordingly;
+- create only the Eloquent models needed for the P0 core/platform/content/runtime tables;
+- adapt tenant/account context naming and scoping to `customer_accounts`, `business_entities`, and `workplaces`;
+- port the hash-chain AuditService to the new `audit_events` columns;
+- create a minimal v0.3 dev seeder/login path;
+- delete obsolete scaffold tests and add/update backend tests for account/business/workplace isolation and audit-chain behavior.
+
+Avoid extending old production truth tables such as `tenants`, `businesses`, `task_packs`, `activities`, and `submissions`.
 ```

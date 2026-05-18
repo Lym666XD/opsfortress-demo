@@ -4,32 +4,25 @@ declare(strict_types=1);
 
 namespace App\Domain\OpsFortress\Industries\Models;
 
+use App\Models\Concerns\UsesUuidPrimaryKey;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-/**
- * Platform-level catalog. NOT tenant-scoped — every tenant draws from
- * the same industry taxonomy (per OpsFortress Central Source Pack §3.21).
- */
 class Industry extends Model
 {
-    protected $table = 'industries';
+    use SoftDeletes, UsesUuidPrimaryKey;
 
-    protected $fillable = [
-        'code',
-        'parent_id',
-        'name',
-        'level',
-        'active',
-    ];
+    protected $guarded = [];
 
-    protected $casts = [
-        // FK int cast — PG's PDO driver returns BIGINT as string.
-        'parent_id' => 'integer',
-        'level' => 'integer',
-        'active' => 'boolean',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'level' => 'integer',
+            'metadata' => 'array',
+        ];
+    }
 
     public function parent(): BelongsTo
     {

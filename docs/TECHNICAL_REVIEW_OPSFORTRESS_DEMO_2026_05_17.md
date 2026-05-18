@@ -26,6 +26,8 @@ Stop extending the old scaffold schema for production workflows.
 Move to v0.3 schema reset and importer-first P0.
 ```
 
+2026-05-18 status: the v0.3 migration-only reset has been generated and verified against local PostgreSQL. The old scaffold schema remains useful as code reference, but backend infrastructure now needs to be ported to the new account/business/workplace/task/runtime tables.
+
 ---
 
 ## 2. What Is Good and Should Be Preserved

@@ -28,6 +28,31 @@ v0.3 Schema Reset + Importer-first P0
 
 This repository should keep its useful Laravel infrastructure, but the database schema and business entities should be rebuilt around v0.3.
 
+### 2026-05-18 Implementation Status
+
+The first migration-only implementation pass is complete.
+
+Completed:
+
+- v0.3 migration files generated in the recommended dependency order;
+- old scaffold tables are removed by a reset migration during `migrate:fresh`;
+- PostgreSQL `pgcrypto`, UUID primary keys, JSONB fields, explicit FKs, partial unique indexes, timestamps, and soft deletes are used where appropriate;
+- implementation add-ons were included: `import_batches`, `import_source_files`, `import_validation_results`, `prestart_submissions`, `workplace_task_settings`, `alerts`, `worker_training_completions`, and `user_workplace_access`;
+- P1 post-task and training tables are isolated in separate migration files;
+- `tests/Feature/Database/V03SchemaContractTest.php` validates the migrated PostgreSQL schema.
+
+Verified locally:
+
+```bash
+php artisan migrate:fresh --seed
+DB_CONNECTION=pgsql DB_DATABASE=opsfortress_demo DB_USERNAME=postgres DB_PASSWORD=postgres php artisan test --filter=V03SchemaContractTest
+DB_CONNECTION=pgsql DB_DATABASE=opsfortress_demo DB_USERNAME=postgres DB_PASSWORD=postgres php artisan test --filter=V03DevSeederTest
+```
+
+Result: migration and seed pass succeeded; schema contract passed with 5 tests and 158 assertions; dev seeder test passed with 1 test and 11 assertions.
+
+Next: build importer services and validation tests before worker UI.
+
 ---
 
 ## 2. Why a Reset Is Needed
@@ -350,6 +375,33 @@ Still to confirm with Kevin / Damon:
 
 ---
 
-## 11. Final Position
+## 11. Backend Infrastructure Status After Migration Verification
+
+Completed on 2026-05-18:
+
+- `users.id` was refactored to UUID before importer/runtime data depends on user foreign keys.
+- v0.3 Eloquent models were added for the core platform/content/runtime/import/evidence/audit tables.
+- Active request scoping moved from tenant-only context to `AccountContext` / `BelongsToAccount`.
+- `AuditService` was ported to `audit_events.event_hash`, `previous_hash`, `hash_sequence`, and `event_payload`.
+- `V03DemoSeeder` creates a runnable local account/business/workplace/admin/content slice.
+- Obsolete tests that depended on the old scaffold schema were deleted.
+- Frontend/admin UI expansion stayed out of scope.
+
+Verification:
+
+- `php artisan migrate:fresh --seed` passed.
+- `DB_CONNECTION=pgsql DB_DATABASE=opsfortress_demo DB_USERNAME=postgres DB_PASSWORD=postgres php artisan test --filter=V03SchemaContractTest` passed.
+- `DB_CONNECTION=pgsql DB_DATABASE=opsfortress_demo DB_USERNAME=postgres DB_PASSWORD=postgres php artisan test --filter=V03DevSeederTest` passed.
+- `./vendor/bin/pint --test` passed.
+
+Next engineering step:
+
+```text
+Build the first importer service slice against the verified v0.3 backend.
+```
+
+---
+
+## 12. Final Position
 
 The repository should move forward by resetting the schema to v0.3 and proving the importer-backed worker flow. The existing codebase remains valuable as a Laravel implementation foundation, but the old table model should not be treated as production truth.

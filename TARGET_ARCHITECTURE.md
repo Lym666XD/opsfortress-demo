@@ -32,6 +32,8 @@ The recommended next step is:
 v0.3 Schema Reset + Importer-first P0
 ```
 
+2026-05-18 status: the migration-only v0.3 reset has been generated and verified against local PostgreSQL. The next architecture task is to port backend infrastructure, models, account/business/workplace scoping, audit service, seed/dev login, and tests to the v0.3 schema before building importer services or more UI.
+
 ### v0.3 Core Modelling Direction
 
 The next schema should move toward:

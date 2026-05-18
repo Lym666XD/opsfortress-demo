@@ -4,6 +4,39 @@ Use this prompt when asking Codex / Claude Code / another coding agent to genera
 
 ---
 
+## 2026-05-18 Status
+
+This migration-generation task has been completed in the repository.
+
+Generated migrations:
+
+```text
+2026_05_18_000000_enable_postgres_extensions_and_prepare_v0_3_reset.php
+2026_05_18_000001_create_platform_lookup_tables.php
+2026_05_18_000002_create_customer_account_and_business_tables.php
+2026_05_18_000003_create_users_and_access_tables.php
+2026_05_18_000004_create_contractor_relationships.php
+2026_05_18_000005_create_whs_master_content_tables.php
+2026_05_18_000006_create_swms_content_tables.php
+2026_05_18_000007_create_import_tracking_tables.php
+2026_05_18_000008_create_runtime_tables.php
+2026_05_18_000009_create_evidence_audit_alert_tables.php
+2026_05_18_000010_create_p1_posttask_tables.php
+2026_05_18_000011_create_p1_training_tables.php
+```
+
+Verified:
+
+```text
+php artisan migrate:fresh
+php artisan test --filter=V03SchemaContractTest
+vendor/bin/pint --test
+```
+
+Current recommendation: use this document as historical context only. The next task is backend infrastructure porting to the v0.3 schema, not another migration generation pass.
+
+---
+
 ## Prompt
 
 Read the v0.3 design documents carefully before writing code:

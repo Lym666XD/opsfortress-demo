@@ -4,59 +4,29 @@ declare(strict_types=1);
 
 namespace App\Domain\OpsFortress\Workplaces\Models;
 
-use App\Domain\OpsFortress\Businesses\Models\Business;
-use App\Domain\Shared\Tenancy\BelongsToTenant;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use App\Domain\Shared\Context\BelongsToAccount;
+use App\Models\Concerns\UsesUuidPrimaryKey;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Workplace extends Model
 {
-    use BelongsToTenant;
-    use HasUuids;
+    use BelongsToAccount, SoftDeletes, UsesUuidPrimaryKey;
 
-    protected $table = 'workplaces';
+    protected $guarded = [];
 
-    protected $fillable = [
-        'tenant_id',
-        'business_id',
-        'uuid',
-        'name',
-        'code',
-        'classification',
-        'street_address',
-        'suburb',
-        'city',
-        'state',
-        'postcode',
-        'country',
-        'latitude',
-        'longitude',
-        'geofence_radius_meters',
-        'active',
-        'metadata',
-    ];
-
-    protected $casts = [
-        // Foreign keys — explicit int casts because PG's PDO driver returns
-        // BIGINT columns as strings by default. Without these, type-hinted
-        // ?int parameters (e.g. AuditService::record) fail.
-        'tenant_id' => 'integer',
-        'business_id' => 'integer',
-        'latitude' => 'decimal:7',
-        'longitude' => 'decimal:7',
-        'geofence_radius_meters' => 'integer',
-        'active' => 'boolean',
-        'metadata' => 'array',
-    ];
-
-    public function uniqueIds(): array
+    protected function casts(): array
     {
-        return ['uuid'];
+        return [
+            'latitude' => 'decimal:7',
+            'longitude' => 'decimal:7',
+            'metadata' => 'array',
+        ];
     }
 
-    public function business(): BelongsTo
+    public function environments(): HasMany
     {
-        return $this->belongsTo(Business::class);
+        return $this->hasMany(WorkplaceEnvironment::class);
     }
 }

@@ -30,12 +30,12 @@ The business intent is that WHSAPP may be one product running on top of OpsFortr
 
 ### Useful Technical Foundations Already Built
 
-These pieces are worth preserving and porting into the v0.3 reset:
+These pieces were worth preserving and have started being ported into the v0.3 reset:
 
 - Domain-oriented folder direction under `app/Domain/...`
-- `TenantContext`, `TenantScope`, and `BelongsToTenant` ideas for request/job scoped isolation
-- Tenant isolation tests and policy-driven access checks
-- Hash-chained `AuditService` using SHA-256, canonical JSON, `previous_hash`, and row locking
+- `AccountContext`, `AccountScope`, and `BelongsToAccount` for request/job scoped account isolation
+- PostgreSQL schema and seeder tests for the v0.3 backend
+- Hash-chained `AuditService` using SHA-256, canonical JSON, `event_hash`, `previous_hash`, `hash_sequence`, and row locking
 - Append-only / immutable payload hardening ideas
 - Public registration disabled in favour of controlled onboarding / invite flows
 - FormRequest + Policy + Controller + Inertia vertical slice pattern
@@ -86,19 +86,31 @@ The current authoritative design sources are in the Google Drive WHSAPPDOCS fold
 
 ## Current Recommended Direction
 
-The next major technical step should be:
+The current major technical direction is:
 
 ```text
 v0.3 Schema Reset + Importer-first P0
 ```
 
+As of 2026-05-18, the v0.3 migration and backend infrastructure pass has been generated and verified locally against PostgreSQL. The next work should build the importer-first P0 path.
+
 This means:
 
-1. Generate fresh Laravel migrations for the v0.3 schema.
-2. Preserve useful infrastructure from this repo, especially tenancy, audit, policies, and vertical-slice style.
+1. Keep the fresh v0.3 Laravel migrations as the production schema direction.
+2. Preserve useful infrastructure from this repo, especially account scoping, audit, policies, and vertical-slice style.
 3. Stop extending the old `tenants/businesses/task_packs/submissions` model for production features.
 4. Build the importer early, because the real business asset is Kevin's workbook/data pipeline.
 5. Prove the first worker flow from imported workbook data, not from hand-written demo seed data.
+
+## Local v0.3 Demo Login
+
+After running `php artisan migrate:fresh --seed`, the v0.3 demo seeder creates:
+
+- account: `Acme Construction`
+- login: `admin@acme.test`
+- password: `password`
+
+Run the app with `php artisan serve --host=127.0.0.1 --port=8000` and open `http://127.0.0.1:8000/dashboard`.
 
 ## P0 Proof Target
 
@@ -129,9 +141,9 @@ Current notable routes in the scaffold:
 ### Assumptions
 
 - PostgreSQL 14 is running on `127.0.0.1:5432`
-- The app is linked in Laravel Herd as `opsfortress-demo.test`
-- PHP / Composer are provided by Herd
-- Bun is installed
+- PHP / Composer are installed
+- Bun is installed, with `~/.bun/bin` on `PATH`
+- Node is `20.19+` or `22.12+` for Vite. Homebrew Node 26 works; old Node 18 does not.
 
 ### Environment
 
@@ -142,21 +154,57 @@ Current local defaults in `.env`:
 - `CACHE_STORE=database`
 - `FILESYSTEM_DISK=local`
 
+### PostgreSQL Setup on macOS via Homebrew
+
+The verified local setup uses Homebrew PostgreSQL, not Docker:
+
+```bash
+brew services start postgresql@14
+pg_isready -h 127.0.0.1 -p 5432
+psql -h 127.0.0.1 -d postgres -c "CREATE ROLE postgres WITH LOGIN SUPERUSER PASSWORD 'postgres';"
+psql -h 127.0.0.1 -d postgres -c "CREATE DATABASE opsfortress_demo OWNER postgres;"
+```
+
+The expected `.env` database settings are:
+
+```env
+DB_CONNECTION=pgsql
+DB_HOST=127.0.0.1
+DB_PORT=5432
+DB_DATABASE=opsfortress_demo
+DB_USERNAME=postgres
+DB_PASSWORD=postgres
+```
+
 ### Start The App
 
-```powershell
-$env:PATH="C:\Users\User\.config\herd\bin;C:\Users\User\.bun\bin;" + $env:PATH
-Set-Location "C:\Users\User\Desktop\WHSAPP\opsfortress-demo"
-composer run dev
+```bash
+composer install
+php artisan key:generate
+php artisan migrate:fresh --seed
+php artisan serve --host=127.0.0.1 --port=8000
 ```
 
 Open:
 
-- `http://opsfortress-demo.test`
+- `http://127.0.0.1:8000`
+
+Local v0.3 dashboard login after seeding:
+
+- email: `admin@acme.test`
+- password: `password`
 
 ## Verification
 
-See `MILESTONE.md` for the latest local verification status. Previous verification included successful frontend type-check/build, database migration, seed data, and feature tests.
+See `MILESTONE.md` for the latest local verification status.
+
+Latest 2026-05-18 verification:
+
+- `php artisan migrate:fresh --seed` passed against local PostgreSQL.
+- `php artisan test --filter=V03SchemaContractTest` passed with 5 tests / 158 assertions when run against PostgreSQL.
+- `php artisan test --filter=V03DevSeederTest` passed with 1 test / 11 assertions when run against PostgreSQL.
+- `./vendor/bin/pint --test` passed.
+- `php artisan route:list` passed; active app routes are home, preview, auth, dashboard, settings, storage, and health.
 
 ## Related Docs Added 2026-05-17
 

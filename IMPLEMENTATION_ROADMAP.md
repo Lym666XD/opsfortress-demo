@@ -407,11 +407,14 @@ Mitigation:
 
 ## Immediate Next Actions
 
-1. Align repository folders to the target domain structure.
-2. Lock down tenancy and registration rules.
-3. Build the first polished stakeholder demo screens.
-4. Implement Business Identity as the first true flow.
-5. Build the Task Pack engine behind the demo shell.
+2026-05-18 update: the v0.3 migration-only reset has been generated and verified against local PostgreSQL. The next actions should stay backend-first until the application infrastructure matches the new schema.
+
+1. Port backend infrastructure to v0.3: UUID `users.id`, account context, business/workplace scoping, audit service, core models, and tests.
+2. Create a minimal v0.3 dev seeder/login path using `customer_accounts`, `business_entities`, `account_businesses`, `workplaces`, and the existing auth `users` table.
+3. Build the importer engine slice for approved source tabs: occupations, industries, tasks, task access maps, SWMS versions, worker steps, and prestart questions.
+4. Prove the first runtime path from imported content: worker task session, step read events, signature, prestart submission, evidence/audit/alert records.
+5. Delete obsolete scaffold tests rather than maintaining old and new schemas in parallel.
+6. Resume frontend/demo work only after the backend path above can create and query v0.3 data reliably.
 
 ## Final Recommendation
 
