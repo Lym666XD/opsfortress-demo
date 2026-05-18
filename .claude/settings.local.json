@@ -10,7 +10,16 @@
       "Bash(\"C:/Users/User/.config/herd/bin/herd.bat\")",
       "Bash(\"C:/Users/User/.config/herd/bin/herd.bat\" paths *)",
       "Bash(\"C:/Users/User/.config/herd/bin/herd.bat\" links *)",
-      "Bash(\"C:/Users/User/.config/herd/bin/herd.bat\" link *)"
+      "Bash(\"C:/Users/User/.config/herd/bin/herd.bat\" link *)",
+      "Bash(python3 *)",
+      "Bash(pip3 install *)",
+      "Bash(git *)",
+      "Bash(php artisan *)",
+      "Bash(DB_CONNECTION=pgsql DB_DATABASE=opsfortress_demo DB_USERNAME=postgres DB_PASSWORD=postgres php artisan test --filter=V03SchemaContractTest)",
+      "Bash(DB_CONNECTION=pgsql DB_DATABASE=opsfortress_demo DB_USERNAME=postgres DB_PASSWORD=postgres php artisan test --filter=V03DevSeederTest)",
+      "Bash(./vendor/bin/pint --test)",
+      "Bash(./vendor/bin/pint)",
+      "Bash(DB_CONNECTION=pgsql DB_DATABASE=opsfortress_demo DB_USERNAME=postgres DB_PASSWORD=postgres php artisan test)"
     ]
   }
 }
