@@ -35,27 +35,27 @@ final class V03DevSeederTest extends TestCase
             '/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/',
             $admin->id,
         );
-        $this->assertSame($account->id, $admin->customer_account_id);
+        $this->assertSame($account->id, $admin->account_id);
         $this->assertTrue($admin->hasRole('admin'));
         $this->assertContains('admin', $admin->roleCodes());
 
         $this->assertDatabaseHas('user_business_access', [
-            'customer_account_id' => $account->id,
+            'account_id' => $account->id,
             'user_id' => $admin->id,
             'permission_role' => 'admin',
             'access_status' => 'active',
         ]);
 
         app(AccountContext::class)->runAs(
-            customerAccountId: $account->id,
+            accountId: $account->id,
             callback: function (): void {
                 $this->assertSame(1, Workplace::query()->count());
             },
         );
 
         $this->assertDatabaseHas('tasks', [
-            'task_code' => 'TASK-DEMO-001',
-            'status' => 'published',
+            'external_task_id' => 'TASK-DEMO-001',
+            'active_status' => true,
         ]);
         $this->assertDatabaseHas('swms_versions', [
             'external_swms_version_id' => 'demo-v1',

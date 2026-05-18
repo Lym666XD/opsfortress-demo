@@ -47,7 +47,7 @@ return new class extends Migration
 
         Schema::create('account_businesses', function (Blueprint $table) {
             $table->uuid('id')->primary()->default(DB::raw('gen_random_uuid()'));
-            $table->foreignUuid('customer_account_id')->constrained('customer_accounts')->cascadeOnDelete();
+            $table->foreignUuid('account_id')->constrained('customer_accounts')->cascadeOnDelete();
             $table->foreignUuid('business_entity_id')->constrained('business_entities')->cascadeOnDelete();
             $table->string('relationship_type', 32)->default('owned');
             $table->boolean('is_primary')->default(false);
@@ -57,13 +57,13 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->index(['customer_account_id', 'relationship_type'], 'account_businesses_rel_idx');
+            $table->index(['account_id', 'relationship_type'], 'account_businesses_rel_idx');
             $table->index('business_entity_id');
         });
 
         DB::statement(
             'CREATE UNIQUE INDEX account_businesses_active_unique '.
-            'ON account_businesses (customer_account_id, business_entity_id) '.
+            'ON account_businesses (account_id, business_entity_id) '.
             'WHERE deleted_at IS NULL',
         );
 
@@ -94,7 +94,7 @@ return new class extends Migration
 
         Schema::create('workplaces', function (Blueprint $table) {
             $table->uuid('id')->primary()->default(DB::raw('gen_random_uuid()'));
-            $table->foreignUuid('customer_account_id')->constrained('customer_accounts')->cascadeOnDelete();
+            $table->foreignUuid('account_id')->constrained('customer_accounts')->cascadeOnDelete();
             $table->foreignUuid('business_entity_id')->constrained('business_entities')->cascadeOnDelete();
             $table->foreignUuid('country_id')->nullable()->constrained('countries')->nullOnDelete();
             $table->string('code')->nullable();
@@ -116,7 +116,7 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->index(['customer_account_id', 'status']);
+            $table->index(['account_id', 'status']);
             $table->index(['business_entity_id', 'status']);
         });
 

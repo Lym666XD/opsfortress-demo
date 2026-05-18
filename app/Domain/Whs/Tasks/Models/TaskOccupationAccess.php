@@ -21,7 +21,7 @@ class TaskOccupationAccess extends Model
     protected function casts(): array
     {
         return [
-            'is_primary' => 'boolean',
+            'active_status' => 'boolean',
             'metadata' => 'array',
         ];
     }

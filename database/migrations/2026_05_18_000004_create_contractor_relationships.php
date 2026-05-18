@@ -11,7 +11,7 @@ return new class extends Migration
     {
         Schema::create('contractor_relationships', function (Blueprint $table) {
             $table->uuid('id')->primary()->default(DB::raw('gen_random_uuid()'));
-            $table->foreignUuid('customer_account_id')->constrained('customer_accounts')->cascadeOnDelete();
+            $table->foreignUuid('account_id')->constrained('customer_accounts')->cascadeOnDelete();
             $table->foreignUuid('host_business_entity_id')->constrained('business_entities')->cascadeOnDelete();
             $table->foreignUuid('contractor_business_entity_id')->constrained('business_entities')->cascadeOnDelete();
             $table->string('relationship_type', 64)->default('contractor');
@@ -27,7 +27,7 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->index(['customer_account_id', 'relationship_status'], 'contractors_account_status_idx');
+            $table->index(['account_id', 'relationship_status'], 'contractors_account_status_idx');
             $table->index('host_business_entity_id', 'contractors_host_idx');
             $table->index('contractor_business_entity_id', 'contractors_contractor_idx');
         });

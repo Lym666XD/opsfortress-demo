@@ -13,7 +13,7 @@ trait BelongsToAccount
         static::addGlobalScope(new AccountScope);
 
         static::creating(function ($model): void {
-            if ($model->getAttribute('customer_account_id') !== null) {
+            if ($model->getAttribute('account_id') !== null) {
                 return;
             }
 
@@ -26,7 +26,7 @@ trait BelongsToAccount
                 ));
             }
 
-            $model->setAttribute('customer_account_id', $context->customerAccountId());
+            $model->setAttribute('account_id', $context->accountId());
         });
     }
 }

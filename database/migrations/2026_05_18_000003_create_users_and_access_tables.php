@@ -10,21 +10,21 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->foreignUuid('customer_account_id')->nullable()->after('id')->constrained('customer_accounts')->nullOnDelete();
-            $table->foreignUuid('home_business_entity_id')->nullable()->after('customer_account_id')->constrained('business_entities')->nullOnDelete();
+            $table->foreignUuid('account_id')->nullable()->after('id')->constrained('customer_accounts')->nullOnDelete();
+            $table->foreignUuid('home_business_entity_id')->nullable()->after('account_id')->constrained('business_entities')->nullOnDelete();
             $table->string('timezone', 64)->nullable()->after('contractor_type');
             $table->string('locale', 16)->nullable()->after('timezone');
             $table->jsonb('metadata')->nullable()->after('locale');
             $table->softDeletes();
 
-            $table->index(['customer_account_id', 'status']);
+            $table->index(['account_id', 'status']);
             $table->index('home_business_entity_id');
             $table->index('person_type');
         });
 
         Schema::create('user_business_access', function (Blueprint $table) {
             $table->uuid('id')->primary()->default(DB::raw('gen_random_uuid()'));
-            $table->foreignUuid('customer_account_id')->constrained('customer_accounts')->cascadeOnDelete();
+            $table->foreignUuid('account_id')->constrained('customer_accounts')->cascadeOnDelete();
             $table->foreignUuid('business_entity_id')->constrained('business_entities')->cascadeOnDelete();
             $table->foreignUuid('user_id')->constrained('users')->cascadeOnDelete();
             $table->string('permission_role', 32)->default('worker');
@@ -36,7 +36,7 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->index(['customer_account_id', 'access_status'], 'uba_account_status_idx');
+            $table->index(['account_id', 'access_status'], 'uba_account_status_idx');
             $table->index(['business_entity_id', 'permission_role'], 'uba_business_role_idx');
             $table->index('user_id');
         });
@@ -49,7 +49,7 @@ return new class extends Migration
 
         Schema::create('user_workplace_access', function (Blueprint $table) {
             $table->uuid('id')->primary()->default(DB::raw('gen_random_uuid()'));
-            $table->foreignUuid('customer_account_id')->constrained('customer_accounts')->cascadeOnDelete();
+            $table->foreignUuid('account_id')->constrained('customer_accounts')->cascadeOnDelete();
             $table->foreignUuid('business_entity_id')->constrained('business_entities')->cascadeOnDelete();
             $table->foreignUuid('workplace_id')->constrained('workplaces')->cascadeOnDelete();
             $table->foreignUuid('user_id')->constrained('users')->cascadeOnDelete();
@@ -62,7 +62,7 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->index(['customer_account_id', 'access_status'], 'uwa_account_status_idx');
+            $table->index(['account_id', 'access_status'], 'uwa_account_status_idx');
             $table->index(['workplace_id', 'permission_role'], 'uwa_workplace_role_idx');
             $table->index('user_id');
         });
@@ -80,11 +80,11 @@ return new class extends Migration
         Schema::dropIfExists('user_business_access');
 
         Schema::table('users', function (Blueprint $table) {
-            $table->dropIndex(['customer_account_id', 'status']);
+            $table->dropIndex(['account_id', 'status']);
             $table->dropIndex(['home_business_entity_id']);
             $table->dropIndex(['person_type']);
             $table->dropConstrainedForeignId('home_business_entity_id');
-            $table->dropConstrainedForeignId('customer_account_id');
+            $table->dropConstrainedForeignId('account_id');
             $table->dropColumn(['timezone', 'locale', 'metadata', 'deleted_at']);
         });
     }

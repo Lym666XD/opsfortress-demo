@@ -56,24 +56,24 @@ final class AuditService
         ?string $userId = null,
         ?string $businessEntityId = null,
         ?string $workplaceId = null,
-        ?string $customerAccountId = null,
+        ?string $accountId = null,
     ): AuditEvent {
         if (! $subject->exists) {
             throw new RuntimeException('Cannot audit an unsaved subject.');
         }
 
         $context = app(AccountContext::class);
-        $customerAccountId ??= $subject->getAttribute('customer_account_id') ?? $context->customerAccountId();
+        $accountId ??= $subject->getAttribute('account_id') ?? $context->accountId();
         $businessEntityId ??= $subject->getAttribute('business_entity_id') ?? $context->businessEntityId();
         $workplaceId ??= $subject->getAttribute('workplace_id') ?? $context->workplaceId();
 
-        if ($customerAccountId === null) {
-            throw new RuntimeException('Cannot audit without a customer_account_id.');
+        if ($accountId === null) {
+            throw new RuntimeException('Cannot audit without an account_id.');
         }
 
-        return DB::transaction(function () use ($subject, $anchor, $eventType, $payload, $userId, $businessEntityId, $workplaceId, $customerAccountId) {
+        return DB::transaction(function () use ($subject, $anchor, $eventType, $payload, $userId, $businessEntityId, $workplaceId, $accountId) {
             $previous = AuditEvent::query()
-                ->where('customer_account_id', $customerAccountId)
+                ->where('account_id', $accountId)
                 ->where('subject_type', $subject::class)
                 ->where('subject_id', $subject->getKey())
                 ->orderByDesc('hash_sequence')
@@ -85,7 +85,7 @@ final class AuditService
             $hash = $this->computeHash($payload, $previousHash);
 
             return AuditEvent::create([
-                'customer_account_id' => $customerAccountId,
+                'account_id' => $accountId,
                 'business_entity_id' => $businessEntityId,
                 'workplace_id' => $workplaceId,
                 'user_id' => $userId,
@@ -108,15 +108,15 @@ final class AuditService
      */
     public function detectTampering(Model $subject): ?AuditEvent
     {
-        $customerAccountId = $subject->getAttribute('customer_account_id')
-            ?? app(AccountContext::class)->customerAccountId();
+        $accountId = $subject->getAttribute('account_id')
+            ?? app(AccountContext::class)->accountId();
 
-        if ($customerAccountId === null) {
-            throw new RuntimeException('Cannot verify audit trail without a customer_account_id.');
+        if ($accountId === null) {
+            throw new RuntimeException('Cannot verify audit trail without an account_id.');
         }
 
         $events = AuditEvent::query()
-            ->where('customer_account_id', $customerAccountId)
+            ->where('account_id', $accountId)
             ->where('subject_type', $subject::class)
             ->where('subject_id', (string) $subject->getKey())
             ->orderBy('hash_sequence')

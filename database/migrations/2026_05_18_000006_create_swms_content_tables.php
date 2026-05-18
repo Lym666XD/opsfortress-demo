@@ -96,7 +96,7 @@ return new class extends Migration
 
         Schema::create('workplace_task_settings', function (Blueprint $table) {
             $table->uuid('id')->primary()->default(DB::raw('gen_random_uuid()'));
-            $table->foreignUuid('customer_account_id')->constrained('customer_accounts')->cascadeOnDelete();
+            $table->foreignUuid('account_id')->constrained('customer_accounts')->cascadeOnDelete();
             $table->foreignUuid('business_entity_id')->constrained('business_entities')->cascadeOnDelete();
             $table->foreignUuid('workplace_id')->constrained('workplaces')->cascadeOnDelete();
             $table->foreignUuid('task_id')->constrained('tasks')->cascadeOnDelete();
@@ -111,7 +111,7 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->index(['customer_account_id', 'workplace_id'], 'wts_account_workplace_idx');
+            $table->index(['account_id', 'workplace_id'], 'wts_account_workplace_idx');
             $table->index(['business_entity_id', 'task_id'], 'wts_business_task_idx');
         });
 

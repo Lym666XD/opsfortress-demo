@@ -11,10 +11,10 @@ return new class extends Migration
     {
         Schema::create('countries', function (Blueprint $table) {
             $table->uuid('id')->primary()->default(DB::raw('gen_random_uuid()'));
-            $table->char('iso_alpha2', 2)->unique();
-            $table->char('iso_alpha3', 3)->unique();
+            $table->char('iso_alpha2', 2)->nullable()->unique();
+            $table->char('iso_alpha3', 3)->nullable()->unique();
             $table->char('numeric_code', 3)->nullable()->unique();
-            $table->string('name');
+            $table->string('name')->unique();
             $table->string('official_name')->nullable();
             $table->char('default_currency_code', 3)->nullable();
             $table->boolean('active')->default(true);

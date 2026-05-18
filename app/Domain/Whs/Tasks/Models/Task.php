@@ -20,6 +20,7 @@ class Task extends Model
     protected function casts(): array
     {
         return [
+            'active_status' => 'boolean',
             'metadata' => 'array',
         ];
     }

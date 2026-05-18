@@ -18,7 +18,7 @@ final class SetAccountContext
         $user = $request->user();
 
         return $this->context->runAs(
-            customerAccountId: $user?->customer_account_id,
+            accountId: $user?->account_id,
             businessEntityId: $user?->home_business_entity_id,
             callback: fn (): Response => $next($request),
         );

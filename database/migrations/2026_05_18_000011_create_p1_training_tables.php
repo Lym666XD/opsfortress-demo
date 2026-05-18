@@ -39,7 +39,7 @@ return new class extends Migration
 
         Schema::create('training_attempts', function (Blueprint $table) {
             $table->uuid('id')->primary()->default(DB::raw('gen_random_uuid()'));
-            $table->foreignUuid('customer_account_id')->constrained('customer_accounts')->cascadeOnDelete();
+            $table->foreignUuid('account_id')->constrained('customer_accounts')->cascadeOnDelete();
             $table->foreignUuid('business_entity_id')->constrained('business_entities')->cascadeOnDelete();
             $table->foreignUuid('workplace_id')->nullable()->constrained('workplaces')->nullOnDelete();
             $table->foreignUuid('task_id')->constrained('tasks')->restrictOnDelete();
@@ -56,7 +56,7 @@ return new class extends Migration
             $table->jsonb('metadata')->nullable();
             $table->timestamps();
 
-            $table->index(['customer_account_id', 'status']);
+            $table->index(['account_id', 'status']);
             $table->index(['worker_user_id', 'task_id']);
             $table->index('supersedes_id');
         });
@@ -85,7 +85,7 @@ return new class extends Migration
 
         Schema::create('worker_training_completions', function (Blueprint $table) {
             $table->uuid('id')->primary()->default(DB::raw('gen_random_uuid()'));
-            $table->foreignUuid('customer_account_id')->constrained('customer_accounts')->cascadeOnDelete();
+            $table->foreignUuid('account_id')->constrained('customer_accounts')->cascadeOnDelete();
             $table->foreignUuid('business_entity_id')->constrained('business_entities')->cascadeOnDelete();
             $table->foreignUuid('workplace_id')->nullable()->constrained('workplaces')->nullOnDelete();
             $table->foreignUuid('task_id')->constrained('tasks')->restrictOnDelete();
@@ -99,7 +99,7 @@ return new class extends Migration
             $table->jsonb('metadata')->nullable();
             $table->timestamps();
 
-            $table->index(['customer_account_id', 'status']);
+            $table->index(['account_id', 'status']);
             $table->index(['worker_user_id', 'expires_at']);
             $table->index('latest_training_attempt_id', 'wtc_latest_attempt_idx');
         });

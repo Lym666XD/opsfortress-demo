@@ -11,7 +11,7 @@ return new class extends Migration
     {
         Schema::create('signatures', function (Blueprint $table) {
             $table->uuid('id')->primary()->default(DB::raw('gen_random_uuid()'));
-            $table->foreignUuid('customer_account_id')->constrained('customer_accounts')->cascadeOnDelete();
+            $table->foreignUuid('account_id')->constrained('customer_accounts')->cascadeOnDelete();
             $table->foreignUuid('business_entity_id')->nullable()->constrained('business_entities')->nullOnDelete();
             $table->foreignUuid('workplace_id')->nullable()->constrained('workplaces')->nullOnDelete();
             $table->foreignUuid('worker_task_session_id')->nullable()->constrained('worker_task_sessions')->nullOnDelete();
@@ -28,14 +28,14 @@ return new class extends Migration
             $table->jsonb('metadata')->nullable();
             $table->timestamps();
 
-            $table->index(['customer_account_id', 'signature_type']);
+            $table->index(['account_id', 'signature_type']);
             $table->index(['worker_task_session_id', 'signed_at'], 'signatures_session_signed_idx');
             $table->index('supersedes_id');
         });
 
         Schema::create('evidence_files', function (Blueprint $table) {
             $table->uuid('id')->primary()->default(DB::raw('gen_random_uuid()'));
-            $table->foreignUuid('customer_account_id')->constrained('customer_accounts')->cascadeOnDelete();
+            $table->foreignUuid('account_id')->constrained('customer_accounts')->cascadeOnDelete();
             $table->foreignUuid('business_entity_id')->nullable()->constrained('business_entities')->nullOnDelete();
             $table->foreignUuid('workplace_id')->nullable()->constrained('workplaces')->nullOnDelete();
             $table->foreignUuid('worker_task_session_id')->nullable()->constrained('worker_task_sessions')->nullOnDelete();
@@ -55,7 +55,7 @@ return new class extends Migration
             $table->jsonb('metadata')->nullable();
             $table->timestamps();
 
-            $table->index(['customer_account_id', 'evidence_type']);
+            $table->index(['account_id', 'evidence_type']);
             $table->index(['worker_task_session_id', 'captured_at'], 'evidence_files_session_captured_idx');
             $table->index('file_hash');
             $table->index('supersedes_id');
@@ -63,7 +63,7 @@ return new class extends Migration
 
         Schema::create('audit_events', function (Blueprint $table) {
             $table->uuid('id')->primary()->default(DB::raw('gen_random_uuid()'));
-            $table->foreignUuid('customer_account_id')->constrained('customer_accounts')->cascadeOnDelete();
+            $table->foreignUuid('account_id')->constrained('customer_accounts')->cascadeOnDelete();
             $table->foreignUuid('business_entity_id')->nullable()->constrained('business_entities')->nullOnDelete();
             $table->foreignUuid('workplace_id')->nullable()->constrained('workplaces')->nullOnDelete();
             $table->foreignUuid('user_id')->nullable()->constrained('users')->nullOnDelete();
@@ -79,19 +79,19 @@ return new class extends Migration
             $table->timestamp('occurred_at')->useCurrent();
             $table->timestamp('created_at')->nullable()->useCurrent();
 
-            $table->index(['customer_account_id', 'subject_type', 'subject_id'], 'audit_events_subject_idx');
-            $table->index(['customer_account_id', 'anchor'], 'audit_events_anchor_idx');
+            $table->index(['account_id', 'subject_type', 'subject_id'], 'audit_events_subject_idx');
+            $table->index(['account_id', 'anchor'], 'audit_events_anchor_idx');
             $table->index('event_hash');
         });
 
         DB::statement(
             'CREATE UNIQUE INDEX audit_events_chain_sequence_unique '.
-            'ON audit_events (customer_account_id, subject_type, subject_id, hash_sequence)',
+            'ON audit_events (account_id, subject_type, subject_id, hash_sequence)',
         );
 
         Schema::create('alerts', function (Blueprint $table) {
             $table->uuid('id')->primary()->default(DB::raw('gen_random_uuid()'));
-            $table->foreignUuid('customer_account_id')->constrained('customer_accounts')->cascadeOnDelete();
+            $table->foreignUuid('account_id')->constrained('customer_accounts')->cascadeOnDelete();
             $table->foreignUuid('business_entity_id')->nullable()->constrained('business_entities')->nullOnDelete();
             $table->foreignUuid('workplace_id')->nullable()->constrained('workplaces')->nullOnDelete();
             $table->foreignUuid('worker_task_session_id')->nullable()->constrained('worker_task_sessions')->nullOnDelete();
@@ -113,7 +113,7 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->index(['customer_account_id', 'status']);
+            $table->index(['account_id', 'status']);
             $table->index(['workplace_id', 'severity']);
             $table->index(['assigned_to_user_id', 'status']);
             $table->index('supersedes_id');

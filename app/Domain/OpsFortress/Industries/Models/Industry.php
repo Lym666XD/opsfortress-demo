@@ -6,8 +6,6 @@ namespace App\Domain\OpsFortress\Industries\Models;
 
 use App\Models\Concerns\UsesUuidPrimaryKey;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Industry extends Model
@@ -19,18 +17,8 @@ class Industry extends Model
     protected function casts(): array
     {
         return [
-            'level' => 'integer',
+            'active_status' => 'boolean',
             'metadata' => 'array',
         ];
-    }
-
-    public function parent(): BelongsTo
-    {
-        return $this->belongsTo(self::class, 'parent_id');
-    }
-
-    public function children(): HasMany
-    {
-        return $this->hasMany(self::class, 'parent_id');
     }
 }

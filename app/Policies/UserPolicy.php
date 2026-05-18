@@ -8,7 +8,7 @@ use App\Models\User;
 
 /**
  * Defense-in-depth around the unscoped User model.
- * User queries must still filter by customer_account_id before pagination.
+ * User queries must still filter by account_id before pagination.
  */
 final class UserPolicy
 {
@@ -52,7 +52,7 @@ final class UserPolicy
 
     private function sameAccount(User $actor, User $target): bool
     {
-        return $actor->customer_account_id !== null
-            && $actor->customer_account_id === $target->customer_account_id;
+        return $actor->account_id !== null
+            && $actor->account_id === $target->account_id;
     }
 }

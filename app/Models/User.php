@@ -30,7 +30,7 @@ class User extends Authenticatable
     use HasFactory, Notifiable, SoftDeletes, TwoFactorAuthenticatable, UsesUuidPrimaryKey;
 
     protected $fillable = [
-        'customer_account_id',
+        'account_id',
         'home_business_entity_id',
         'first_name',
         'last_name',
@@ -91,9 +91,9 @@ class User extends Authenticatable
         ];
     }
 
-    public function customerAccount(): BelongsTo
+    public function account(): BelongsTo
     {
-        return $this->belongsTo(CustomerAccount::class);
+        return $this->belongsTo(CustomerAccount::class, 'account_id');
     }
 
     public function homeBusinessEntity(): BelongsTo
@@ -113,13 +113,13 @@ class User extends Authenticatable
 
     public function hasRole(string $code): bool
     {
-        if ($this->customer_account_id === null) {
+        if ($this->account_id === null) {
             return false;
         }
 
         foreach (['user_business_access', 'user_workplace_access'] as $table) {
             $hasRole = DB::table($table)
-                ->where('customer_account_id', $this->customer_account_id)
+                ->where('account_id', $this->account_id)
                 ->where('user_id', $this->id)
                 ->where('access_status', 'active')
                 ->where('permission_role', $code)
@@ -138,18 +138,18 @@ class User extends Authenticatable
      */
     public function roleCodes(): array
     {
-        if ($this->customer_account_id === null) {
+        if ($this->account_id === null) {
             return [];
         }
 
         return DB::table('user_business_access')
-            ->where('customer_account_id', $this->customer_account_id)
+            ->where('account_id', $this->account_id)
             ->where('user_id', $this->id)
             ->where('access_status', 'active')
             ->pluck('permission_role')
             ->merge(
                 DB::table('user_workplace_access')
-                    ->where('customer_account_id', $this->customer_account_id)
+                    ->where('account_id', $this->account_id)
                     ->where('user_id', $this->id)
                     ->where('access_status', 'active')
                     ->pluck('permission_role'),

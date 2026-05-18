@@ -19,8 +19,8 @@ final class AccountScope implements Scope
         }
 
         $builder->where(
-            $model->qualifyColumn('customer_account_id'),
-            $context->customerAccountId(),
+            $model->qualifyColumn('account_id'),
+            $context->accountId(),
         );
     }
 }

@@ -107,7 +107,7 @@ final class V03SchemaContractTest extends TestCase
         $this->assertForeignKey('user_business_access', 'user_id', 'users');
         $this->assertForeignKey('user_workplace_access', 'user_id', 'users');
         $this->assertForeignKey('business_identifier_types', 'country_id', 'countries');
-        $this->assertForeignKey('account_businesses', 'customer_account_id', 'customer_accounts');
+        $this->assertForeignKey('account_businesses', 'account_id', 'customer_accounts');
         $this->assertForeignKey('account_businesses', 'business_entity_id', 'business_entities');
         $this->assertForeignKey('business_identifiers', 'identifier_type_id', 'business_identifier_types');
         $this->assertForeignKey('workplaces', 'business_entity_id', 'business_entities');
@@ -117,7 +117,7 @@ final class V03SchemaContractTest extends TestCase
         $this->assertForeignKey('swms_versions', 'task_id', 'tasks');
         $this->assertForeignKey('swms_activity_steps', 'swms_version_id', 'swms_versions');
         $this->assertForeignKey('prestart_submissions', 'worker_task_session_id', 'worker_task_sessions');
-        $this->assertForeignKey('audit_events', 'customer_account_id', 'customer_accounts');
+        $this->assertForeignKey('audit_events', 'account_id', 'customer_accounts');
 
         $this->assertIndexExists('business_identifiers_active_unique', 'WHERE ((deleted_at IS NULL)');
         $this->assertIndexExists('account_businesses_active_unique', 'WHERE (deleted_at IS NULL)');
@@ -134,7 +134,7 @@ final class V03SchemaContractTest extends TestCase
     {
         $this->assertGeneratedUuidPrimaryKey('users');
         $this->assertColumnsExist('users', [
-            'customer_account_id',
+            'account_id',
             'home_business_entity_id',
             'timezone',
             'locale',

@@ -6,22 +6,22 @@ namespace App\Domain\Shared\Context;
 
 final class AccountContext
 {
-    private ?string $customerAccountId = null;
+    private ?string $accountId = null;
 
     private ?string $businessEntityId = null;
 
     private ?string $workplaceId = null;
 
-    public function set(?string $customerAccountId, ?string $businessEntityId = null, ?string $workplaceId = null): void
+    public function set(?string $accountId, ?string $businessEntityId = null, ?string $workplaceId = null): void
     {
-        $this->customerAccountId = $customerAccountId;
+        $this->accountId = $accountId;
         $this->businessEntityId = $businessEntityId;
         $this->workplaceId = $workplaceId;
     }
 
-    public function customerAccountId(): ?string
+    public function accountId(): ?string
     {
-        return $this->customerAccountId;
+        return $this->accountId;
     }
 
     public function businessEntityId(): ?string
@@ -36,16 +36,16 @@ final class AccountContext
 
     public function hasAccount(): bool
     {
-        return $this->customerAccountId !== null;
+        return $this->accountId !== null;
     }
 
-    public function runAs(?string $customerAccountId, callable $callback, ?string $businessEntityId = null, ?string $workplaceId = null): mixed
+    public function runAs(?string $accountId, callable $callback, ?string $businessEntityId = null, ?string $workplaceId = null): mixed
     {
-        $previousCustomerAccountId = $this->customerAccountId;
+        $previousCustomerAccountId = $this->accountId;
         $previousBusinessEntityId = $this->businessEntityId;
         $previousWorkplaceId = $this->workplaceId;
 
-        $this->set($customerAccountId, $businessEntityId, $workplaceId);
+        $this->set($accountId, $businessEntityId, $workplaceId);
 
         try {
             return $callback();

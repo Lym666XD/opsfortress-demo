@@ -82,7 +82,7 @@ class V03DemoSeeder extends Seeder
             );
 
             app(AccountContext::class)->runAs(
-                customerAccountId: $account->id,
+                accountId: $account->id,
                 callback: function () use ($account, $country, $abnType): void {
                     $business = BusinessEntity::query()->updateOrCreate(
                         ['legal_name' => 'Acme Construction Pty Ltd', 'country_id' => $country->id],
@@ -102,7 +102,7 @@ class V03DemoSeeder extends Seeder
                     );
 
                     AccountBusiness::query()->updateOrCreate(
-                        ['customer_account_id' => $account->id, 'business_entity_id' => $business->id],
+                        ['account_id' => $account->id, 'business_entity_id' => $business->id],
                         [
                             'relationship_type' => 'owned',
                             'is_primary' => true,
@@ -126,7 +126,7 @@ class V03DemoSeeder extends Seeder
                     $workplace = Workplace::query()->updateOrCreate(
                         ['business_entity_id' => $business->id, 'code' => 'MEL-CBD'],
                         [
-                            'customer_account_id' => $account->id,
+                            'account_id' => $account->id,
                             'country_id' => $country->id,
                             'name' => 'Melbourne CBD Site',
                             'workplace_type' => 'construction_site',
@@ -154,7 +154,7 @@ class V03DemoSeeder extends Seeder
                     $admin = User::query()->updateOrCreate(
                         ['email' => 'admin@acme.test'],
                         [
-                            'customer_account_id' => $account->id,
+                            'account_id' => $account->id,
                             'home_business_entity_id' => $business->id,
                             'first_name' => 'Alex',
                             'last_name' => 'Admin',
@@ -172,7 +172,7 @@ class V03DemoSeeder extends Seeder
 
                     UserBusinessAccess::query()->updateOrCreate(
                         [
-                            'customer_account_id' => $account->id,
+                            'account_id' => $account->id,
                             'business_entity_id' => $business->id,
                             'user_id' => $admin->id,
                         ],
@@ -186,7 +186,7 @@ class V03DemoSeeder extends Seeder
 
                     UserWorkplaceAccess::query()->updateOrCreate(
                         [
-                            'customer_account_id' => $account->id,
+                            'account_id' => $account->id,
                             'workplace_id' => $workplace->id,
                             'user_id' => $admin->id,
                         ],
@@ -200,52 +200,69 @@ class V03DemoSeeder extends Seeder
                     );
 
                     $industry = Industry::query()->updateOrCreate(
-                        ['code' => 'construction'],
+                        ['industry_candidate_key' => 'construction|general'],
                         [
-                            'name' => 'Construction',
-                            'description' => 'Building and civil construction work.',
-                            'level' => 1,
-                            'status' => 'active',
+                            'external_industry_id' => 'IND-DEMO-001',
+                            'industry_group' => 'Construction',
+                            'industry_sub_group' => 'General construction',
+                            'industry_leaf' => 'General construction',
+                            'active_status' => true,
                         ],
                     );
 
                     $occupation = Occupation::query()->updateOrCreate(
-                        ['code' => 'general-construction-worker'],
+                        ['occupation_candidate_key' => 'construction|general_worker'],
                         [
-                            'primary_industry_id' => $industry->id,
-                            'name' => 'General Construction Worker',
-                            'description' => 'Worker performing general site tasks.',
-                            'level' => 1,
-                            'status' => 'active',
+                            'external_occupation_id' => 'OCC-DEMO-001',
+                            'occupation_group' => 'Construction support',
+                            'occupation_sub_group' => 'General site work',
+                            'occupation_leaf' => 'General Construction Worker',
+                            'active_status' => true,
                         ],
                     );
 
                     BusinessIndustry::query()->updateOrCreate(
                         ['business_entity_id' => $business->id, 'industry_id' => $industry->id],
-                        ['customer_account_id' => $account->id],
+                        ['account_id' => $account->id],
                     );
 
                     $task = Task::query()->updateOrCreate(
-                        ['task_code' => 'TASK-DEMO-001'],
+                        ['external_task_id' => 'TASK-DEMO-001'],
                         [
-                            'external_task_id' => 'demo-swms-001',
-                            'slug' => 'demo-site-inspection',
-                            'title' => 'Daily Site Inspection',
-                            'task_type' => 'swms',
-                            'summary' => 'Demo SWMS task used for local development.',
-                            'status' => 'published',
-                            'source_file_name' => 'dev-seed',
+                            'task_name' => 'Daily Site Inspection',
+                            'task_title' => 'Daily Site Inspection',
+                            'document_type' => 'SWMS',
+                            'trade_industry' => 'General construction',
+                            'task_group' => 'Construction',
+                            'task_sub_group' => 'General',
+                            'task_leaf' => 'Daily Site Inspection',
+                            'task_candidate_key' => 'construction|general|daily_site_inspection',
+                            'active_status' => true,
                         ],
                     );
 
                     TaskIndustryAccess::query()->updateOrCreate(
                         ['task_id' => $task->id, 'industry_id' => $industry->id],
-                        ['access_level' => 'eligible', 'is_primary' => true],
+                        [
+                            'swms_view_access' => 'full',
+                            'pre_start_access' => 'full',
+                            'post_task_access' => 'full',
+                            'training_access' => 'full',
+                            'menu_visibility' => 'full',
+                            'active_status' => true,
+                        ],
                     );
 
                     TaskOccupationAccess::query()->updateOrCreate(
                         ['task_id' => $task->id, 'occupation_id' => $occupation->id],
-                        ['access_level' => 'eligible', 'is_primary' => true],
+                        [
+                            'swms_view_access' => 'full',
+                            'pre_start_access' => 'full',
+                            'post_task_access' => 'full',
+                            'training_access' => 'full',
+                            'menu_visibility' => 'full',
+                            'active_status' => true,
+                        ],
                     );
 
                     $swms = SwmsVersion::query()->updateOrCreate(
@@ -290,7 +307,7 @@ class V03DemoSeeder extends Seeder
                     WorkplaceTaskSetting::query()->updateOrCreate(
                         ['workplace_id' => $workplace->id, 'task_id' => $task->id],
                         [
-                            'customer_account_id' => $account->id,
+                            'account_id' => $account->id,
                             'business_entity_id' => $business->id,
                             'active_swms_version_id' => $swms->id,
                             'prestart_frequency' => 'daily',

@@ -27,9 +27,9 @@ class AccountBusiness extends Model
         ];
     }
 
-    public function customerAccount(): BelongsTo
+    public function account(): BelongsTo
     {
-        return $this->belongsTo(CustomerAccount::class);
+        return $this->belongsTo(CustomerAccount::class, 'account_id');
     }
 
     public function businessEntity(): BelongsTo

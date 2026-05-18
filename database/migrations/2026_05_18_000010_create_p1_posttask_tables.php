@@ -39,7 +39,7 @@ return new class extends Migration
         Schema::create('posttask_submissions', function (Blueprint $table) {
             $table->uuid('id')->primary()->default(DB::raw('gen_random_uuid()'));
             $table->foreignUuid('worker_task_session_id')->constrained('worker_task_sessions')->cascadeOnDelete();
-            $table->foreignUuid('customer_account_id')->constrained('customer_accounts')->cascadeOnDelete();
+            $table->foreignUuid('account_id')->constrained('customer_accounts')->cascadeOnDelete();
             $table->foreignUuid('business_entity_id')->constrained('business_entities')->cascadeOnDelete();
             $table->foreignUuid('workplace_id')->constrained('workplaces')->cascadeOnDelete();
             $table->foreignUuid('task_id')->constrained('tasks')->restrictOnDelete();
@@ -53,7 +53,7 @@ return new class extends Migration
             $table->jsonb('metadata')->nullable();
             $table->timestamps();
 
-            $table->index(['customer_account_id', 'status']);
+            $table->index(['account_id', 'status']);
             $table->index(['worker_user_id', 'submitted_at']);
             $table->index(['workplace_id', 'task_id']);
             $table->index('supersedes_id');

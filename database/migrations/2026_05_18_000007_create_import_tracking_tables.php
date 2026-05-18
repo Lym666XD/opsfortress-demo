@@ -11,7 +11,7 @@ return new class extends Migration
     {
         Schema::create('import_batches', function (Blueprint $table) {
             $table->uuid('id')->primary()->default(DB::raw('gen_random_uuid()'));
-            $table->foreignUuid('customer_account_id')->nullable()->constrained('customer_accounts')->nullOnDelete();
+            $table->foreignUuid('account_id')->nullable()->constrained('customer_accounts')->nullOnDelete();
             $table->string('import_type', 64)->default('content_workbook');
             $table->string('status', 32)->default('pending');
             $table->foreignUuid('started_by_user_id')->nullable()->constrained('users')->nullOnDelete();
@@ -21,7 +21,7 @@ return new class extends Migration
             $table->jsonb('metadata')->nullable();
             $table->timestamps();
 
-            $table->index(['customer_account_id', 'status']);
+            $table->index(['account_id', 'status']);
             $table->index('import_type');
         });
 
