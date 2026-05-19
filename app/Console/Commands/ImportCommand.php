@@ -8,6 +8,7 @@ use App\Domain\Shared\Importer\Contracts\TabImporter;
 use App\Domain\Shared\Importer\Services\ImportRunner;
 use App\Domain\Whs\Importer\Tabs\IndustriesTabImporter;
 use App\Domain\Whs\Importer\Tabs\OccupationsTabImporter;
+use App\Domain\Whs\Importer\Tabs\TasksTabImporter;
 use Illuminate\Console\Command;
 
 /**
@@ -90,6 +91,7 @@ final class ImportCommand extends Command
         return [
             app(IndustriesTabImporter::class),
             app(OccupationsTabImporter::class),
+            app(TasksTabImporter::class),
         ];
     }
 

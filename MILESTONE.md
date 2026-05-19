@@ -372,15 +372,26 @@ then repeat the pattern for the rest. Allow-list driven from
 - Tests: 5 PG integration cases / 40 assertions — clean import, idempotency, missing candidate_key error, unknown active_status warning, batch lifecycle
 - Real-source quirks surfaced and handled: duplicate `industry_candidate_key` (first wins + warning), duplicate `industry_record_id` across distinct candidate_keys (first keeps external_id, rest get null + warning), unrecognised `active_status` (defaults to inactive + warning), missing `industry_candidate_key` (error + skip)
 
-**Slice 2 — Occupations** (done, 2026-05-19):
+**Slice 2 — Occupations** (done, `303f8d1` 2026-05-19):
 
 - Source: same SRC-001 workbook, tab `RAW_All_Occupation_Master` (8 data rows)
 - `app/Domain/Whs/Importer/Tabs/OccupationsTabImporter.php` — mirrors Industries shape; upsert by `occupation_candidate_key`; same dedup quirks (`OCC-001` and `OCC-002` each appear in two rows against distinct candidate_keys)
 - Wired into `ImportCommand::allWiredTabImporters()`; `opsf:import` now imports both tabs in one run
 - Tests: 4 PG integration cases / 33 assertions
-- Outcome: importing SRC-001 end-to-end now reads 12 rows, writes 11 (3 industries + 8 occupations), 0 errors, 4 warnings — all expected dedup signals
 
-**Slice 3 — Tasks** (next): `RAW_All_Task_Register`. 34-source-cols dropped to ~9 target cols per column-mapping spec. New concept: `external_task_id` is NOT NULL in DBML (no candidate_key dedup fallback).
+**Slice 3 — Tasks + helper extraction** (done 2026-05-19):
+
+- Source: same SRC-001 workbook, tab `RAW_All_Task_Register` (4 data rows, 34 source cols)
+- Extracted two shared traits at the third-implementation threshold:
+  - `app/Domain/Shared/Importer/Concerns/NormalisesValues.php` — `coerceActiveStatus`, `isCoercibleActiveStatus`, `stringOrNull`
+  - `app/Domain/Shared/Importer/Concerns/WritesValidationResults.php` — `recordResult(severity, ruleCode, rowNumber, columnName, rawValue, message)` reads `sheetName()` + `targetTable()` from the host class (already required by `TabImporter` interface)
+- `IndustriesTabImporter` + `OccupationsTabImporter` refactored to use both traits; lost ~40 lines of duplication each.
+- `app/Domain/Whs/Importer/Tabs/TasksTabImporter.php` — new concepts vs prior slices: `external_task_id` is NOT NULL + canonical identity (upsert key), `task_name` is NOT NULL. Duplicate `external_task_id` is a hard **error** (row skipped), unlike Industries/Occupations where duplicate external_id was coerced to null + warning. Maps 9 of 34 source cols; the other 25 are listed in the class docblock as P1, governance, or wrong-table fields and deliberately ignored.
+- Wired into `ImportCommand`; `opsf:import` now processes three tabs in one run.
+- Tests: 5 PG integration cases / 41 assertions — clean import (no dedup warnings since all 4 source rows are distinct), idempotency, missing `task_id`, missing `task_name`, duplicate `task_id` as hard error.
+- Outcome: importing SRC-001 end-to-end now reads 16 rows, writes 15 (3 industries + 8 occupations + 4 tasks), 0 errors, 4 warnings — all expected dedup signals from Industries/Occupations only; tasks contribute zero.
+
+**Slice 4 — Access maps** (next): `RAW_All_Task_Occupation_Access` + `RAW_All_Task_Industry_Access`. First slice that exercises **FK resolution** (`task_id` external string → `tasks.id` UUID; `occupation_id`/`industry_id` external string → `occupations.id`/`industries.id` UUID) and **enum coercion** (`Yes`→`full`, `Conditional`→`conditional`, `Show supervised`→`supervised`, `Management only`→`supervised`). Slices 1-3 must have run first (or be in the same batch) so the FK targets exist.
 
 **Slice 4 — Access maps**: `RAW_All_Task_Occupation_Access` + `RAW_All_Task_Industry_Access`. Introduces FK resolution (`task_id` + `occupation_id`/`industry_id`) and the enum coercion (`Yes`→`full`, `Conditional`→`conditional`, `Show supervised`→`supervised`).
 
@@ -423,9 +434,9 @@ Not implemented yet:
 ## Immediate Next Actions
 
 1. ~~M17 Slice 1: framework + IndustriesTabImporter~~ done (`0caf6ec`).
-2. ~~M17 Slice 2: OccupationsTabImporter~~ done 2026-05-19.
-3. **M17 Slice 3 (active)**: `TasksTabImporter` from `RAW_All_Task_Register`. New concept: required `external_task_id` (no candidate_key fallback). After two repetitions of the same pattern, this is the right moment to evaluate whether the duplicated helpers (`coerceActiveStatus`, `stringOrNull`, `recordResult`) should be extracted.
-4. M17 Slice 4: Access map importers (`task_occupation_access`, `task_industry_access`) — first time we exercise FK resolution + enum coercion (`Yes`→`full`, `Conditional`→`conditional`, `Show supervised`→`supervised`).
+2. ~~M17 Slice 2: OccupationsTabImporter~~ done (`303f8d1`).
+3. ~~M17 Slice 3: TasksTabImporter + extract NormalisesValues + WritesValidationResults traits~~ done 2026-05-19.
+4. **M17 Slice 4 (active)**: access map importers (`task_occupation_access`, `task_industry_access`). First time we exercise **FK resolution** (`task_id`/`occupation_id`/`industry_id` source strings → UUIDs) and the per-component **enum coercion** (`Yes`→`full`, `Conditional`→`conditional`, `Show supervised`→`supervised`, `Management only`→`supervised`).
 5. M17 Slice 5: SWMS workbook importer for SRC-002/003/004 (`WHSAPP_Task_Register`, `WHSAPP_SWMS_Data`, `WHSAPP_Worker_App_View_Map`, `WHSAPP_PreStart_SWMS_15`).
 6. M17 Slice 6: Global Business Identifiers seed (SRC-005).
 7. Port or replace admin policies/controllers only when a real backend use case needs them.

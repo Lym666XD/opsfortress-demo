@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace App\Domain\Whs\Importer\Tabs;
 
 use App\Domain\OpsFortress\Occupations\Models\Occupation;
+use App\Domain\Shared\Importer\Concerns\NormalisesValues;
+use App\Domain\Shared\Importer\Concerns\WritesValidationResults;
 use App\Domain\Shared\Importer\Contracts\TabImporter;
 use App\Domain\Shared\Importer\Models\ImportSourceFile;
-use App\Domain\Shared\Importer\Models\ImportValidationResult;
 
 /**
  * Imports the RAW_All_Occupation_Master tab from SRC-001
@@ -33,6 +34,8 @@ use App\Domain\Shared\Importer\Models\ImportValidationResult;
  */
 final class OccupationsTabImporter implements TabImporter
 {
+    use NormalisesValues, WritesValidationResults;
+
     private const SHEET = 'RAW_All_Occupation_Master';
 
     public function sheetName(): string
@@ -119,63 +122,5 @@ final class OccupationsTabImporter implements TabImporter
         }
 
         return $written;
-    }
-
-    private function recordResult(
-        ImportSourceFile $sourceFile,
-        string $severity,
-        string $ruleCode,
-        int $rowNumber,
-        string $columnName,
-        ?string $rawValue,
-        string $message,
-    ): void {
-        ImportValidationResult::create([
-            'import_batch_id' => $sourceFile->import_batch_id,
-            'import_source_file_id' => $sourceFile->id,
-            'severity' => $severity,
-            'rule_code' => $ruleCode,
-            'message' => $message,
-            'source_sheet_name' => self::SHEET,
-            'source_row_number' => $rowNumber,
-            'source_column_name' => $columnName,
-            'target_table' => $this->targetTable(),
-            'raw_value' => $rawValue,
-        ]);
-    }
-
-    private function isCoercibleActiveStatus(mixed $value): bool
-    {
-        if (is_bool($value)) {
-            return true;
-        }
-
-        if (! is_string($value)) {
-            return false;
-        }
-
-        return in_array(strtolower(trim($value)), ['active', 'inactive', 'yes', 'no', 'true', 'false', '1', '0'], true);
-    }
-
-    private function coerceActiveStatus(mixed $value): bool
-    {
-        if (is_bool($value)) {
-            return $value;
-        }
-
-        if (is_string($value)) {
-            return in_array(strtolower(trim($value)), ['active', 'yes', 'true', '1'], true);
-        }
-
-        return false;
-    }
-
-    private function stringOrNull(mixed $value): ?string
-    {
-        if ($value === null || $value === '') {
-            return null;
-        }
-
-        return is_string($value) ? $value : (string) $value;
     }
 }
