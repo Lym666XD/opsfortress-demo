@@ -1,5 +1,5 @@
-import { Link, usePage } from '@inertiajs/react';
-import { Building2, BookOpen, FolderGit2, LayoutGrid } from 'lucide-react';
+import { Link } from '@inertiajs/react';
+import { BookOpen, FolderGit2, LayoutGrid } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
@@ -30,30 +30,20 @@ const footerNavItems: NavItem[] = [
 ];
 
 /**
- * Sidebar nav. Items are built per-render from the current user's role list
- * so we can conditionally show admin-only sections (Workplaces, etc.).
- * Server-side authorization still enforces access — this is UI hint only.
+ * Sidebar nav. v0.3 admin UI is intentionally not built yet — see
+ * IMPLEMENTATION_ROADMAP.md "Immediate Next Actions": frontend work
+ * resumes only after the importer-backed backend (M17) can create and
+ * query v0.3 data reliably. Once that lands, this is where new admin
+ * sections (e.g. read-only views of imported industries / occupations /
+ * tasks / swms_versions) get wired in.
  */
 export function AppSidebar() {
-    const { auth } = usePage().props;
-    const roles = auth.roles ?? [];
-    const isAdminOrManager = roles.includes('admin') || roles.includes('manager');
-
     const mainNavItems: NavItem[] = [
         {
             title: 'Dashboard',
             href: dashboard(),
             icon: LayoutGrid,
         },
-        ...(isAdminOrManager
-            ? [
-                  {
-                      title: 'Workplaces',
-                      href: '/admin/workplaces',
-                      icon: Building2,
-                  },
-              ]
-            : []),
     ];
 
     return (

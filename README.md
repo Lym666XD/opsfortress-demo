@@ -134,7 +134,11 @@ Current notable routes in the scaffold:
 - `/preview` -> WHS module preview home
 - `/preview/{slug}` -> static placeholder module page
 - `/dashboard` -> authenticated starter dashboard
-- `/admin/workplaces` -> early admin workplace vertical slice
+
+The legacy v0.2 `/admin/workplaces` slice was removed in M16 along with
+the tenant-era controller / request / test. v0.3 admin UI will be
+rebuilt once the M17 importer can populate real data — see
+`MILESTONE.md` §M17 and the "Immediate Next Actions" list.
 
 ## Local Run
 
