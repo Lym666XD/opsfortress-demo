@@ -19,7 +19,15 @@
       "Bash(DB_CONNECTION=pgsql DB_DATABASE=opsfortress_demo DB_USERNAME=postgres DB_PASSWORD=postgres php artisan test --filter=V03DevSeederTest)",
       "Bash(./vendor/bin/pint --test)",
       "Bash(./vendor/bin/pint)",
-      "Bash(DB_CONNECTION=pgsql DB_DATABASE=opsfortress_demo DB_USERNAME=postgres DB_PASSWORD=postgres php artisan test)"
+      "Bash(DB_CONNECTION=pgsql DB_DATABASE=opsfortress_demo DB_USERNAME=postgres DB_PASSWORD=postgres php artisan test)",
+      "Bash(composer require *)",
+      "Bash(psql -h 127.0.0.1 -d opsfortress_demo -U postgres -c \"SELECT industry_candidate_key, external_industry_id, industry_leaf FROM industries ORDER BY created_at;\")",
+      "Bash(DB_CONNECTION=pgsql DB_DATABASE=opsfortress_demo DB_USERNAME=postgres DB_PASSWORD=postgres php artisan test --filter=IndustriesImportTest)",
+      "Bash(DB_CONNECTION=pgsql DB_DATABASE=opsfortress_demo DB_USERNAME=postgres DB_PASSWORD=postgres php artisan test --filter=OccupationsImportTest)",
+      "Bash(DB_CONNECTION=pgsql DB_DATABASE=opsfortress_demo DB_USERNAME=postgres DB_PASSWORD=postgres php artisan test --filter=\"IndustriesImportTest|OccupationsImportTest\")",
+      "Bash(DB_CONNECTION=pgsql DB_DATABASE=opsfortress_demo DB_USERNAME=postgres DB_PASSWORD=postgres php artisan test --filter=TasksImportTest)",
+      "Bash(DB_CONNECTION=pgsql DB_DATABASE=opsfortress_demo DB_USERNAME=postgres DB_PASSWORD=postgres php artisan test --filter=\"test_row_missing_task_id_produces_error_and_is_skipped\")",
+      "Bash(DB_CONNECTION=pgsql DB_DATABASE=opsfortress_demo DB_USERNAME=postgres DB_PASSWORD=postgres php artisan test --filter=\"ImportTest\")"
     ]
   }
 }
