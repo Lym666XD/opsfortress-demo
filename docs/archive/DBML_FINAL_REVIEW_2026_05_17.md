@@ -304,3 +304,7 @@ Recommended first instruction:
 ```text
 Read docs/CODEX_PROMPT_V0_3_MIGRATIONS.md and docs/DBML_FINAL_REVIEW_2026_05_17.md. Generate only the fresh v0.3 Laravel migration files. Do not generate models, controllers, seeders, services, or UI files yet.
 ```
+> Status: SUPERSEDED 2026-05-23.
+> The add-ons in section 4 have been implemented. The DBML in this folder
+> was regenerated against the live migrations. Use that file plus the
+> migration files as authority going forward.

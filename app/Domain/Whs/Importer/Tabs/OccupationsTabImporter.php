@@ -59,23 +59,23 @@ final class OccupationsTabImporter implements TabImporter
 
             $candidateKey = $row['occupation_candidate_key'] ?? null;
             if (! is_string($candidateKey) || $candidateKey === '') {
-                $this->recordResult($sourceFile, 'error', 'occupations.candidate_key_missing', $rowNumber, 'occupation_candidate_key', null, 'Row skipped: occupation_candidate_key is required for upsert.');
+                $this->recordResult($sourceFile, 'error', 'business:occupations.candidate_key_missing', $rowNumber, 'occupation_candidate_key', null, 'Row skipped: occupation_candidate_key is required for upsert.');
 
                 continue;
             }
 
             if (($row['occupation_group'] ?? null) === null) {
-                $this->recordResult($sourceFile, 'warning', 'occupations.group_missing', $rowNumber, 'occupation_group', null, 'occupation_group is empty; importing without group.');
+                $this->recordResult($sourceFile, 'warning', 'business:occupations.group_missing', $rowNumber, 'occupation_group', null, 'occupation_group is empty; importing without group.');
             }
 
             $activeRaw = $row['active_status'] ?? null;
             if ($activeRaw !== null && ! $this->isCoercibleActiveStatus($activeRaw)) {
-                $this->recordResult($sourceFile, 'warning', 'occupations.active_status_unrecognised', $rowNumber, 'active_status', (string) $activeRaw, "Unrecognised active_status value [{$activeRaw}]; defaulting to inactive.");
+                $this->recordResult($sourceFile, 'warning', 'business:occupations.active_status_unrecognised', $rowNumber, 'active_status', (string) $activeRaw, "Unrecognised active_status value [{$activeRaw}]; defaulting to inactive.");
             }
 
             // Dedup within this import on candidate_key (the canonical identity).
             if (isset($seenCandidateKeys[$candidateKey])) {
-                $this->recordResult($sourceFile, 'warning', 'occupations.duplicate_candidate_key_in_source', $rowNumber, 'occupation_candidate_key', $candidateKey, 'Duplicate occupation_candidate_key in source rows; first row wins for this import.');
+                $this->recordResult($sourceFile, 'warning', 'dup:occupations.candidate_key_in_source', $rowNumber, 'occupation_candidate_key', $candidateKey, 'Duplicate occupation_candidate_key in source rows; first row wins for this import.');
 
                 continue;
             }
@@ -89,7 +89,7 @@ final class OccupationsTabImporter implements TabImporter
             $externalId = $this->stringOrNull($row['occupation_record_id'] ?? null);
             if ($externalId !== null) {
                 if (isset($seenExternalIds[$externalId])) {
-                    $this->recordResult($sourceFile, 'warning', 'occupations.duplicate_external_id_in_source', $rowNumber, 'occupation_record_id', $externalId, "occupation_record_id [{$externalId}] already used by an earlier row in this import; importing row without external_occupation_id reference.");
+                    $this->recordResult($sourceFile, 'warning', 'dup:occupations.external_id_in_source', $rowNumber, 'occupation_record_id', $externalId, "occupation_record_id [{$externalId}] already used by an earlier row in this import; importing row without external_occupation_id reference.");
                     $row['occupation_record_id'] = null;
                 } else {
                     $seenExternalIds[$externalId] = true;

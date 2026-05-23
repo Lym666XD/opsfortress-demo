@@ -6,6 +6,7 @@ namespace App\Domain\Shared\Audit\Services;
 
 use App\Domain\Shared\Audit\Models\AuditEvent;
 use App\Domain\Shared\Context\AccountContext;
+use App\Domain\Whs\Runtime\Models\WorkerTaskSession;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;
@@ -71,7 +72,11 @@ final class AuditService
             throw new RuntimeException('Cannot audit without an account_id.');
         }
 
-        return DB::transaction(function () use ($subject, $anchor, $eventType, $payload, $userId, $businessEntityId, $workplaceId, $accountId) {
+        $workerTaskSessionId = $subject instanceof WorkerTaskSession
+            ? (string) $subject->getKey()
+            : null;
+
+        return DB::transaction(function () use ($subject, $anchor, $eventType, $payload, $userId, $businessEntityId, $workplaceId, $accountId, $workerTaskSessionId) {
             $previous = AuditEvent::query()
                 ->where('account_id', $accountId)
                 ->where('subject_type', $subject::class)
@@ -88,6 +93,7 @@ final class AuditService
                 'account_id' => $accountId,
                 'business_entity_id' => $businessEntityId,
                 'workplace_id' => $workplaceId,
+                'worker_task_session_id' => $workerTaskSessionId,
                 'user_id' => $userId,
                 'subject_type' => $subject::class,
                 'subject_id' => (string) $subject->getKey(),

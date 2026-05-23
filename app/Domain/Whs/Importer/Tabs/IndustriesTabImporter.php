@@ -60,23 +60,23 @@ final class IndustriesTabImporter implements TabImporter
 
             $candidateKey = $row['industry_candidate_key'] ?? null;
             if (! is_string($candidateKey) || $candidateKey === '') {
-                $this->recordResult($sourceFile, 'error', 'industries.candidate_key_missing', $rowNumber, 'industry_candidate_key', null, 'Row skipped: industry_candidate_key is required for upsert.');
+                $this->recordResult($sourceFile, 'error', 'business:industries.candidate_key_missing', $rowNumber, 'industry_candidate_key', null, 'Row skipped: industry_candidate_key is required for upsert.');
 
                 continue;
             }
 
             if (($row['industry_group'] ?? null) === null) {
-                $this->recordResult($sourceFile, 'warning', 'industries.group_missing', $rowNumber, 'industry_group', null, 'industry_group is empty; importing without group.');
+                $this->recordResult($sourceFile, 'warning', 'business:industries.group_missing', $rowNumber, 'industry_group', null, 'industry_group is empty; importing without group.');
             }
 
             $activeRaw = $row['active_status'] ?? null;
             if ($activeRaw !== null && ! $this->isCoercibleActiveStatus($activeRaw)) {
-                $this->recordResult($sourceFile, 'warning', 'industries.active_status_unrecognised', $rowNumber, 'active_status', (string) $activeRaw, "Unrecognised active_status value [{$activeRaw}]; defaulting to inactive.");
+                $this->recordResult($sourceFile, 'warning', 'business:industries.active_status_unrecognised', $rowNumber, 'active_status', (string) $activeRaw, "Unrecognised active_status value [{$activeRaw}]; defaulting to inactive.");
             }
 
             // Dedup within this import on candidate_key (the canonical identity).
             if (isset($seenCandidateKeys[$candidateKey])) {
-                $this->recordResult($sourceFile, 'warning', 'industries.duplicate_candidate_key_in_source', $rowNumber, 'industry_candidate_key', $candidateKey, 'Duplicate industry_candidate_key in source rows; first row wins for this import.');
+                $this->recordResult($sourceFile, 'warning', 'dup:industries.candidate_key_in_source', $rowNumber, 'industry_candidate_key', $candidateKey, 'Duplicate industry_candidate_key in source rows; first row wins for this import.');
 
                 continue;
             }
@@ -89,7 +89,7 @@ final class IndustriesTabImporter implements TabImporter
             $externalId = $this->stringOrNull($row['industry_record_id'] ?? null);
             if ($externalId !== null) {
                 if (isset($seenExternalIds[$externalId])) {
-                    $this->recordResult($sourceFile, 'warning', 'industries.duplicate_external_id_in_source', $rowNumber, 'industry_record_id', $externalId, "industry_record_id [{$externalId}] already used by an earlier row in this import; importing row without external_industry_id reference.");
+                    $this->recordResult($sourceFile, 'warning', 'dup:industries.external_id_in_source', $rowNumber, 'industry_record_id', $externalId, "industry_record_id [{$externalId}] already used by an earlier row in this import; importing row without external_industry_id reference.");
                     $row['industry_record_id'] = null;
                 } else {
                     $seenExternalIds[$externalId] = true;

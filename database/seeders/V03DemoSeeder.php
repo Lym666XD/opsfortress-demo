@@ -15,9 +15,18 @@ use App\Domain\OpsFortress\Industries\Models\Industry;
 use App\Domain\OpsFortress\Lookups\Models\BusinessIdentifierType;
 use App\Domain\OpsFortress\Lookups\Models\Country;
 use App\Domain\OpsFortress\Occupations\Models\Occupation;
+use App\Domain\OpsFortress\People\Models\UserOccupation;
 use App\Domain\OpsFortress\Workplaces\Models\Workplace;
 use App\Domain\OpsFortress\Workplaces\Models\WorkplaceEnvironment;
+use App\Domain\Shared\Audit\Services\AuditService;
 use App\Domain\Shared\Context\AccountContext;
+use App\Domain\Whs\Evidence\Models\Alert;
+use App\Domain\Whs\Evidence\Models\EvidenceFile;
+use App\Domain\Whs\Evidence\Models\Signature;
+use App\Domain\Whs\Runtime\Models\PrestartResponse;
+use App\Domain\Whs\Runtime\Models\PrestartSubmission;
+use App\Domain\Whs\Runtime\Models\SwmsStepEvent;
+use App\Domain\Whs\Runtime\Models\WorkerTaskSession;
 use App\Domain\Whs\Swms\Models\PrestartQuestion;
 use App\Domain\Whs\Swms\Models\SwmsActivityStep;
 use App\Domain\Whs\Swms\Models\SwmsVersion;
@@ -101,6 +110,29 @@ class V03DemoSeeder extends Seeder
                         ],
                     );
 
+                    $constructionEnvironment = WorkplaceEnvironment::query()->updateOrCreate(
+                        ['environment_code' => 'construction'],
+                        [
+                            'environment_name' => 'Construction',
+                            'active' => true,
+                        ],
+                    );
+
+                    foreach ([
+                        'federal' => 'Federal',
+                        'mine' => 'Mine',
+                        'petroleum' => 'Petroleum',
+                        'other' => 'Other',
+                    ] as $environmentCode => $environmentName) {
+                        WorkplaceEnvironment::query()->updateOrCreate(
+                            ['environment_code' => $environmentCode],
+                            [
+                                'environment_name' => $environmentName,
+                                'active' => true,
+                            ],
+                        );
+                    }
+
                     AccountBusiness::query()->updateOrCreate(
                         ['account_id' => $account->id, 'business_entity_id' => $business->id],
                         [
@@ -128,6 +160,7 @@ class V03DemoSeeder extends Seeder
                         [
                             'account_id' => $account->id,
                             'country_id' => $country->id,
+                            'environment_id' => $constructionEnvironment->id,
                             'name' => 'Melbourne CBD Site',
                             'workplace_type' => 'construction_site',
                             'status' => 'active',
@@ -139,15 +172,6 @@ class V03DemoSeeder extends Seeder
                             'latitude' => -37.8136000,
                             'longitude' => 144.9631000,
                             'geofence_radius_meters' => 150,
-                        ],
-                    );
-
-                    WorkplaceEnvironment::query()->updateOrCreate(
-                        ['workplace_id' => $workplace->id, 'environment_code' => 'outdoor'],
-                        [
-                            'name' => 'Outdoor construction area',
-                            'description' => 'Open site areas with mobile plant and weather exposure.',
-                            'is_active' => true,
                         ],
                     );
 
@@ -223,7 +247,10 @@ class V03DemoSeeder extends Seeder
 
                     BusinessIndustry::query()->updateOrCreate(
                         ['business_entity_id' => $business->id, 'industry_id' => $industry->id],
-                        ['account_id' => $account->id],
+                        [
+                            'account_id' => $account->id,
+                            'is_primary' => true,
+                        ],
                     );
 
                     $task = Task::query()->updateOrCreate(
@@ -232,7 +259,6 @@ class V03DemoSeeder extends Seeder
                             'task_name' => 'Daily Site Inspection',
                             'task_title' => 'Daily Site Inspection',
                             'document_type' => 'SWMS',
-                            'trade_industry' => 'General construction',
                             'task_group' => 'Construction',
                             'task_sub_group' => 'General',
                             'task_leaf' => 'Daily Site Inspection',
@@ -281,7 +307,7 @@ class V03DemoSeeder extends Seeder
                         ],
                     );
 
-                    SwmsActivityStep::query()->updateOrCreate(
+                    $swmsStep = SwmsActivityStep::query()->updateOrCreate(
                         ['swms_version_id' => $swms->id, 'step_number' => 1],
                         [
                             'title' => 'Check site conditions',
@@ -290,10 +316,19 @@ class V03DemoSeeder extends Seeder
                             'controls' => ['barricades', 'prestart_briefing'],
                             'required_ppe' => ['hard_hat', 'hi_vis', 'safety_boots'],
                             'minimum_read_seconds' => 10,
+                            'initial_risk_level' => 'medium',
+                            'residual_risk_level' => 'low',
+                            'residual_risk_reason' => 'Controls are verified before work starts.',
+                            'stop_work_trigger' => true,
+                            'evidence_required' => false,
+                            'evidence_prompt' => null,
+                            'quick_view_summary' => 'Check access paths, exclusion zones, and weather exposure.',
+                            'primary_task_performer' => 'worker',
+                            'supervisory_verification' => 'spot_check',
                         ],
                     );
 
-                    PrestartQuestion::query()->updateOrCreate(
+                    $prestartQuestion = PrestartQuestion::query()->updateOrCreate(
                         ['task_id' => $task->id, 'question_number' => 1],
                         [
                             'prompt' => 'Are exclusion zones and access paths safe for work today?',
@@ -317,6 +352,235 @@ class V03DemoSeeder extends Seeder
                             'configured_at' => now(),
                         ],
                     );
+
+                    $worker = User::query()->updateOrCreate(
+                        ['email' => 'worker@acme.test'],
+                        [
+                            'account_id' => $account->id,
+                            'home_business_entity_id' => $business->id,
+                            'first_name' => 'Wendy',
+                            'last_name' => 'Worker',
+                            'name' => 'Wendy Worker',
+                            'mobile' => '+61 400 000 002',
+                            'employee_code' => 'ACME-WORKER',
+                            'status' => 'active',
+                            'person_type' => 'employee',
+                            'timezone' => 'Australia/Melbourne',
+                            'locale' => 'en-AU',
+                            'email_verified_at' => now(),
+                            'password' => Hash::make('password'),
+                        ],
+                    );
+
+                    UserBusinessAccess::query()->updateOrCreate(
+                        [
+                            'account_id' => $account->id,
+                            'business_entity_id' => $business->id,
+                            'user_id' => $worker->id,
+                        ],
+                        [
+                            'permission_role' => 'worker',
+                            'access_status' => 'active',
+                            'starts_at' => now(),
+                            'granted_by_user_id' => $admin->id,
+                        ],
+                    );
+
+                    UserWorkplaceAccess::query()->updateOrCreate(
+                        [
+                            'account_id' => $account->id,
+                            'workplace_id' => $workplace->id,
+                            'user_id' => $worker->id,
+                        ],
+                        [
+                            'business_entity_id' => $business->id,
+                            'permission_role' => 'worker',
+                            'access_status' => 'active',
+                            'starts_at' => now(),
+                            'granted_by_user_id' => $admin->id,
+                        ],
+                    );
+
+                    UserOccupation::query()->updateOrCreate(
+                        [
+                            'account_id' => $account->id,
+                            'user_id' => $worker->id,
+                            'occupation_id' => $occupation->id,
+                        ],
+                        [
+                            'is_primary' => true,
+                            'starts_on' => now()->toDateString(),
+                            'granted_by_user_id' => $admin->id,
+                        ],
+                    );
+
+                    $session = WorkerTaskSession::query()->updateOrCreate(
+                        [
+                            'account_id' => $account->id,
+                            'worker_user_id' => $worker->id,
+                            'task_id' => $task->id,
+                        ],
+                        [
+                            'business_entity_id' => $business->id,
+                            'workplace_id' => $workplace->id,
+                            'swms_version_id' => $swms->id,
+                            'status' => 'completed',
+                            'minimum_read_seconds_required' => 10,
+                            'total_read_seconds' => 12,
+                            'started_at' => now()->subMinutes(20),
+                            'completed_at' => now()->subMinutes(5),
+                        ],
+                    );
+
+                    SwmsStepEvent::query()->updateOrCreate(
+                        [
+                            'worker_task_session_id' => $session->id,
+                            'swms_activity_step_id' => $swmsStep->id,
+                            'event_type' => 'read_completed',
+                        ],
+                        [
+                            'worker_user_id' => $worker->id,
+                            'step_number' => 1,
+                            'read_started_at' => now()->subMinutes(18),
+                            'read_completed_at' => now()->subMinutes(17),
+                            'read_seconds' => 12,
+                            'met_minimum_read_time' => true,
+                            'occurred_at' => now()->subMinutes(17),
+                        ],
+                    );
+
+                    $prestartSubmission = PrestartSubmission::query()->updateOrCreate(
+                        [
+                            'worker_task_session_id' => $session->id,
+                            'task_id' => $task->id,
+                        ],
+                        [
+                            'account_id' => $account->id,
+                            'business_entity_id' => $business->id,
+                            'workplace_id' => $workplace->id,
+                            'worker_user_id' => $worker->id,
+                            'status' => 'submitted',
+                            'score_percent' => 100,
+                            'critical_failure_count' => 0,
+                            'has_critical_failure' => false,
+                            'submitted_at' => now()->subMinutes(12),
+                        ],
+                    );
+
+                    PrestartResponse::query()->updateOrCreate(
+                        [
+                            'prestart_submission_id' => $prestartSubmission->id,
+                            'prestart_question_id' => $prestartQuestion->id,
+                        ],
+                        [
+                            'worker_task_session_id' => $session->id,
+                            'worker_user_id' => $worker->id,
+                            'answer_text' => 'Yes',
+                            'answer_boolean' => true,
+                            'is_critical_failure' => false,
+                            'score_awarded' => 1,
+                            'answered_at' => now()->subMinutes(12),
+                        ],
+                    );
+
+                    $signature = Signature::query()->firstOrCreate(
+                        [
+                            'account_id' => $account->id,
+                            'worker_task_session_id' => $session->id,
+                            'signature_type' => 'swms_acknowledgement',
+                        ],
+                        [
+                            'business_entity_id' => $business->id,
+                            'workplace_id' => $workplace->id,
+                            'user_id' => $worker->id,
+                            'signer_name' => $worker->name,
+                            'signer_email' => $worker->email,
+                            'signed_payload_hash' => hash('sha256', $session->id.'|swms_acknowledgement'),
+                            'signature_data' => [
+                                'method' => 'typed_name',
+                                'value' => $worker->name,
+                            ],
+                            'signed_at' => now()->subMinutes(10),
+                        ],
+                    );
+
+                    EvidenceFile::query()->firstOrCreate(
+                        [
+                            'account_id' => $account->id,
+                            'path' => 'demo/prestart-photo.jpg',
+                        ],
+                        [
+                            'business_entity_id' => $business->id,
+                            'workplace_id' => $workplace->id,
+                            'worker_task_session_id' => $session->id,
+                            'prestart_submission_id' => $prestartSubmission->id,
+                            'signature_id' => $signature->id,
+                            'uploaded_by_user_id' => $worker->id,
+                            'evidence_type' => 'prestart_photo',
+                            'disk' => 'local',
+                            'original_name' => 'prestart-photo.jpg',
+                            'mime_type' => 'image/jpeg',
+                            'size_bytes' => 204800,
+                            'file_hash' => hash('sha256', 'demo/prestart-photo.jpg'),
+                            'captured_at' => now()->subMinutes(11),
+                        ],
+                    );
+
+                    Alert::query()->updateOrCreate(
+                        [
+                            'account_id' => $account->id,
+                            'prestart_submission_id' => $prestartSubmission->id,
+                            'alert_type' => 'prestart_review',
+                        ],
+                        [
+                            'business_entity_id' => $business->id,
+                            'workplace_id' => $workplace->id,
+                            'worker_task_session_id' => $session->id,
+                            'triggered_by_user_id' => $worker->id,
+                            'assigned_to_user_id' => $admin->id,
+                            'severity' => 'warning',
+                            'status' => 'open',
+                            'title' => 'Demo prestart requires supervisor review',
+                            'message' => 'Demo warning alert linked to a completed worker task session.',
+                            'trigger_payload' => [
+                                'prestart_submission_id' => $prestartSubmission->id,
+                                'worker_task_session_id' => $session->id,
+                            ],
+                        ],
+                    );
+
+                    $auditService = app(AuditService::class);
+
+                    foreach ([
+                        'worker_task_session.completed' => [
+                            'status' => 'completed',
+                            'worker_user_id' => $worker->id,
+                            'task_id' => $task->id,
+                        ],
+                        'worker_task_session.signed' => [
+                            'signature_id' => $signature->id,
+                            'signature_type' => $signature->signature_type,
+                        ],
+                    ] as $eventType => $payload) {
+                        $exists = DB::table('audit_events')
+                            ->where('account_id', $account->id)
+                            ->where('worker_task_session_id', $session->id)
+                            ->where('event_type', $eventType)
+                            ->exists();
+
+                        if (! $exists) {
+                            $auditService->record(
+                                subject: $session,
+                                anchor: AuditService::ANCHOR_SIGNATURE,
+                                eventType: $eventType,
+                                payload: $payload,
+                                userId: $worker->id,
+                                businessEntityId: $business->id,
+                                workplaceId: $workplace->id,
+                                accountId: $account->id,
+                            );
+                        }
+                    }
                 },
                 businessEntityId: null,
                 workplaceId: null,

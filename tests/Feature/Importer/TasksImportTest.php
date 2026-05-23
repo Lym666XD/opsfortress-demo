@@ -46,13 +46,12 @@ final class TasksImportTest extends TestCase
         $this->assertSame(0, $summary['warnings']);
         $this->assertSame('completed', $batch->status);
 
-        // Anchor: one specific row should be present with its 9 mapped fields populated.
+        // Anchor: one specific row should be present with its mapped fields populated.
         $task = Task::query()->where('external_task_id', 'TASK_CCB_001')->first();
         $this->assertNotNull($task);
         $this->assertSame('Cutting concrete blocks', $task->task_name);
         $this->assertSame('Cutting concrete blocks', $task->task_title);
         $this->assertSame('SWMS', $task->document_type);
-        $this->assertSame('Block Laying', $task->trade_industry);
         $this->assertSame('Construction', $task->task_group);
         $this->assertSame('Masonry', $task->task_sub_group);
         $this->assertSame('Cutting concrete blocks', $task->task_leaf);
@@ -100,7 +99,7 @@ final class TasksImportTest extends TestCase
             ->where('severity', 'error')
             ->first();
         $this->assertNotNull($error);
-        $this->assertSame('tasks.external_task_id_missing', $error->rule_code);
+        $this->assertSame('business:tasks.external_task_id_missing', $error->rule_code);
         $this->assertSame('task_id', $error->source_column_name);
         $this->assertSame('tasks', $error->target_table);
 
@@ -130,7 +129,7 @@ final class TasksImportTest extends TestCase
             ->where('severity', 'error')
             ->first();
         $this->assertNotNull($error);
-        $this->assertSame('tasks.task_name_missing', $error->rule_code);
+        $this->assertSame('business:tasks.task_name_missing', $error->rule_code);
         $this->assertSame('task_name', $error->source_column_name);
         $this->assertSame(0, Task::query()->count());
 
@@ -161,7 +160,7 @@ final class TasksImportTest extends TestCase
         $error = ImportValidationResult::query()
             ->where('import_batch_id', $batch->id)
             ->where('severity', 'error')
-            ->where('rule_code', 'tasks.duplicate_external_task_id_in_source')
+            ->where('rule_code', 'dup:tasks.external_task_id_in_source')
             ->first();
         $this->assertNotNull($error);
 
@@ -178,6 +177,8 @@ final class TasksImportTest extends TestCase
         // Clear children first to satisfy FKs; seeded rows reference tasks via
         // task_occupation_access, task_industry_access, swms_versions
         // (and downstream), prestart_questions, workplace_task_settings.
+        DB::statement('TRUNCATE TABLE audit_events, evidence_files, signatures RESTART IDENTITY CASCADE');
+        DB::table('alerts')->delete();
         DB::table('workplace_task_settings')->delete();
         DB::table('prestart_responses')->delete();
         DB::table('prestart_submissions')->delete();

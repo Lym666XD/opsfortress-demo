@@ -17,10 +17,14 @@ captures:
 4. Open questions we need Kevin or Damon to answer.
 
 This document is **not** authoritative — the DBML
-(`.localdoc/OpsFortress_MVP_ERD_v0_3_Updated.txt`) and the column
+(`docs/OpsFortress_MVP_ERD_v0_3_Updated.dbml`) and the column
 mapping (`.localdoc/OpsFortress_MVP_Column_Level_Mapping_v0_3_Clean.xlsx`)
 are. This file just records where reality has diverged from the spec
 and what we propose to do about it.
+
+2026-05-23 update: for schema authority, use the Laravel migrations plus
+`docs/OpsFortress_MVP_ERD_v0_3_Updated.dbml`. The `.localdoc` DBML export is
+historical unless regenerated from the current migrations.
 
 ## Status of M17 importer slices
 
@@ -32,6 +36,20 @@ and what we propose to do about it.
 | 4 — Access maps | SRC-001 `RAW_All_Task_Occupation_Access` + `RAW_All_Task_Industry_Access` | **blocked — see Open Question A below** | — |
 | 5 — SWMS workbook | SRC-002/003/004 (`SWMS_*.xls(m)`) | **blocked — see Open Questions B, C, D below** | — |
 | 6 — Global Business Identifiers | SRC-005 `Global Business Identifiers.xlsx` | not started | — |
+
+## Validation rule_code namespaces
+
+`import_validation_results.rule_code` must use one of these prefixes. The
+database enforces this with `import_validation_results_rule_code_prefix_check`.
+Nested segments are allowed, e.g. `schema:json:missing_field`.
+
+| Prefix | Meaning | Example |
+|---|---|---|
+| `schema:*` | JSON Schema failure at AI output stage | `schema:missing_required_field` |
+| `structure:*` | Workbook or Python structure failure | `structure:unknown_sheet` |
+| `fk:*` | Foreign key cannot be resolved at importer stage | `fk:occupation_not_found` |
+| `business:*` | Business-rule violation; schema is valid | `business:tasks.task_name_missing` |
+| `dup:*` | Idempotency or duplicate-source violation | `dup:tasks.external_task_id_in_source` |
 
 ## Preferred data delivery format
 
@@ -159,7 +177,7 @@ is exactly what v0.3 architecture aims to prevent.
 
 ### C. Worker App View Map grew from 12 cols to 34 cols
 
-Raised: 2026-05-23. Status: **open / partly self-answerable**.
+Raised: 2026-05-23. Status: **partly resolved by 2026-05-23 schema refactor**.
 
 Our M16.1 `swms_activity_steps` schema covers ~9 of the v4 workbook's
 34 source columns:
@@ -197,11 +215,25 @@ dedicated columns, dump the remaining 25 fields into
 `swms_activity_steps.metadata` JSONB. No data loss; queryable later if
 needed.
 
+**Resolved schema decision**: the following P0 query / branching fields
+are now dedicated nullable columns on `swms_activity_steps`:
+
+- `initial_risk_level`
+- `residual_risk_level`
+- `residual_risk_reason`
+- `stop_work_trigger`
+- `evidence_required`
+- `evidence_prompt`
+- `quick_view_summary`
+- `primary_task_performer`
+- `supervisory_verification`
+
+The remaining worker-view workbook fields stay in `swms_activity_steps.metadata`
+until a concrete query or workflow branch requires promotion.
+
 **What we need**:
 
-- [ ] Decide whether any of the 25 extra fields are P0 query targets
-      (i.e. needed for the worker UI in slice 5 of the importer flow).
-      If yes, they get dedicated columns. If no, JSONB.
+- [x] Promote the 9 P0 query / branching fields listed above.
 - [ ] Confirm with Kevin whether `linked_assets` / `linked_hazardous_chemicals`
       / `linked_permit_triggers` / `linked_critical_controls` are
       pointers to future tables (in which case they're tombstone

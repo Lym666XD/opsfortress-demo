@@ -97,7 +97,7 @@ final class IndustriesImportTest extends TestCase
             ->where('severity', 'error')
             ->first();
         $this->assertNotNull($error);
-        $this->assertSame('industries.candidate_key_missing', $error->rule_code);
+        $this->assertSame('business:industries.candidate_key_missing', $error->rule_code);
         $this->assertSame('industry_candidate_key', $error->source_column_name);
         $this->assertSame('industries', $error->target_table);
         $this->assertSame(3, $error->source_row_number); // header + 1 ok + 1 bad
@@ -133,7 +133,7 @@ final class IndustriesImportTest extends TestCase
             ->where('severity', 'warning')
             ->first();
         $this->assertNotNull($warning);
-        $this->assertSame('industries.active_status_unrecognised', $warning->rule_code);
+        $this->assertSame('business:industries.active_status_unrecognised', $warning->rule_code);
         $this->assertSame('maybe-soon', $warning->raw_value);
 
         unlink($tmpPath);

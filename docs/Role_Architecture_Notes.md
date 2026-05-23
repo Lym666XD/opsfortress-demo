@@ -1,13 +1,10 @@
 # Role Architecture — Issue Notes
 
-
----
-
 ## Core Finding
 
 The Team Directory mixes two different concepts that need to be kept separate in the database:
 
-- **Permission Role** — what the person can *do* in the system (Worker / Supervisor / Manager / Admin)
+- **Permission Role** — what the person can *do* in the system (Worker / Supervisor / Manager / Admin / Platform Admin)
 - **Person Identity Type** — what kind of person they *are* (Employee / Contractor / Labour Hire / Volunteer etc.)
 
 These are independent dimensions. A "Cleaning Contractor" can be a Worker *or* a Supervisor. A "Full-Time Permanent Employee" can be a Worker *or* a Manager. They need separate fields.
@@ -22,10 +19,11 @@ These control what a user can see and do in the app.
 |------|-----------------|
 | **Worker** | Complete pre-starts, SWMS steps, post-task checks, training |
 | **Supervisor** | All of Worker + assign tasks, review submissions, manage their team |
-| **Manager** | All of Supervisor + configure task packs, view reports across teams |
-| **Admin** | Full platform access, billing, user management, tenant settings |
+| **Manager** | All of Supervisor + configure task/SWMS settings, view reports across teams |
+| **Admin** | Full customer-account access, billing, user management, account settings |
+| **Platform Admin** | OpsFortress operator-level support and platform administration |
 
-One user = one permission role (at least for MVP).
+In v0.3, permission role is stored on access rows, not on `users`.
 
 ---
 
@@ -42,7 +40,7 @@ These describe the employment/engagement relationship. From the Team Directory:
 - Volunteer
 
 **Labour Hire**
-- (worker placed by a labour hire agency)
+- Worker placed by a labour hire agency
 
 **Contractor**
 - Asbestos
@@ -62,60 +60,41 @@ These describe the employment/engagement relationship. From the Team Directory:
 
 ## The Contractor Problem
 
-Contractors create a cross-business complexity that doesn't exist for employees:
+Contractors create cross-business complexity that does not exist for employees:
 
-- An ABC Cleaning contractor may work at an XYZ site
-- They need a Worker account that belongs to *their own* business (ABC)
-- But they need access to *XYZ's* task packs and workplace
-- The current schema only has one `business_id` per user — this breaks for contractors
-
-**MVP options:**
-1. Treat contractors as employees of the host business (simplest, but loses their identity)
-2. Add a `host_workplace_id` on the assignment record (cleaner, defers full contractor model)
+- An ABC Cleaning contractor may work at an XYZ site.
+- They need a worker account associated with their home business.
+- They also need access to the host business's workplace, tasks, and SWMS content.
+- A single `business_id` on `users` is not enough.
 
 ---
 
-## Current DB Gap
+## How v0.3 Implements This
 
-The existing migrations are missing:
+The v0.3 schema resolves the original DB gap:
 
-| Missing | Why it matters |
-|---------|---------------|
-| `person_type` field on `users` | No way to distinguish Employee / Contractor / Labour Hire |
-| `contractor_type` field on `users` | No way to capture Cleaning vs Construction vs Maintenance etc. |
-| `host_business_id` on assignments | Can't model a contractor working at a different business's site |
-| Contractor-specific onboarding flow | Different induction requirements for contractors vs employees |
+| Need | v0.3 implementation |
+|------|---------------------|
+| Person identity type | `users.person_type` |
+| Contractor subtype | `users.contractor_type` |
+| Permission role | `user_business_access.permission_role` and `user_workplace_access.permission_role` |
+| Cross-business contractor relationship | `contractor_relationships` |
+| Per-workplace access for host sites | `user_workplace_access` |
+| Worker occupation integrity | `user_occupations` linking `users` to `occupations` |
 
----
-
-## Questions for Kevin
-
-### Q1 — Do we need person_type in MVP?
-
-| Option | What it means |
-|--------|--------------|
-| Yes, add `person_type` now | Team Directory is visible in the app; contractors are identifiable |
-| No, defer to Phase 2 | Everyone is treated the same; simpler DB, faster to build |
-
-### Q2 — Contractor cross-business access
-
-| Option | What it means |
-|--------|--------------|
-| Treat them as host business employees | ABC contractor gets an XYZ account — loses their ABC identity |
-| `host_workplace_id` on assignment | ABC contractor keeps their ABC account, assigned to XYZ workplace |
-| Full contractor portal (Phase 2) | Proper cross-business model, separate onboarding — significant scope |
+The important distinction remains: person identity lives on `users`; permission lives on access rows.
 
 ---
 
-## Recommended MVP Approach
+## Resolved
 
-1. Add `person_type` as a simple enum on the `users` table:  
-   `employee | labour_hire | contractor | other`
+- MVP needs `person_type`; it is implemented on `users`.
+- Contractor-specific subtype is implemented as nullable `users.contractor_type`.
+- Cross-business contractor access is represented by `contractor_relationships` plus `user_workplace_access`.
+- Worker-to-task eligibility can now be resolved through `user_occupations` → `task_occupation_access`.
 
-2. Add `contractor_type` as a nullable string (e.g. `"cleaning"`, `"construction"`) — only filled when `person_type = contractor`
+## Still Open
 
-3. For cross-business access: use `host_workplace_id` on the `workplace_user_assignments` table (one extra column, minimal schema change)
-
-4. Full contractor portal (separate business identity, cross-tenant permissions, contractor-specific induction flow) → **Phase 2**
-
-This keeps MVP simple while making the data model honest about who people are.
+- Contractor-specific onboarding UX and induction rules are still product workflow work.
+- More detailed contractor workplace scope should only be added if Kevin confirms contract terms differ by workplace.
+- Richer person identity categories from the Team Directory can remain controlled values until a separate lookup table is justified.

@@ -21,6 +21,8 @@ class SwmsActivityStep extends Model
             'hazards' => 'array',
             'controls' => 'array',
             'required_ppe' => 'array',
+            'stop_work_trigger' => 'boolean',
+            'evidence_required' => 'boolean',
             'metadata' => 'array',
         ];
     }

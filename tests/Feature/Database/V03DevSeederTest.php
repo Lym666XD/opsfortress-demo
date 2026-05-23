@@ -57,13 +57,67 @@ final class V03DevSeederTest extends TestCase
             'external_task_id' => 'TASK-DEMO-001',
             'active_status' => true,
         ]);
+        $this->assertDatabaseHas('workplace_environments', [
+            'environment_code' => 'construction',
+            'environment_name' => 'Construction',
+            'active' => true,
+        ]);
         $this->assertDatabaseHas('swms_versions', [
             'external_swms_version_id' => 'demo-v1',
             'status' => 'published',
+        ]);
+        $this->assertDatabaseHas('swms_activity_steps', [
+            'step_number' => 1,
+            'initial_risk_level' => 'medium',
+            'residual_risk_level' => 'low',
+            'stop_work_trigger' => true,
         ]);
         $this->assertDatabaseHas('prestart_questions', [
             'question_number' => 1,
             'is_critical_failure' => true,
         ]);
+        $this->assertDatabaseHas('user_occupations', [
+            'account_id' => $account->id,
+            'is_primary' => true,
+        ]);
+        $this->assertDatabaseHas('worker_task_sessions', [
+            'account_id' => $account->id,
+            'status' => 'completed',
+        ]);
+        $this->assertDatabaseHas('swms_step_events', [
+            'step_number' => 1,
+            'event_type' => 'read_completed',
+            'met_minimum_read_time' => true,
+        ]);
+        $this->assertDatabaseHas('signatures', [
+            'account_id' => $account->id,
+            'signature_type' => 'swms_acknowledgement',
+        ]);
+        $this->assertDatabaseHas('prestart_submissions', [
+            'account_id' => $account->id,
+            'status' => 'submitted',
+            'has_critical_failure' => false,
+        ]);
+        $this->assertDatabaseHas('prestart_responses', [
+            'answer_boolean' => true,
+            'is_critical_failure' => false,
+        ]);
+        $this->assertDatabaseHas('evidence_files', [
+            'account_id' => $account->id,
+            'evidence_type' => 'prestart_photo',
+        ]);
+        $this->assertDatabaseHas('alerts', [
+            'account_id' => $account->id,
+            'alert_type' => 'prestart_review',
+            'status' => 'open',
+        ]);
+
+        $this->assertSame(
+            2,
+            DB::table('audit_events')
+                ->where('account_id', $account->id)
+                ->whereNotNull('worker_task_session_id')
+                ->count(),
+        );
     }
 }

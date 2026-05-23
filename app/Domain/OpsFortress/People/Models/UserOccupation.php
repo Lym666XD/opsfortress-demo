@@ -4,34 +4,37 @@ declare(strict_types=1);
 
 namespace App\Domain\OpsFortress\People\Models;
 
+use App\Domain\OpsFortress\Accounts\Models\CustomerAccount;
 use App\Domain\OpsFortress\Occupations\Models\Occupation;
-use App\Domain\Shared\Tenancy\BelongsToTenant;
+use App\Domain\Shared\Context\BelongsToAccount;
+use App\Models\Concerns\UsesUuidPrimaryKey;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class UserOccupation extends Model
 {
-    use BelongsToTenant;
+    use BelongsToAccount, SoftDeletes, UsesUuidPrimaryKey;
 
     protected $table = 'user_occupations';
 
-    protected $fillable = [
-        'tenant_id',
-        'business_id',
-        'user_id',
-        'occupation_id',
-        'is_primary',
-    ];
+    protected $guarded = [];
 
-    protected $casts = [
-        // FK int casts — PG's PDO driver returns BIGINT as string.
-        'tenant_id' => 'integer',
-        'business_id' => 'integer',
-        'user_id' => 'integer',
-        'occupation_id' => 'integer',
-        'is_primary' => 'boolean',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'is_primary' => 'boolean',
+            'starts_on' => 'date',
+            'ends_on' => 'date',
+            'metadata' => 'array',
+        ];
+    }
+
+    public function account(): BelongsTo
+    {
+        return $this->belongsTo(CustomerAccount::class);
+    }
 
     public function user(): BelongsTo
     {
@@ -41,5 +44,10 @@ class UserOccupation extends Model
     public function occupation(): BelongsTo
     {
         return $this->belongsTo(Occupation::class);
+    }
+
+    public function grantedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'granted_by_user_id');
     }
 }

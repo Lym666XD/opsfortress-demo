@@ -10,12 +10,28 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use RuntimeException;
 
 class BusinessEntity extends Model
 {
     use SoftDeletes, UsesUuidPrimaryKey;
 
     protected $guarded = [];
+
+    protected $hidden = [
+        'blockchain_id',
+    ];
+
+    protected static function booted(): void
+    {
+        static::updating(function (self $businessEntity): void {
+            $original = $businessEntity->getOriginal('blockchain_id');
+
+            if ($original !== null && $businessEntity->isDirty('blockchain_id')) {
+                throw new RuntimeException('BusinessEntity.blockchain_id is immutable once set.');
+            }
+        });
+    }
 
     protected function casts(): array
     {

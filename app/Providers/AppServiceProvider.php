@@ -4,7 +4,6 @@ namespace App\Providers;
 
 use App\Domain\OpsFortress\Workplaces\Models\Workplace;
 use App\Domain\Shared\Context\AccountContext;
-use App\Domain\Shared\Tenancy\TenantContext;
 use App\Models\User;
 use App\Policies\UserPolicy;
 use App\Policies\WorkplacePolicy;
@@ -31,7 +30,6 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(AccountContext::class);
-        $this->app->singleton(TenantContext::class);
     }
 
     /**

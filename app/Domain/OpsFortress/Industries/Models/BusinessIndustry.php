@@ -19,6 +19,7 @@ class BusinessIndustry extends Model
     protected function casts(): array
     {
         return [
+            'is_primary' => 'boolean',
             'metadata' => 'array',
         ];
     }

@@ -15,8 +15,16 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->uuid('id')->primary()->default(DB::raw('gen_random_uuid()'));
             $table->string('name');
+            $table->string('first_name')->nullable();
+            $table->string('last_name')->nullable();
             $table->string('email')->unique();
+            $table->string('mobile', 32)->nullable();
+            $table->string('employee_code')->nullable();
+            $table->string('status')->default('invited');
+            $table->string('person_type', 32)->nullable();
+            $table->string('contractor_type', 64)->nullable();
             $table->timestamp('email_verified_at')->nullable();
+            $table->timestamp('last_signed_in_at')->nullable();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();

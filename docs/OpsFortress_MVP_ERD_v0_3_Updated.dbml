@@ -1,436 +1,951 @@
-// OpsFortress MVP ERD v0.3 - Updated after Kevin onboarding / business identifier guidance
-// Purpose: visual ERD review and dbdiagram.io import.
-// Note: This is not PostgreSQL DDL. Use Laravel migrations / SQL to create tables.
+// OpsFortress MVP ERD v0.3
+// Regenerated 2026-05-23 from Laravel migrations through 2026_05_23_*.
+// Schema authority: Laravel migrations + this regenerated DBML.
 
 TableGroup "Core Platform / Onboarding P0" {
   customer_accounts
-  business_entities
-  account_businesses
   countries
   business_identifier_types
+  business_entities
+  account_businesses
   business_identifiers
   workplaces
   workplace_environments
   business_industries
   users
   user_business_access
+  user_workplace_access
+  user_occupations
   contractor_relationships
 }
 
 TableGroup "WHS Content / Menu P0" {
+  industries
+  occupations
   tasks
+  task_occupation_access
+  task_industry_access
   swms_versions
   swms_activity_steps
   prestart_questions
-  occupations
-  industries
-  task_occupation_access
-  task_industry_access
+  workplace_task_settings
+}
+
+TableGroup "Importer / Intake P0" {
+  import_batches
+  import_source_files
+  import_validation_results
 }
 
 TableGroup "Runtime / Evidence P0" {
   worker_task_sessions
   swms_step_events
+  prestart_submissions
   prestart_responses
   signatures
   evidence_files
   audit_events
+  alerts
 }
 
 TableGroup "P1 Expansion" {
   posttask_questions
+  posttask_submissions
   posttask_responses
   training_questions
   training_attempts
   training_responses
+  worker_training_completions
 }
 
 Table customer_accounts {
-  id uuid [pk]
-  account_name text [not null]
-  account_status text [not null]
-  billing_status text
-  created_at timestamptz
-  updated_at timestamptz
+  id uuid [pk, default: `gen_random_uuid()`]
+  slug varchar [not null, unique]
+  name varchar [not null]
+  legal_name varchar
+  status varchar [not null, default: 'onboarding']
+  timezone varchar [not null, default: 'UTC']
+  locale varchar [not null, default: 'en']
+  billing_email varchar
+  settings jsonb
+  metadata jsonb
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
 }
 
 Table countries {
-  id uuid [pk]
-  country_name text [unique, not null]
-  country_code text
-  active_status boolean
+  id uuid [pk, default: `gen_random_uuid()`]
+  iso_alpha2 char [unique]
+  iso_alpha3 char [unique]
+  numeric_code char [unique]
+  name varchar [not null, unique]
+  official_name varchar
+  default_currency_code char
+  active boolean [not null, default: true]
+  metadata jsonb
+  created_at timestamp
+  updated_at timestamp
 }
 
 Table business_identifier_types {
-  id uuid [pk]
+  id uuid [pk, default: `gen_random_uuid()`]
   country_id uuid [not null]
-  identifier_label text [not null] // ABN, NZBN, Company Number, EIN, etc.
-  identifier_code text
-  active_status boolean
+  identifier_code varchar [not null]
+  name varchar [not null]
+  description text
+  format_hint varchar
+  validation_regex varchar
+  active boolean [not null, default: true]
+  metadata jsonb
+  created_at timestamp
+  updated_at timestamp
 }
 
 Table business_entities {
-  id uuid [pk]
-  legal_name text [not null]
-  trading_name text
-  country_id uuid [not null]
-  entity_type text [not null]
-  entity_type_other_text text
-  blockchain_id uuid [unique, not null]
-  status text
-  review_status text
-  created_by_user_id uuid
-  created_at timestamptz
-  updated_at timestamptz
-}
-
-Table business_identifiers {
-  id uuid [pk]
-  business_entity_id uuid [not null]
-  identifier_type_id uuid [not null]
-  identifier_value text [not null]
-  normalised_identifier_value text [not null]
-  is_primary boolean
-  verification_status text
-  created_at timestamptz
+  id uuid [pk, default: `gen_random_uuid()`]
+  country_id uuid
+  legal_name varchar [not null]
+  trading_name varchar
+  business_type varchar
+  entity_status varchar [not null, default: 'onboarding']
+  primary_email varchar
+  primary_phone varchar
+  website varchar
+  registered_address jsonb
+  postal_address jsonb
+  metadata jsonb
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+  blockchain_id uuid [not null, unique, default: `gen_random_uuid()`]
 }
 
 Table account_businesses {
-  id uuid [pk]
+  id uuid [pk, default: `gen_random_uuid()`]
   account_id uuid [not null]
   business_entity_id uuid [not null]
-  relationship_type text // owned / controlled
-  is_primary boolean
-  status text
+  relationship_type varchar [not null, default: 'owned']
+  is_primary boolean [not null, default: false]
+  starts_at timestamp
+  ends_at timestamp
+  metadata jsonb
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
 }
 
-Table workplace_environments {
-  id uuid [pk]
-  environment_name text [not null] // Construction, Federal, Mine, Petroleum, Other
-  active_status boolean
+Table business_identifiers {
+  id uuid [pk, default: `gen_random_uuid()`]
+  business_entity_id uuid [not null]
+  identifier_type_id uuid [not null]
+  identifier_value varchar [not null]
+  normalised_identifier_value varchar [not null]
+  status varchar [not null, default: 'active']
+  issued_at date
+  expires_at date
+  verified_at timestamp
+  verified_by_user_id uuid
+  metadata jsonb
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
 }
 
 Table workplaces {
-  id uuid [pk]
+  id uuid [pk, default: `gen_random_uuid()`]
   account_id uuid [not null]
   business_entity_id uuid [not null]
-  country_id uuid [not null]
+  country_id uuid
+  code varchar
+  name varchar [not null]
+  workplace_type varchar
+  status varchar [not null, default: 'active']
+  street_address varchar
+  suburb varchar
+  city varchar
+  state_region varchar
+  postal_code varchar
+  latitude decimal
+  longitude decimal
+  geofence_radius_meters integer
+  contact_name varchar
+  contact_email varchar
+  contact_phone varchar
+  metadata jsonb
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
   environment_id uuid
-  workplace_name text [not null]
-  address_line_1 text
-  suburb text
-  region text
-  postcode text
-  status text
 }
 
-Table industries {
-  id uuid [pk]
-  external_industry_id text [unique]
-  industry_group text
-  industry_sub_group text
-  industry_leaf text
-  industry_candidate_key text
-  active_status boolean
+Table workplace_environments {
+  id uuid [pk, default: `gen_random_uuid()`]
+  environment_code varchar [not null, unique]
+  environment_name varchar [not null]
+  active boolean [not null, default: true]
+  metadata jsonb
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
 }
 
 Table business_industries {
-  id uuid [pk]
+  id uuid [pk, default: `gen_random_uuid()`]
+  account_id uuid
   business_entity_id uuid [not null]
   industry_id uuid [not null]
-  is_primary boolean
-  created_at timestamptz
+  is_primary boolean [not null, default: false]
+  metadata jsonb
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
 }
 
 Table users {
-  id uuid [pk]
+  id uuid [pk, default: `gen_random_uuid()`]
+  name varchar [not null]
+  email varchar [not null, unique]
+  email_verified_at timestamp
+  password varchar [not null]
+  remember_token varchar
+  created_at timestamp
+  updated_at timestamp
+  two_factor_secret text
+  two_factor_recovery_codes text
+  two_factor_confirmed_at timestamp
+  first_name varchar
+  last_name varchar
+  mobile varchar
+  employee_code varchar
+  status varchar [not null, default: 'invited']
+  last_signed_in_at timestamp
+  person_type varchar
+  contractor_type varchar
   account_id uuid
-  name text [not null]
-  email text [unique, not null]
-  role text [not null]
-  position_title text
-  status text
+  home_business_entity_id uuid
+  timezone varchar
+  locale varchar
+  metadata jsonb
+  deleted_at timestamp
 }
 
 Table user_business_access {
-  id uuid [pk]
-  user_id uuid [not null]
+  id uuid [pk, default: `gen_random_uuid()`]
+  account_id uuid [not null]
   business_entity_id uuid [not null]
-  access_role text [not null]
-  can_view boolean
-  can_manage boolean
-  created_at timestamptz
+  user_id uuid [not null]
+  permission_role varchar [not null, default: 'worker', note: 'worker, supervisor, manager, admin, platform_admin']
+  access_status varchar [not null, default: 'active']
+  starts_at timestamp
+  ends_at timestamp
+  granted_by_user_id uuid
+  metadata jsonb
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+}
+
+Table user_workplace_access {
+  id uuid [pk, default: `gen_random_uuid()`]
+  account_id uuid [not null]
+  business_entity_id uuid [not null]
+  workplace_id uuid [not null]
+  user_id uuid [not null]
+  permission_role varchar [not null, default: 'worker', note: 'worker, supervisor, manager, admin, platform_admin']
+  access_status varchar [not null, default: 'active']
+  starts_at timestamp
+  ends_at timestamp
+  granted_by_user_id uuid
+  metadata jsonb
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+}
+
+Table user_occupations {
+  id uuid [pk, default: `gen_random_uuid()`]
+  account_id uuid [not null]
+  user_id uuid [not null]
+  occupation_id uuid [not null]
+  is_primary boolean [not null, default: false]
+  starts_on date
+  ends_on date
+  granted_by_user_id uuid
+  metadata jsonb
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
 }
 
 Table contractor_relationships {
-  id uuid [pk]
-  host_account_id uuid [not null]
+  id uuid [pk, default: `gen_random_uuid()`]
+  account_id uuid [not null]
   host_business_entity_id uuid [not null]
-  workplace_id uuid
   contractor_business_entity_id uuid [not null]
-  relationship_status text
-  access_status text
-  billing_status text
-  active_from date
-  active_to date
+  relationship_type varchar [not null, default: 'contractor']
+  relationship_status varchar [not null, default: 'pending']
+  access_scope jsonb
+  insurance_metadata jsonb
+  compliance_metadata jsonb
+  starts_on date
+  ends_on date
+  approved_by_user_id uuid
+  approved_at timestamp
+  metadata jsonb
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+}
+
+Table industries {
+  id uuid [pk, default: `gen_random_uuid()`]
+  external_industry_id varchar
+  industry_group varchar
+  industry_sub_group varchar
+  industry_leaf varchar
+  industry_candidate_key varchar
+  active_status boolean [not null, default: true]
+  metadata jsonb
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
 }
 
 Table occupations {
-  id uuid [pk]
-  external_occupation_id text [unique]
-  occupation_group text
-  occupation_sub_group text
-  occupation_leaf text
-  occupation_candidate_key text
-  active_status boolean
+  id uuid [pk, default: `gen_random_uuid()`]
+  external_occupation_id varchar
+  occupation_group varchar
+  occupation_sub_group varchar
+  occupation_leaf varchar
+  occupation_candidate_key varchar
+  active_status boolean [not null, default: true]
+  metadata jsonb
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
 }
 
 Table tasks {
-  id uuid [pk]
-  external_task_id text [unique, not null]
-  task_name text [not null]
-  task_title text
-  document_type text
-  trade_industry text
-  task_group text
-  task_sub_group text
-  task_leaf text
-  active_status boolean
-}
-
-Table swms_versions {
-  id uuid [pk]
-  task_id uuid [not null]
-  external_swms_version_id text [not null]
-  version_label text
-  full_swms_content jsonb
-  is_current boolean
-}
-
-Table swms_activity_steps {
-  id uuid [pk]
-  task_id uuid [not null]
-  swms_version_id uuid [not null]
-  external_activity_id text
-  step_number integer [not null]
-  activity_name text [not null]
-  hazards text
-  controls text
-  stop_work_trigger boolean
-  evidence_required boolean
-  evidence_prompt text
-}
-
-Table prestart_questions {
-  id uuid [pk]
-  task_id uuid [not null]
-  external_question_id text
-  question_number integer [not null]
-  question_text text [not null]
-  response_type text [not null]
-  is_critical_fail boolean
-  evidence_required boolean
+  id uuid [pk, default: `gen_random_uuid()`]
+  external_task_id varchar [not null]
+  task_name varchar [not null]
+  task_title varchar
+  document_type varchar
+  task_group varchar
+  task_sub_group varchar
+  task_leaf varchar
+  task_candidate_key varchar
+  active_status boolean [not null, default: true]
+  metadata jsonb
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
 }
 
 Table task_occupation_access {
-  id uuid [pk]
+  id uuid [pk, default: `gen_random_uuid()`]
   task_id uuid [not null]
   occupation_id uuid [not null]
-  swms_view_access boolean
-  pre_start_access boolean
-  post_task_access boolean
-  training_access boolean
-  menu_visibility boolean
+  swms_view_access varchar [not null, default: 'none']
+  pre_start_access varchar [not null, default: 'none']
+  post_task_access varchar [not null, default: 'none']
+  training_access varchar [not null, default: 'none']
+  menu_visibility varchar [not null, default: 'none']
+  active_status boolean [not null, default: true]
+  metadata jsonb
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
 }
 
 Table task_industry_access {
-  id uuid [pk]
+  id uuid [pk, default: `gen_random_uuid()`]
   task_id uuid [not null]
   industry_id uuid [not null]
-  swms_applicability boolean
-  pre_start_applicability boolean
-  post_task_applicability boolean
-  training_applicability boolean
-  menu_visibility boolean
+  swms_view_access varchar [not null, default: 'none']
+  pre_start_access varchar [not null, default: 'none']
+  post_task_access varchar [not null, default: 'none']
+  training_access varchar [not null, default: 'none']
+  menu_visibility varchar [not null, default: 'none']
+  active_status boolean [not null, default: true]
+  metadata jsonb
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+}
+
+Table swms_versions {
+  id uuid [pk, default: `gen_random_uuid()`]
+  task_id uuid [not null]
+  external_swms_version_id varchar
+  version_label varchar
+  status varchar [not null, default: 'draft']
+  full_swms_content jsonb [not null]
+  source_file_name varchar
+  source_sheet_name varchar
+  source_row_number integer
+  source_hash varchar
+  approved_by_user_id uuid
+  approved_at timestamp
+  published_at timestamp
+  supersedes_id uuid
+  metadata jsonb
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+}
+
+Table swms_activity_steps {
+  id uuid [pk, default: `gen_random_uuid()`]
+  swms_version_id uuid [not null]
+  step_number smallint [not null]
+  title varchar
+  instruction text [not null]
+  hazards jsonb
+  controls jsonb
+  required_ppe jsonb
+  minimum_read_seconds smallint
+  source_sheet_name varchar
+  source_row_number integer
+  metadata jsonb
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+  initial_risk_level varchar
+  residual_risk_level varchar
+  residual_risk_reason text
+  stop_work_trigger boolean
+  evidence_required boolean
+  evidence_prompt text
+  quick_view_summary text
+  primary_task_performer varchar
+  supervisory_verification varchar
+}
+
+Table prestart_questions {
+  id uuid [pk, default: `gen_random_uuid()`]
+  task_id uuid [not null]
+  question_number smallint [not null]
+  prompt text [not null]
+  question_type varchar [not null, default: 'yes_no']
+  is_required boolean [not null, default: true]
+  is_critical_failure boolean [not null, default: false]
+  expected_answer varchar
+  options jsonb
+  scoring_rules jsonb
+  source_sheet_name varchar
+  source_row_number integer
+  metadata jsonb
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+}
+
+Table workplace_task_settings {
+  id uuid [pk, default: `gen_random_uuid()`]
+  account_id uuid [not null]
+  business_entity_id uuid [not null]
+  workplace_id uuid [not null]
+  task_id uuid [not null]
+  active_swms_version_id uuid
+  prestart_frequency varchar [not null, default: 'daily']
+  posttask_frequency varchar [not null, default: 'off']
+  training_refresh_interval_days integer
+  minimum_read_seconds integer
+  configured_by_user_id uuid
+  configured_at timestamp
+  metadata jsonb
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+}
+
+Table import_batches {
+  id uuid [pk, default: `gen_random_uuid()`]
+  account_id uuid
+  import_type varchar [not null, default: 'content_workbook']
+  status varchar [not null, default: 'pending']
+  started_by_user_id uuid
+  started_at timestamp
+  completed_at timestamp
+  summary jsonb
+  metadata jsonb
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table import_source_files {
+  id uuid [pk, default: `gen_random_uuid()`]
+  import_batch_id uuid [not null]
+  original_filename varchar [not null]
+  storage_disk varchar
+  storage_path varchar
+  file_hash varchar [not null]
+  file_hash_algorithm varchar [not null, default: 'sha256']
+  size_bytes bigint
+  workbook_type varchar
+  status varchar [not null, default: 'pending']
+  metadata jsonb
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table import_validation_results {
+  id uuid [pk, default: `gen_random_uuid()`]
+  import_batch_id uuid [not null]
+  import_source_file_id uuid
+  severity varchar [not null, default: 'error']
+  rule_code varchar [not null, note: 'Must start with schema:, structure:, fk:, business:, or dup:.']
+  message text [not null]
+  source_sheet_name varchar
+  source_row_number integer
+  source_column_name varchar
+  target_table varchar
+  target_column varchar
+  raw_value text
+  context jsonb
+  resolved_at timestamp
+  resolved_by_user_id uuid
+  created_at timestamp
+  updated_at timestamp
 }
 
 Table worker_task_sessions {
-  id uuid [pk]
-  account_id uuid
-  business_entity_id uuid
-  user_id uuid [not null]
+  id uuid [pk, default: `gen_random_uuid()`]
+  account_id uuid [not null]
+  business_entity_id uuid [not null]
   workplace_id uuid [not null]
   task_id uuid [not null]
-  swms_version_id uuid [not null]
-  status text [not null]
-  started_at timestamptz
-  completed_at timestamptz
+  swms_version_id uuid
+  worker_user_id uuid [not null]
+  status varchar [not null, default: 'not_started']
+  minimum_read_seconds_required integer
+  total_read_seconds integer [not null, default: 0]
+  started_at timestamp
+  completed_at timestamp
+  supersedes_id uuid
+  metadata jsonb
+  created_at timestamp
+  updated_at timestamp
 }
 
 Table swms_step_events {
-  id uuid [pk]
-  session_id uuid [not null]
-  activity_step_id uuid [not null]
-  event_type text [not null]
-  event_at timestamptz
-  time_spent_seconds integer
+  id uuid [pk, default: `gen_random_uuid()`]
+  worker_task_session_id uuid [not null]
+  swms_activity_step_id uuid [not null]
+  worker_user_id uuid [not null]
+  event_type varchar [not null, default: 'viewed']
+  step_number smallint [not null]
+  read_started_at timestamp
+  read_completed_at timestamp
+  read_seconds integer
+  met_minimum_read_time boolean [not null, default: false]
+  device_metadata jsonb
+  occurred_at timestamp [not null, default: `CURRENT_TIMESTAMP`]
+  supersedes_id uuid
+  metadata jsonb
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table prestart_submissions {
+  id uuid [pk, default: `gen_random_uuid()`]
+  worker_task_session_id uuid [not null]
+  account_id uuid [not null]
+  business_entity_id uuid [not null]
+  workplace_id uuid [not null]
+  task_id uuid [not null]
+  worker_user_id uuid [not null]
+  status varchar [not null, default: 'draft']
+  score_percent decimal
+  critical_failure_count smallint [not null, default: 0]
+  has_critical_failure boolean [not null, default: false]
+  submitted_at timestamp
+  supersedes_id uuid
+  metadata jsonb
+  created_at timestamp
+  updated_at timestamp
 }
 
 Table prestart_responses {
-  id uuid [pk]
-  session_id uuid [not null]
-  question_id uuid [not null]
-  answer_value text [not null]
-  comment text
-  evidence_file_id uuid
-  answered_at timestamptz
-}
-
-Table evidence_files {
-  id uuid [pk]
-  session_id uuid
-  file_type text [not null] // photo / signature / pdf / other
-  file_path text [not null]
-  storage_provider text
-  uploaded_by uuid
-  uploaded_at timestamptz
+  id uuid [pk, default: `gen_random_uuid()`]
+  prestart_submission_id uuid [not null]
+  prestart_question_id uuid [not null]
+  worker_task_session_id uuid
+  worker_user_id uuid [not null]
+  answer_text text
+  answer_boolean boolean
+  answer_number decimal
+  answer_json jsonb
+  is_critical_failure boolean [not null, default: false]
+  score_awarded decimal
+  answered_at timestamp
+  supersedes_id uuid
+  metadata jsonb
+  created_at timestamp
+  updated_at timestamp
 }
 
 Table signatures {
-  id uuid [pk]
-  session_id uuid [not null]
-  user_id uuid [not null]
-  evidence_file_id uuid
-  signature_meaning text
-  signed_at timestamptz
+  id uuid [pk, default: `gen_random_uuid()`]
+  account_id uuid [not null, note: 'RESTRICT on delete; append-only trigger enforced.']
+  business_entity_id uuid
+  workplace_id uuid
+  worker_task_session_id uuid
+  user_id uuid
+  signature_type varchar [not null]
+  signer_name varchar [not null]
+  signer_email varchar
+  signed_payload_hash varchar
+  signature_data jsonb
+  signed_at timestamp [not null, default: `CURRENT_TIMESTAMP`]
+  ip_address varchar
+  user_agent text
+  supersedes_id uuid
+  metadata jsonb
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table evidence_files {
+  id uuid [pk, default: `gen_random_uuid()`]
+  account_id uuid [not null, note: 'RESTRICT on delete; append-only trigger enforced.']
+  business_entity_id uuid
+  workplace_id uuid
+  worker_task_session_id uuid
+  prestart_submission_id uuid
+  signature_id uuid
+  uploaded_by_user_id uuid
+  evidence_type varchar [not null]
+  disk varchar [not null, default: 'local']
+  path varchar [not null]
+  original_name varchar
+  mime_type varchar
+  size_bytes bigint
+  file_hash varchar
+  file_hash_algorithm varchar [not null, default: 'sha256']
+  captured_at timestamp
+  supersedes_id uuid
+  metadata jsonb
+  created_at timestamp
+  updated_at timestamp
 }
 
 Table audit_events {
-  id uuid [pk]
-  account_id uuid
+  id uuid [pk, default: `gen_random_uuid()`]
+  account_id uuid [not null, note: 'RESTRICT on delete; append-only trigger enforced.']
   business_entity_id uuid
+  workplace_id uuid
   user_id uuid
-  session_id uuid
-  event_type text [not null]
-  event_payload jsonb
-  event_at timestamptz
+  subject_type varchar
+  subject_id varchar
+  event_type varchar [not null]
+  anchor varchar
+  previous_hash varchar
+  event_hash varchar [not null]
+  hash_algorithm varchar [not null, default: 'sha256']
+  hash_sequence bigint [not null]
+  event_payload jsonb [not null]
+  occurred_at timestamp [not null, default: `CURRENT_TIMESTAMP`]
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+  worker_task_session_id uuid [note: 'Either this FK or subject_type + subject_id must be present.']
 }
 
-// P1 expansion tables
+Table alerts {
+  id uuid [pk, default: `gen_random_uuid()`]
+  account_id uuid [not null]
+  business_entity_id uuid
+  workplace_id uuid
+  worker_task_session_id uuid
+  prestart_submission_id uuid
+  triggered_by_user_id uuid
+  assigned_to_user_id uuid
+  alert_type varchar [not null]
+  severity varchar [not null, default: 'warning']
+  status varchar [not null, default: 'open']
+  escalation_level smallint [not null, default: 0]
+  title varchar [not null]
+  message text
+  trigger_payload jsonb
+  due_at timestamp
+  acknowledged_at timestamp
+  resolved_at timestamp
+  supersedes_id uuid
+  metadata jsonb
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+}
+
 Table posttask_questions {
-  id uuid [pk]
+  id uuid [pk, default: `gen_random_uuid()`]
   task_id uuid [not null]
-  external_question_id text
-  question_number integer [not null]
-  question_text text [not null]
-  response_type text
+  question_number smallint [not null]
+  prompt text [not null]
+  question_type varchar [not null, default: 'yes_no']
+  is_required boolean [not null, default: true]
+  is_critical_failure boolean [not null, default: false]
+  expected_answer varchar
+  options jsonb
+  scoring_rules jsonb
+  source_sheet_name varchar
+  source_row_number integer
+  metadata jsonb
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+}
+
+Table posttask_submissions {
+  id uuid [pk, default: `gen_random_uuid()`]
+  worker_task_session_id uuid [not null]
+  account_id uuid [not null]
+  business_entity_id uuid [not null]
+  workplace_id uuid [not null]
+  task_id uuid [not null]
+  worker_user_id uuid [not null]
+  status varchar [not null, default: 'draft']
+  score_percent decimal
+  critical_failure_count smallint [not null, default: 0]
+  has_critical_failure boolean [not null, default: false]
+  submitted_at timestamp
+  supersedes_id uuid
+  metadata jsonb
+  created_at timestamp
+  updated_at timestamp
 }
 
 Table posttask_responses {
-  id uuid [pk]
-  session_id uuid [not null]
-  question_id uuid [not null]
-  answer_value text [not null]
-  comment text
-  evidence_file_id uuid
-  answered_at timestamptz
+  id uuid [pk, default: `gen_random_uuid()`]
+  posttask_submission_id uuid [not null]
+  posttask_question_id uuid [not null]
+  worker_task_session_id uuid
+  worker_user_id uuid [not null]
+  answer_text text
+  answer_boolean boolean
+  answer_number decimal
+  answer_json jsonb
+  is_critical_failure boolean [not null, default: false]
+  score_awarded decimal
+  answered_at timestamp
+  supersedes_id uuid
+  metadata jsonb
+  created_at timestamp
+  updated_at timestamp
 }
 
 Table training_questions {
-  id uuid [pk]
+  id uuid [pk, default: `gen_random_uuid()`]
   task_id uuid [not null]
-  external_question_id text
-  question_number integer [not null]
-  question_text text [not null]
-  response_type text
-  option_a text
-  option_b text
-  option_c text
-  option_d text
-  correct_answer text
+  swms_version_id uuid
+  question_number smallint [not null]
+  prompt text [not null]
+  question_type varchar [not null, default: 'multiple_choice']
+  is_required boolean [not null, default: true]
+  is_critical_failure boolean [not null, default: false]
+  options jsonb
+  correct_answer jsonb
+  scoring_rules jsonb
+  source_sheet_name varchar
+  source_row_number integer
+  metadata jsonb
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
 }
 
 Table training_attempts {
-  id uuid [pk]
-  session_id uuid
-  user_id uuid [not null]
+  id uuid [pk, default: `gen_random_uuid()`]
+  account_id uuid [not null]
+  business_entity_id uuid [not null]
+  workplace_id uuid
   task_id uuid [not null]
-  swms_version_id uuid [not null]
-  score numeric
+  swms_version_id uuid
+  worker_user_id uuid [not null]
+  attempt_number integer [not null, default: 1]
+  status varchar [not null, default: 'in_progress']
+  score_percent decimal
   passed boolean
+  critical_failure_count smallint [not null, default: 0]
+  started_at timestamp
+  completed_at timestamp
+  supersedes_id uuid
+  metadata jsonb
+  created_at timestamp
+  updated_at timestamp
 }
 
 Table training_responses {
-  id uuid [pk]
+  id uuid [pk, default: `gen_random_uuid()`]
   training_attempt_id uuid [not null]
   training_question_id uuid [not null]
-  selected_answer text
+  worker_user_id uuid [not null]
+  answer_text text
+  answer_boolean boolean
+  answer_number decimal
+  answer_json jsonb
   is_correct boolean
+  is_critical_failure boolean [not null, default: false]
+  score_awarded decimal
+  answered_at timestamp
+  supersedes_id uuid
+  metadata jsonb
+  created_at timestamp
+  updated_at timestamp
 }
 
-// Core refs
+Table worker_training_completions {
+  id uuid [pk, default: `gen_random_uuid()`]
+  account_id uuid [not null]
+  business_entity_id uuid [not null]
+  workplace_id uuid
+  task_id uuid [not null]
+  worker_user_id uuid [not null]
+  latest_training_attempt_id uuid
+  status varchar [not null, default: 'current']
+  score_percent decimal
+  critical_failure_count smallint [not null, default: 0]
+  completed_at timestamp
+  expires_at timestamp
+  metadata jsonb
+  created_at timestamp
+  updated_at timestamp
+}
+
 Ref: business_identifier_types.country_id > countries.id
 Ref: business_entities.country_id > countries.id
-Ref: business_entities.created_by_user_id > users.id
-Ref: business_identifiers.business_entity_id > business_entities.id
-Ref: business_identifiers.identifier_type_id > business_identifier_types.id
 Ref: account_businesses.account_id > customer_accounts.id
 Ref: account_businesses.business_entity_id > business_entities.id
+Ref: business_identifiers.business_entity_id > business_entities.id
+Ref: business_identifiers.identifier_type_id > business_identifier_types.id
+Ref: business_identifiers.verified_by_user_id > users.id
 Ref: workplaces.account_id > customer_accounts.id
 Ref: workplaces.business_entity_id > business_entities.id
 Ref: workplaces.country_id > countries.id
 Ref: workplaces.environment_id > workplace_environments.id
+Ref: business_industries.account_id > customer_accounts.id
 Ref: business_industries.business_entity_id > business_entities.id
 Ref: business_industries.industry_id > industries.id
 Ref: users.account_id > customer_accounts.id
-Ref: user_business_access.user_id > users.id
+Ref: users.home_business_entity_id > business_entities.id
+Ref: user_business_access.account_id > customer_accounts.id
 Ref: user_business_access.business_entity_id > business_entities.id
-Ref: contractor_relationships.host_account_id > customer_accounts.id
+Ref: user_business_access.user_id > users.id
+Ref: user_business_access.granted_by_user_id > users.id
+Ref: user_workplace_access.account_id > customer_accounts.id
+Ref: user_workplace_access.business_entity_id > business_entities.id
+Ref: user_workplace_access.workplace_id > workplaces.id
+Ref: user_workplace_access.user_id > users.id
+Ref: user_workplace_access.granted_by_user_id > users.id
+Ref: user_occupations.account_id > customer_accounts.id
+Ref: user_occupations.user_id > users.id
+Ref: user_occupations.occupation_id > occupations.id
+Ref: user_occupations.granted_by_user_id > users.id
+Ref: contractor_relationships.account_id > customer_accounts.id
 Ref: contractor_relationships.host_business_entity_id > business_entities.id
-Ref: contractor_relationships.workplace_id > workplaces.id
 Ref: contractor_relationships.contractor_business_entity_id > business_entities.id
-
-// WHS content refs
-Ref: swms_versions.task_id > tasks.id
-Ref: swms_activity_steps.task_id > tasks.id
-Ref: swms_activity_steps.swms_version_id > swms_versions.id
-Ref: prestart_questions.task_id > tasks.id
+Ref: contractor_relationships.approved_by_user_id > users.id
 Ref: task_occupation_access.task_id > tasks.id
 Ref: task_occupation_access.occupation_id > occupations.id
 Ref: task_industry_access.task_id > tasks.id
 Ref: task_industry_access.industry_id > industries.id
-
-// Runtime / evidence refs
+Ref: swms_versions.task_id > tasks.id
+Ref: swms_versions.approved_by_user_id > users.id
+Ref: swms_versions.supersedes_id > swms_versions.id
+Ref: swms_activity_steps.swms_version_id > swms_versions.id
+Ref: prestart_questions.task_id > tasks.id
+Ref: workplace_task_settings.account_id > customer_accounts.id
+Ref: workplace_task_settings.business_entity_id > business_entities.id
+Ref: workplace_task_settings.workplace_id > workplaces.id
+Ref: workplace_task_settings.task_id > tasks.id
+Ref: workplace_task_settings.active_swms_version_id > swms_versions.id
+Ref: workplace_task_settings.configured_by_user_id > users.id
+Ref: import_batches.account_id > customer_accounts.id
+Ref: import_batches.started_by_user_id > users.id
+Ref: import_source_files.import_batch_id > import_batches.id
+Ref: import_validation_results.import_batch_id > import_batches.id
+Ref: import_validation_results.import_source_file_id > import_source_files.id
+Ref: import_validation_results.resolved_by_user_id > users.id
 Ref: worker_task_sessions.account_id > customer_accounts.id
 Ref: worker_task_sessions.business_entity_id > business_entities.id
-Ref: worker_task_sessions.user_id > users.id
 Ref: worker_task_sessions.workplace_id > workplaces.id
 Ref: worker_task_sessions.task_id > tasks.id
 Ref: worker_task_sessions.swms_version_id > swms_versions.id
-Ref: swms_step_events.session_id > worker_task_sessions.id
-Ref: swms_step_events.activity_step_id > swms_activity_steps.id
-Ref: prestart_responses.session_id > worker_task_sessions.id
-Ref: prestart_responses.question_id > prestart_questions.id
-Ref: prestart_responses.evidence_file_id > evidence_files.id
-Ref: evidence_files.session_id > worker_task_sessions.id
-Ref: evidence_files.uploaded_by > users.id
-Ref: signatures.session_id > worker_task_sessions.id
+Ref: worker_task_sessions.worker_user_id > users.id
+Ref: worker_task_sessions.supersedes_id > worker_task_sessions.id
+Ref: swms_step_events.worker_task_session_id > worker_task_sessions.id
+Ref: swms_step_events.swms_activity_step_id > swms_activity_steps.id
+Ref: swms_step_events.worker_user_id > users.id
+Ref: swms_step_events.supersedes_id > swms_step_events.id
+Ref: prestart_submissions.worker_task_session_id > worker_task_sessions.id
+Ref: prestart_submissions.account_id > customer_accounts.id
+Ref: prestart_submissions.business_entity_id > business_entities.id
+Ref: prestart_submissions.workplace_id > workplaces.id
+Ref: prestart_submissions.task_id > tasks.id
+Ref: prestart_submissions.worker_user_id > users.id
+Ref: prestart_submissions.supersedes_id > prestart_submissions.id
+Ref: prestart_responses.prestart_submission_id > prestart_submissions.id
+Ref: prestart_responses.prestart_question_id > prestart_questions.id
+Ref: prestart_responses.worker_task_session_id > worker_task_sessions.id
+Ref: prestart_responses.worker_user_id > users.id
+Ref: prestart_responses.supersedes_id > prestart_responses.id
+Ref: signatures.account_id > customer_accounts.id
+Ref: signatures.business_entity_id > business_entities.id
+Ref: signatures.workplace_id > workplaces.id
+Ref: signatures.worker_task_session_id > worker_task_sessions.id
 Ref: signatures.user_id > users.id
-Ref: signatures.evidence_file_id > evidence_files.id
+Ref: signatures.supersedes_id > signatures.id
+Ref: evidence_files.account_id > customer_accounts.id
+Ref: evidence_files.business_entity_id > business_entities.id
+Ref: evidence_files.workplace_id > workplaces.id
+Ref: evidence_files.worker_task_session_id > worker_task_sessions.id
+Ref: evidence_files.prestart_submission_id > prestart_submissions.id
+Ref: evidence_files.signature_id > signatures.id
+Ref: evidence_files.uploaded_by_user_id > users.id
+Ref: evidence_files.supersedes_id > evidence_files.id
 Ref: audit_events.account_id > customer_accounts.id
 Ref: audit_events.business_entity_id > business_entities.id
+Ref: audit_events.workplace_id > workplaces.id
 Ref: audit_events.user_id > users.id
-Ref: audit_events.session_id > worker_task_sessions.id
-
-// P1 refs
+Ref: audit_events.worker_task_session_id > worker_task_sessions.id
+Ref: alerts.account_id > customer_accounts.id
+Ref: alerts.business_entity_id > business_entities.id
+Ref: alerts.workplace_id > workplaces.id
+Ref: alerts.worker_task_session_id > worker_task_sessions.id
+Ref: alerts.prestart_submission_id > prestart_submissions.id
+Ref: alerts.triggered_by_user_id > users.id
+Ref: alerts.assigned_to_user_id > users.id
+Ref: alerts.supersedes_id > alerts.id
 Ref: posttask_questions.task_id > tasks.id
-Ref: posttask_responses.session_id > worker_task_sessions.id
-Ref: posttask_responses.question_id > posttask_questions.id
-Ref: posttask_responses.evidence_file_id > evidence_files.id
+Ref: posttask_submissions.worker_task_session_id > worker_task_sessions.id
+Ref: posttask_submissions.account_id > customer_accounts.id
+Ref: posttask_submissions.business_entity_id > business_entities.id
+Ref: posttask_submissions.workplace_id > workplaces.id
+Ref: posttask_submissions.task_id > tasks.id
+Ref: posttask_submissions.worker_user_id > users.id
+Ref: posttask_submissions.supersedes_id > posttask_submissions.id
+Ref: posttask_responses.posttask_submission_id > posttask_submissions.id
+Ref: posttask_responses.posttask_question_id > posttask_questions.id
+Ref: posttask_responses.worker_task_session_id > worker_task_sessions.id
+Ref: posttask_responses.worker_user_id > users.id
+Ref: posttask_responses.supersedes_id > posttask_responses.id
 Ref: training_questions.task_id > tasks.id
-Ref: training_attempts.session_id > worker_task_sessions.id
-Ref: training_attempts.user_id > users.id
+Ref: training_questions.swms_version_id > swms_versions.id
+Ref: training_attempts.account_id > customer_accounts.id
+Ref: training_attempts.business_entity_id > business_entities.id
+Ref: training_attempts.workplace_id > workplaces.id
 Ref: training_attempts.task_id > tasks.id
 Ref: training_attempts.swms_version_id > swms_versions.id
+Ref: training_attempts.worker_user_id > users.id
+Ref: training_attempts.supersedes_id > training_attempts.id
 Ref: training_responses.training_attempt_id > training_attempts.id
 Ref: training_responses.training_question_id > training_questions.id
+Ref: training_responses.worker_user_id > users.id
+Ref: training_responses.supersedes_id > training_responses.id
+Ref: worker_training_completions.account_id > customer_accounts.id
+Ref: worker_training_completions.business_entity_id > business_entities.id
+Ref: worker_training_completions.workplace_id > workplaces.id
+Ref: worker_training_completions.task_id > tasks.id
+Ref: worker_training_completions.worker_user_id > users.id
+Ref: worker_training_completions.latest_training_attempt_id > training_attempts.id

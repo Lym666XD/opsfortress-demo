@@ -1,5 +1,7 @@
 # Meeting Notes — WHSAPP / OpsFortress / Working Safety Docs
 
+> Status: historical meeting context. For current schema truth, use the Laravel migrations, regenerated DBML, and `docs/README.md`.
+>
 > Date: 2026-05-17 update based on latest translated transcript summary  
 > Participants referenced: Kevin, Yiming, Damon  
 > Purpose: clean architecture/business notes from transcript, not verbatim transcript

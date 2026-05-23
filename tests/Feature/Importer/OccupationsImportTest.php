@@ -107,7 +107,7 @@ final class OccupationsImportTest extends TestCase
             ->where('severity', 'error')
             ->first();
         $this->assertNotNull($error);
-        $this->assertSame('occupations.candidate_key_missing', $error->rule_code);
+        $this->assertSame('business:occupations.candidate_key_missing', $error->rule_code);
         $this->assertSame('occupation_candidate_key', $error->source_column_name);
         $this->assertSame('occupations', $error->target_table);
         $this->assertSame(3, $error->source_row_number); // header + 1 ok + 1 bad
@@ -143,7 +143,7 @@ final class OccupationsImportTest extends TestCase
             ->where('severity', 'warning')
             ->first();
         $this->assertNotNull($warning);
-        $this->assertSame('occupations.active_status_unrecognised', $warning->rule_code);
+        $this->assertSame('business:occupations.active_status_unrecognised', $warning->rule_code);
         $this->assertSame('maybe-soon', $warning->raw_value);
 
         unlink($tmpPath);
@@ -152,7 +152,8 @@ final class OccupationsImportTest extends TestCase
     private function clearOccupations(): void
     {
         // Clear children first to satisfy FKs; seeded rows reference occupations
-        // via (in M17 slice 4) task_occupation_access.
+        // via task_occupation_access and seeded worker user occupations.
+        DB::table('user_occupations')->delete();
         DB::table('task_occupation_access')->delete();
         DB::table('occupations')->delete();
     }

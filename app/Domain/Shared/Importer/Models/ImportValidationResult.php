@@ -8,12 +8,24 @@ use App\Models\Concerns\UsesUuidPrimaryKey;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use InvalidArgumentException;
 
 class ImportValidationResult extends Model
 {
     use UsesUuidPrimaryKey;
 
+    private const RULE_CODE_PATTERN = '/^(schema|structure|fk|business|dup)(:[A-Za-z0-9_.-]+)+$/';
+
     protected $guarded = [];
+
+    protected static function booted(): void
+    {
+        static::saving(function (self $validationResult): void {
+            if (! preg_match(self::RULE_CODE_PATTERN, (string) $validationResult->rule_code)) {
+                throw new InvalidArgumentException('Import validation rule_code must use an approved namespace prefix.');
+            }
+        });
+    }
 
     protected function casts(): array
     {

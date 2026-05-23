@@ -7,7 +7,7 @@ namespace App\Domain\OpsFortress\Workplaces\Models;
 use App\Domain\Shared\Context\BelongsToAccount;
 use App\Models\Concerns\UsesUuidPrimaryKey;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Workplace extends Model
@@ -25,8 +25,8 @@ class Workplace extends Model
         ];
     }
 
-    public function environments(): HasMany
+    public function environment(): BelongsTo
     {
-        return $this->hasMany(WorkplaceEnvironment::class);
+        return $this->belongsTo(WorkplaceEnvironment::class, 'environment_id');
     }
 }

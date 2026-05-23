@@ -4,221 +4,134 @@
 
 This repository contains the Laravel / PostgreSQL / React / Inertia technical scaffold for the OpsFortress / WHSAPP rebuild.
 
-The current codebase is a **working prototype scaffold**, not the final OpsFortress MVP schema and not a finished WHS workflow app.
+The current codebase is a **v0.3 schema-reset prototype**, not a finished WHS workflow app. As of the 2026-05-23 refactor, the Laravel migrations and regenerated DBML are the co-authoritative schema reference.
 
-As of the 2026-05-17 architecture review, the v0.3 database documents are treated as the authoritative schema direction. The older demo tables in this repository are useful as implementation reference, but they should not be extended as the long-term production data model.
+## Current Source of Truth
 
-## 2026-05-17 Architecture Decision
+Use these sources in this order:
 
-The project now has a clearer two-layer business and technical structure:
+1. `database/migrations/2026_05_18_*` and `database/migrations/2026_05_23_*`
+2. `docs/OpsFortress_MVP_ERD_v0_3_Updated.dbml`
+3. `tests/Feature/Database/V03SchemaContractTest.php`
+4. `database/seeders/V03DemoSeeder.php`
+5. `docs/CHANGELOG_2026_05_23_REFACTOR.md`
 
-1. **OpsFortress** — the underlying platform / software engine / database layer. It owns reusable platform data such as customer accounts, legal business entities, workplaces, users, occupations, industries, assets, suppliers, contractors, business identifiers, evidence, audit records, and import pipelines.
-2. **WHSAPP** — the customer-facing WHS product / branded application layer. It uses OpsFortress to deliver SWMS, SOP, worker task execution, pre-start, post-task, training, signatures, evidence, PDFs, reporting, and dashboards.
-
-The business intent is that WHSAPP may be one product running on top of OpsFortress, while future apps may reuse the same core platform. If WHSAPP is ever sold separately, OpsFortress remains the reusable platform asset and licence layer.
+Older architecture notes and archived prompts are useful context only. They are not schema authority.
 
 ## Current Implementation
 
-### Platform
-
-- Laravel 13
-- React + TypeScript via Inertia.js
+- Laravel 13 with React + TypeScript via Inertia.js
 - PostgreSQL as the active database target
-- Local `database` queue and cache drivers for development
-- Local filesystem driver for development uploads and generated files
-- Laravel Fortify auth, profile, password reset, email verification, and 2FA starter flows
+- Local database queue/cache drivers and local filesystem storage for development
+- Laravel Fortify starter auth, profile, password reset, email verification, and 2FA flows
+- Domain-oriented backend folders under `app/Domain/...`
+- `AccountContext`, `AccountScope`, and `BelongsToAccount` for account-scoped row isolation
+- Hash-chained `AuditService` with canonical JSON, SHA-256 hashes, row locking, and `worker_task_session_id` linkage
+- Append-only database triggers for `audit_events`, `signatures`, and `evidence_files`
+- Importer framework and first SRC-001 slices for industries, occupations, and tasks
 
-### Useful Technical Foundations Already Built
+## v0.3 Direction
 
-These pieces were worth preserving and have started being ported into the v0.3 reset:
-
-- Domain-oriented folder direction under `app/Domain/...`
-- `AccountContext`, `AccountScope`, and `BelongsToAccount` for request/job scoped account isolation
-- PostgreSQL schema and seeder tests for the v0.3 backend
-- Hash-chained `AuditService` using SHA-256, canonical JSON, `event_hash`, `previous_hash`, `hash_sequence`, and row locking
-- Append-only / immutable payload hardening ideas
-- Public registration disabled in favour of controlled onboarding / invite flows
-- FormRequest + Policy + Controller + Inertia vertical slice pattern
-- PostgreSQL partial unique index experience
-
-## Legacy Demo Schema Warning
-
-The original demo migrations created tables such as:
-
-- `tenants`
-- `businesses`
-- `workplaces`
-- `industries`
-- `occupations`
-- `roles`
-- `user_roles`
-- `user_occupations`
-- `workplace_user_assignments`
-- `task_packs`
-- `task_pack_occupations`
-- `task_pack_industries`
-- `activities`
-- `submissions`
-- `file_uploads`
-- `generated_documents`
-
-These were appropriate for an early scaffold, but they are now superseded by the v0.3 database design. In particular:
-
-- `tenants` becomes conceptually closer to `customer_accounts`.
-- `businesses` should be replaced by `business_entities` plus `account_businesses`.
-- direct `abn` storage should be replaced by `business_identifiers` with country-specific identifier types.
-- `task_packs` should be replaced by `tasks`, `swms_versions`, `swms_activity_steps`, and question tables.
-- generic `activities` / `submissions` should be replaced or narrowed into explicit runtime/evidence tables such as `worker_task_sessions`, `swms_step_events`, `signatures`, `prestart_submissions`, `prestart_responses`, `evidence_files`, and `audit_events`.
-
-Do not build major new production workflows on top of the legacy schema without checking the v0.3 reset plan.
-
-## Authoritative Design Sources
-
-The current authoritative design sources are in the Google Drive WHSAPPDOCS folder and related architecture notes:
-
-- `OpsFortress_MVP_ERD_v0_3_Updated.dbml` — authoritative schema when available as text
-- `OpsFortress_MVP_ERD_v0_3_Readable.pdf` — visual ERD reference
-- `OpsFortress_MVP_Database_Spec_v0_3_Clean.xlsx` — table purpose, P0/P1 scope, business meaning
-- `OpsFortress_MVP_Column_Level_Mapping_v0_3_Clean.xlsx` — source column to DB column mapping
-- `OpsFortress_MVP_Importer_Source_File_Index_for_Yiming_v0_1_Clean.xlsx` — importer allow-list
-- `WHS_Architecture_Record.md` / `WHS架构分析记录.md` — architecture history and meeting decisions
-- `Role_Architecture_Notes.md` — role vs person identity separation
-
-## Current Recommended Direction
-
-The current major technical direction is:
+The current technical direction is:
 
 ```text
-v0.3 Schema Reset + Importer-first P0
+v0.3 schema baseline -> importer-first content loading -> worker runtime proof
 ```
-
-As of 2026-05-18, the v0.3 migration set, backend infrastructure pass (M16), and a follow-up schema reconciliation against the authoritative DBML in `.localdoc/` (M16.1) have all been committed to `refactor` and verified locally against PostgreSQL. The next work is the importer slice (M17) — see `MILESTONE.md` §M17 Importer Slice Plan.
 
 This means:
 
 1. Keep the fresh v0.3 Laravel migrations as the production schema direction.
-2. Preserve useful infrastructure from this repo, especially account scoping, audit, policies, and vertical-slice style.
-3. Stop extending the old `tenants/businesses/task_packs/submissions` model for production features.
-4. Build the importer early, because the real business asset is Kevin's workbook/data pipeline.
-5. Prove the first worker flow from imported workbook data, not from hand-written demo seed data.
+2. Stop extending the old `tenants/businesses/task_packs/activities/submissions` model.
+3. Build importer coverage early because Kevin's workbook pipeline is the real business asset.
+4. Prove worker runtime from imported workbook data, not only from hand-written seed rows.
+5. Resume larger frontend/admin work only after imported data can drive the v0.3 backend reliably.
 
-## Local v0.3 Demo Login
+## Legacy Schema Warning
+
+The old scaffold tables and models for tenants, businesses, task packs, activities, submissions, file uploads, generated documents, roles, and workplace assignments have been superseded by the v0.3 account/business/workplace/task/runtime model.
+
+Do not build new production workflows on top of the old scaffold concepts. If a historical document mentions `tenant_id`, `BelongsToTenant`, `task_packs`, or generic `submissions.payload`, treat that section as superseded unless a newer 2026-05-23 note says otherwise.
+
+## Demo Login
 
 After running `php artisan migrate:fresh --seed`, the v0.3 demo seeder creates:
 
 - account: `Acme Construction`
-- login: `admin@acme.test`
+- admin login: `admin@acme.test`
+- worker login: `worker@acme.test`
 - password: `password`
 
-Run the app with `php artisan serve --host=127.0.0.1 --port=8000` and open `http://127.0.0.1:8000/dashboard`.
+Run the app with:
 
-## P0 Proof Target
+```powershell
+php artisan serve --host=127.0.0.1 --port=8000
+```
 
-A useful P0 should prove more than “a worker can view a SWMS”. It should prove:
-
-- database structure supports customer account → legal business entity → workplace → user access;
-- country-specific business identifiers work;
-- contractor relationships can be modelled;
-- importer can load approved workbook tabs into canonical v0.3 tables;
-- worker can see the correct task/SWMS based on occupation, industry, workplace, and access rules;
-- SWMS worker-view steps are rendered from `swms_activity_steps`;
-- worker actions create runtime/evidence/audit records;
-- signatures and critical events are hash-chain auditable;
-- PDFs and dashboards can be built from stored evidence later.
+Open `http://127.0.0.1:8000/dashboard`.
 
 ## Routes
 
-Current notable routes in the scaffold:
+Current notable routes:
 
 - `/` -> starter Laravel welcome page
 - `/preview` -> WHS module preview home
 - `/preview/{slug}` -> static placeholder module page
 - `/dashboard` -> authenticated starter dashboard
 
-The legacy v0.2 `/admin/workplaces` slice was removed in M16 along with
-the tenant-era controller / request / test. v0.3 admin UI will be
-rebuilt once the M17 importer can populate real data — see
-`MILESTONE.md` §M17 and the "Immediate Next Actions" list.
+The legacy v0.2 `/admin/workplaces` slice was removed in M16. v0.3 admin UI should be rebuilt after importer-backed data can populate the real account/business/workplace/task model.
 
 ## Local Run
 
-### Assumptions
+Assumptions:
 
-- PostgreSQL 14 is running on `127.0.0.1:5432`
+- PostgreSQL is running on `127.0.0.1:5432`
 - PHP / Composer are installed
-- Bun is installed, with `~/.bun/bin` on `PATH`
-- Node is `20.19+` or `22.12+` for Vite. Homebrew Node 26 works; old Node 18 does not.
+- Bun is installed for frontend tooling
+- Node is `20.19+` or `22.12+` for Vite
 
-### Environment
+Typical commands:
 
-Current local defaults in `.env`:
-
-- `DB_CONNECTION=pgsql`
-- `QUEUE_CONNECTION=database`
-- `CACHE_STORE=database`
-- `FILESYSTEM_DISK=local`
-
-### PostgreSQL Setup on macOS via Homebrew
-
-The verified local setup uses Homebrew PostgreSQL, not Docker:
-
-```bash
-brew services start postgresql@14
-pg_isready -h 127.0.0.1 -p 5432
-psql -h 127.0.0.1 -d postgres -c "CREATE ROLE postgres WITH LOGIN SUPERUSER PASSWORD 'postgres';"
-psql -h 127.0.0.1 -d postgres -c "CREATE DATABASE opsfortress_demo OWNER postgres;"
-```
-
-The expected `.env` database settings are:
-
-```env
-DB_CONNECTION=pgsql
-DB_HOST=127.0.0.1
-DB_PORT=5432
-DB_DATABASE=opsfortress_demo
-DB_USERNAME=postgres
-DB_PASSWORD=postgres
-```
-
-### Start The App
-
-```bash
+```powershell
 composer install
 php artisan key:generate
 php artisan migrate:fresh --seed
 php artisan serve --host=127.0.0.1 --port=8000
 ```
 
-Open:
+Expected database settings:
 
-- `http://127.0.0.1:8000`
-
-Local v0.3 dashboard login after seeding:
-
-- email: `admin@acme.test`
-- password: `password`
+```env
+DB_CONNECTION=pgsql
+DB_HOST=127.0.0.1
+DB_PORT=5432
+DB_DATABASE=opsfortress_demo
+```
 
 ## Verification
 
-See `MILESTONE.md` for the latest local verification status.
+Latest 2026-05-23 verification:
 
-Latest 2026-05-18 verification (after M16.1 DBML reconciliation):
+- `php artisan migrate:fresh --seed` passed against PostgreSQL.
+- `php artisan test` passed: 71 tests / 470 assertions / 8 skipped.
+- `php vendor/bin/pint --test` passed.
+- `php artisan route:list` passed with 36 routes.
 
-- `php artisan migrate:fresh --seed` passed against local PostgreSQL.
-- `php artisan test --filter=V03SchemaContractTest` passed with 5 tests / 158 assertions.
-- `php artisan test --filter=V03DevSeederTest` passed with 1 test / 11 assertions.
-- Full suite `php artisan test` passed with 44 / 2 skipped (intentional registration tests) / 301 assertions.
-- `./vendor/bin/pint --test` passed.
-- `php artisan route:list` passed; active app routes are home, preview, auth, dashboard, settings, storage, and health.
+Targeted database/importer checks also passed:
 
-## Related Docs Added 2026-05-17
+- `V03SchemaContractTest`
+- `V03DevSeederTest`
+- `AppendOnlyEnforcementTest`
+- Industries, occupations, and tasks importer tests
 
-- `docs/V0_3_SCHEMA_RESET_PLAN.md`
-- `docs/TECHNICAL_REVIEW_OPSFORTRESS_DEMO_2026_05_17.md`
-- `docs/MEETING_NOTES_2026_05_17_WHSAPP_OPSFORTRESS.md`
-- `docs/CODEX_PROMPT_V0_3_MIGRATIONS.md`
-- `docs/GOOGLE_DRIVE_MARKDOWN_UPDATE_GUIDE_2026_05_17.md`
+## Documentation Map
 
-## Final Note
+Start with:
 
-The current repository is valuable because it proves the Laravel stack and several hardening patterns. Its main weakness is schema drift. Treat it as a foundation to refactor forward into v0.3, not as the final database model.
+- `docs/README.md` for the documentation index
+- `MILESTONE.md` for current build status and next actions
+- `IMPLEMENTATION_ROADMAP.md` for delivery order
+- `TARGET_ARCHITECTURE.md` for architecture direction
+- `IMPORTER_INTAKE_NOTES.md` for importer-specific decisions and source-file notes
+- `docs/CHANGELOG_2026_05_23_REFACTOR.md` for this refactor's audit trail
+
+Historical prompt/review/plan files live under `docs/archive/`.

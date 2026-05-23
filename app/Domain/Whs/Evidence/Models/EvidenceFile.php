@@ -16,6 +16,8 @@ class EvidenceFile extends Model
 {
     use BelongsToAccount, UsesUuidPrimaryKey;
 
+    public $timestamps = false;
+
     protected $guarded = [];
 
     protected function casts(): array

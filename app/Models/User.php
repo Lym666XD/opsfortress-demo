@@ -53,27 +53,7 @@ class User extends Authenticatable
         'two_factor_secret',
         'two_factor_recovery_codes',
         'remember_token',
-        'blockchain_id',
     ];
-
-    /**
-     * K1: User.blockchain_id is immutable once set. Same Kevin-driven rule as
-     * Business — internal-only audit identifier that must never change.
-     * (We don't auto-generate one on creation because user blockchain_id is
-     * nullable and not currently in use; if a future flow assigns one,
-     * after that point it's frozen.)
-     */
-    protected static function booted(): void
-    {
-        static::updating(function (self $user): void {
-            $original = $user->getOriginal('blockchain_id');
-            if ($original !== null && $user->isDirty('blockchain_id')) {
-                throw new \RuntimeException(
-                    'User.blockchain_id is immutable once set (K1).',
-                );
-            }
-        });
-    }
 
     /**
      * Get the attributes that should be cast.

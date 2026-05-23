@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Shared\Audit\Models;
 
 use App\Domain\Shared\Context\BelongsToAccount;
+use App\Domain\Whs\Runtime\Models\WorkerTaskSession;
 use App\Models\Concerns\UsesUuidPrimaryKey;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
@@ -37,5 +38,10 @@ class AuditEvent extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function workerTaskSession(): BelongsTo
+    {
+        return $this->belongsTo(WorkerTaskSession::class);
     }
 }

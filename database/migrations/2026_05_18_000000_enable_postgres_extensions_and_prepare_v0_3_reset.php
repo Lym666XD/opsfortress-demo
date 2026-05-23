@@ -10,10 +10,9 @@ return new class extends Migration
     /**
      * Prepare the database for the v0.3 schema reset.
      *
-     * The old demo tables remain in source control as historical context, but a
-     * fresh migrate run applies them before this reset point. This migration
-     * clears the obsolete scaffold schema so v0.3 can reuse canonical table
-     * names such as workplaces, industries, occupations, and audit_events.
+     * This migration also clears obsolete scaffold schema from partial local
+     * states so v0.3 can reuse canonical table names such as workplaces,
+     * industries, occupations, and audit_events.
      */
     public function up(): void
     {

@@ -2,442 +2,145 @@
 
 ## Purpose
 
-This roadmap turns the target architecture into an execution plan for the Laravel rebuild of WHS Apps.
+This roadmap defines the active delivery order for the Laravel rebuild of WHSAPP on top of the OpsFortress platform model.
 
-It is designed to:
-
-- sequence the work in a scalable way
-- reduce rework caused by premature module sprawl
-- align backend, frontend, and data modeling decisions
-- support both demo delivery and long-term production development
-
-This roadmap assumes the system will be built as a modular monolith using:
-
-- Laravel
-- PostgreSQL
-- React + TypeScript + Inertia.js
-- Redis and queues later for background work
-- S3-compatible storage for files and generated documents
+It is intentionally current-state focused. Historical prompt, review, and schema-reset planning files now live under `docs/archive/`.
 
 ## Guiding Principles
 
-1. Build engines before building module variants.
-2. Stabilize core identity and tenancy before workflow expansion.
-3. Separate master data, content, runtime submissions, and generated outputs.
-4. Prefer reusable form and task-pack models over one-off feature implementations.
-5. Build demo-ready interfaces early, but anchor them to the real domain model.
+1. Build from the v0.3 schema, not the removed tenant-era scaffold.
+2. Load real workbook content through importers before expanding UI.
+3. Separate platform identity, WHS content, worker runtime, evidence, and output.
+4. Keep account/business/workplace scoping explicit in database constraints, models, and tests.
+5. Prove one vertical workflow end-to-end before broad module expansion.
 
-## Delivery Strategy
+## Locked Decisions
 
-The implementation should move in two parallel tracks:
+- **Schema authority:** `database/migrations/2026_05_18_*`, `database/migrations/2026_05_23_*`, and `docs/OpsFortress_MVP_ERD_v0_3_Updated.dbml`.
+- **Row isolation:** use `AccountContext`, `AccountScope`, and `BelongsToAccount`; the old `tenant_id` / `BelongsToTenant` stack is superseded.
+- **Business model:** `customer_accounts` own access scope; `business_entities` represent legal entities; `account_businesses` links them.
+- **Task content model:** use `tasks`, `swms_versions`, `swms_activity_steps`, prestart tables, and access maps; do not revive `task_packs`.
+- **Evidence integrity:** `audit_events`, `signatures`, and `evidence_files` are append-only at the database layer.
+- **Importer validation:** `import_validation_results.rule_code` uses namespaced prefixes such as `schema:*`, `structure:*`, `fk:*`, `business:*`, and `dup:*`.
+- **Roles:** `users.person_type` / `users.contractor_type` store identity; `user_business_access.permission_role` and `user_workplace_access.permission_role` store permissions.
 
-- `Platform Track`: data model, services, permissions, audit, workflow rules
-- `Experience Track`: admin UI, worker UI, navigation, demo flows, visual proof of product direction
+## Delivery Phases
 
-This matters because the business needs a convincing product demonstration before every backend capability is complete.
+### Phase 1: Schema Baseline
 
-## Phase 0: Foundation Alignment
+Status: `done`
 
-### Goal
+Scope:
 
-Set the codebase up so future development follows clear boundaries.
+- v0.3 migrations
+- regenerated DBML
+- schema contract tests
+- account/business/workplace/user/task/runtime/evidence tables
+- append-only and cross-account consistency constraints
 
-### Scope
+Exit criteria:
 
-- confirm domain boundaries from `TARGET_ARCHITECTURE.md`
-- create domain-oriented backend namespaces
-- create module-oriented frontend directories
-- define route groups for admin, worker, and shared flows
-- document the initial data model map
+- `php artisan migrate:fresh --seed` passes
+- schema tests prove key tables, columns, indexes, triggers, and constraints
 
-### Deliverables
+### Phase 2: Importer Foundation
 
-- agreed target module map
-- initial folder structure in backend and frontend
-- implementation conventions for models, services, requests, and actions
-- updated milestone tracking
+Status: `in-progress`
 
-### Exit Criteria
+Completed:
 
-- the repository structure reflects the target architecture
-- new work can be added by domain instead of by ad hoc page creation
+- importer batch/source/validation tables
+- workbook reader
+- import runner
+- CLI entrypoint
+- industries importer
+- occupations importer
+- tasks importer
+- shared value-normalisation and validation-result traits
 
-### Locked Decisions (2026-05-12)
+Next:
 
-- **Tenancy strategy:** single shared PostgreSQL database with `tenant_id` row-level scoping. No DB-per-tenant. Government clients with stricter isolation needs are handled via a separate full-stack deployment, not a dual-mode runtime. See `TARGET_ARCHITECTURE.md` §Multi-Tenancy and White-Labeling.
-- **Phase 0 refactor commitment:** the 9-step refactor in `MILESTONE.md` §Phase 0 Refactor must complete before any business controller is written. This includes domain namespace creation, splitting workflow migrations, generating Eloquent models for all 17 existing tables, tenant global scope + middleware, audit/hash-chain service, and the tenant-isolation test suite.
-- **Content-layer schema:** normalize from day one. Build the 17 MVP-required content tables listed in `WHS_Architecture_Record.md` §3.18 (`WHSAPP_SWMS_Data`, `prestart_swms_questions`, `posttask_swms_questions`, `swms_training_questions`, `swms_responsible_roles`, `worker_app_view_map`, `OPSF_Occupation_Master`, `OPSF_Industry_Master`, `OPSF_Task_Occupation_Access`, `OPSF_Task_Industry_Access`, plus role permissions / PDF rules / digital signatures / photo evidence / audit events tabs). Defer the remaining ~27 tables (permits, blockchain_logic, dashboard_rules) to Phase 2/3. The `payload JSON` columns on `activities` and `submissions` stay as raw-submission snapshots for dispute traceability — they are NOT used for business queries.
-- **Authorization library:** `spatie/laravel-permission`. Coarse-grained role checks (Worker / Supervisor / Manager / Admin) use the package's `HasRoles` trait; fine-grained per-record decisions (e.g. "can this user edit this submission") still use Laravel Policies. The package's tables are configured to point at the existing `roles` and `user_roles` tables rather than installing its default `model_has_roles` schema.
-- **Import path:** Python-first. A one-shot Python script (Google Sheets API → pandas → psycopg2) imports the 1,700-workbook seed corpus during the content-prep phase. The Laravel importer is built in Week 3-4, copying the field-mapping logic the Python script has already validated. After launch, Kevin uses the Laravel importer (UI/CLI) for new task packs; the Python script is archived. Rationale: cheap schema validation before paying the cost of building UI/error-handling around a still-evolving format.
-- **M10+ delivery method:** vertical slices, not horizontal layers. Build one user-visible feature end-to-end (route → controller → FormRequest → policy → Inertia page → phpunit) before moving to the next. First slice = "Add Workplace". Rationale: every slice exercises the architectural invariants (BelongsToTenant, Audit, policy) in real controller code, so we catch integration issues immediately rather than discovering them weeks later when UI meets backend. See `MILESTONE.md` §M10 Delivery Plan for the slice queue.
+- task occupation access importer
+- task industry access importer
+- SWMS workbook importers
+- global business identifier importer
 
-## Phase 1: Core Platform and Tenancy
+Exit criteria:
 
-### Goal
+- approved source workbooks can load into canonical v0.3 tables with deterministic validation results
+- importer tests cover clean import, idempotency, missing required fields, duplicate identity rows, missing FK targets, and unsupported enum values
 
-Establish the system of record for all identity and access relationships.
+### Phase 3: Worker Runtime Proof
 
-### Scope
+Status: `todo`
 
-- tenants
-- businesses
-- legal entities
-- workplaces
-- workers and contractors
-- industries
-- occupations
-- roles and permissions
-- business-to-workplace-to-worker relationships
-- tenant branding configuration
+Scope:
 
-### Deliverables
+- create a worker task session from imported content
+- render SWMS worker-view steps from imported `swms_activity_steps`
+- capture SWMS step events
+- capture prestart submission/responses
+- capture signature and evidence file rows
+- write audit hash-chain events
+- create alert rows for warning/exception cases
 
-- normalized core tables and relationships
-- seed data for a realistic demo tenant
-- authorization rules aligned to tenancy boundaries
-- admin screens for viewing and maintaining core records
+Exit criteria:
 
-### Exit Criteria
+- runtime data is generated from imported workbook content, not only from seed data
+- append-only and cross-account DB protections remain green in tests
 
-- every user is properly scoped to a tenant and business context
-- the system can represent at least one realistic business hierarchy
+### Phase 4: Admin and Worker UI
 
-## Phase 2: Business Identity Onboarding
+Status: `todo`
 
-### Goal
+Scope:
 
-Implement the first complete domain workflow from the legacy material.
+- v0.3 admin pages for accounts, business entities, workplaces, users, and task settings
+- worker mobile flow for task start, SWMS acknowledgement, prestart, signature, and evidence
+- policies/FormRequests wired to account/business/workplace access
 
-### Scope
+Exit criteria:
 
-- business type selection
-- branching legal structures
-- partnership and trust variants where required
-- group administrator setup
-- workplace setup
-- initial team setup
+- UI writes only through v0.3 tables
+- no route depends on removed v0.2 admin/workplace tables or tenant-era models
 
-### Deliverables
+### Phase 5: Compliance Output
 
-- admin onboarding wizard
-- validation rules for required entity paths
-- summary screens for identity data
-- audit events for onboarding changes
+Status: `todo`
 
-### Exit Criteria
+Scope:
 
-- a new tenant can be onboarded through a controlled flow
-- the flow produces valid core records without manual repair
-
-## Phase 3: Task Pack Engine
-
-### Goal
-
-Build the reusable content and runtime model for task-driven WHS workflows.
-
-### Scope
-
-- task pack definitions
-- task pack versions
-- occupation and industry mapping
-- SWMS content
-- SOP content
-- pre-start checklists
-- post-task reviews
-- training assessments
-
-### Deliverables
-
-- admin task pack management views
-- worker task pack execution views
-- versioned content model
-- assignment and acknowledgement flow
-- critical-fail and score calculation logic
-
-### Exit Criteria
-
-- a worker can be assigned a task pack and complete the required pre-work flow
-- the same engine supports multiple task content types
-
-## Phase 4: Worker Field Runtime
-
-### Goal
-
-Turn task content into a realistic field workflow for mobile use.
-
-### Scope
-
-- site entry or workplace check-in
-- worker sign-in
-- SWMS acknowledgement
-- pre-start completion
-- signature capture
-- photo upload
-- offline-aware draft handling
-
-### Deliverables
-
-- mobile-first worker home
-- worker task list
-- field execution flow
-- submission confirmation and status tracking
-
-### Exit Criteria
-
-- a worker can complete a basic field workflow from phone-friendly screens
-- submissions are saved cleanly with evidence attachments
-
-## Phase 5: Form Runtime Engine
-
-### Goal
-
-Generalize the reporting and OHSMS layer into a reusable runtime engine.
-
-### Scope
-
-- inspections
-- incidents
-- permits to work
-- return to work plans
-- reporting forms
-- register-style records
-
-### Deliverables
-
-- form definition model
-- reusable renderer for structured forms
-- conditional branching support
-- submission storage model
-- approval-ready workflow hooks
-
-### Exit Criteria
-
-- at least three distinct business forms run through the same engine
-- form logic is not duplicated per module
-
-## Phase 6: Compliance, Corrective Actions, and Output
-
-### Goal
-
-Convert captured activity into governance outputs.
-
-### Scope
-
-- compliance scoring
+- PDFs
+- dashboards
 - corrective actions
-- exception tracking
-- dashboard status aggregation
-- PDF generation
-- audit trail reporting
-- tamper-evidence hashes
-
-### Deliverables
-
-- admin compliance dashboard
-- corrective action workflow
-- generated PDF exports
-- audit and evidence views
-
-### Exit Criteria
-
-- admins can see risk, completion, and exceptions from real workflow activity
-- generated documents and audit records are available for key flows
-
-## Phase 7: Tenant Customization and AI Services
-
-### Goal
-
-Introduce tenant-level differentiation and platform augmentation.
-
-### Scope
-
-- tenant-specific menus
-- branding themes
-- feature flags
-- customer-specific content bundles
-- AI-assisted content generation
-- AI-assisted drafting and summarization
-
-### Deliverables
-
-- tenant configuration screens
-- feature exposure controls
-- AI service integration layer
-- reviewable AI output workflow
-
-### Exit Criteria
-
-- one codebase can present different branded experiences
-- AI can assist content workflows without bypassing review controls
-
-## Demo-Oriented Milestones
-
-Not all milestones need full backend completion to support stakeholder review. The following checkpoints are useful for showing progress to leadership.
-
-### Milestone A: Product Shell Demo
-
-Show:
-
-- app shell
-- module navigation
-- admin dashboard
-- worker home
-- capability-based menu structure
-
-Purpose:
-
-- prove product direction and information architecture
-
-### Milestone B: Business Identity Demo
-
-Show:
-
-- onboarding wizard
-- business and workplace setup
-- team directory seed data
-
-Purpose:
-
-- prove the platform foundation
-
-### Milestone C: Task Pack Demo
-
-Show:
-
-- assigned task pack
-- SWMS acknowledgement
-- pre-start checklist
-- completion summary
-
-Purpose:
-
-- prove field workflow viability
-
-### Milestone D: Reporting and Compliance Demo
-
-Show:
-
-- inspection or incident flow
-- corrective action trigger
-- dashboard state update
-- PDF preview
-
-Purpose:
-
-- prove governance value
-
-## Recommended Frontend Priority
-
-If the near-term goal is to show progress to stakeholders, frontend work should focus on a credible product narrative rather than backend breadth.
-
-Recommended page priority:
-
-1. admin dashboard
-2. business identity onboarding
-3. team directory
-4. task pack library
-5. worker mobile home
-6. worker task execution flow
-7. incident or inspection reporting page
-8. compliance summary page
-
-These pages communicate the platform much more effectively than building many low-fidelity CRUD screens.
-
-## Team Working Model
-
-To avoid drift during implementation:
-
-- backend work should be owned by domain
-- frontend work should be owned by user journey
-- shared components should be limited and intentional
-- all new modules should declare which engine they use
-
-Every major feature should answer:
-
-- which domain owns it
-- which engine powers it
-- which runtime records it creates
-- which outputs it produces
-
-## Risks to Manage
-
-### Risk 1: Recreating AppSheet one file at a time
-
-Impact:
-
-- uncontrolled module sprawl
-- repeated logic
-- weak architecture
-
-Mitigation:
-
-- abstract by engine and domain
-
-### Risk 2: Building frontend pages without real domain anchors
-
-Impact:
-
-- attractive demos that collapse during implementation
-
-Mitigation:
-
-- keep demo screens tied to the target data model and module map
-
-### Risk 3: Underestimating identity complexity
-
-Impact:
-
-- broken onboarding
-- invalid tenant scoping
-
-Mitigation:
-
-- prioritize Business Identity early
-
-### Risk 4: Hardcoding workflow branching in UI components
-
-Impact:
-
-- fragile forms
-- duplicated behavior
-
-Mitigation:
-
-- centralize rules and runtime definitions in backend models and services
+- post-task workflows
+- training records
+- notification/escalation paths
+- PWA/offline groundwork
+
+Exit criteria:
+
+- compliance output can be derived from stored runtime/evidence/audit data
+- generated output does not become the source of truth
 
 ## Immediate Next Actions
 
-2026-05-18 update — after the M16 backend port and M16.1 DBML reconciliation
-both landed on `refactor`, the schema and backend infrastructure are now
-aligned with the authoritative v0.3 spec. The next actions should stay
-backend-first and importer-first.
+1. Build M17.4 access map importers.
+2. Add FK-resolution and enum-coercion tests.
+3. Extend importer documentation with accepted access values and failure modes.
+4. Continue to SWMS workbook importers after access maps are stable.
+5. Prove the first worker runtime path from imported content.
 
-Done (no longer in scope):
+## Anti-Patterns to Avoid
 
-1. ~~Port backend infrastructure to v0.3~~ — M16 (`a5c51c3`).
-2. ~~Create minimal v0.3 dev seeder/login path~~ — `V03DemoSeeder` writes account → business → workplace → admin access → industry/occupation → task → SWMS slice. Login `admin@acme.test` / `password`.
-3. ~~Reconcile column naming to DBML~~ — M16.1 (`38d00c1`): `account_id` rename, tasks/occupations/industries reshape to DBML taxonomy, access flags widened to per-component enum, countries ISO cols nullable.
-4. ~~Delete obsolete scaffold tests~~ — done in M16; full suite is 44 passed / 2 skipped / 301 assertions.
+- Do not model one legacy AppSheet app as one Laravel module.
+- Do not create one table per spreadsheet without abstraction.
+- Do not bury workflow branching rules inside React components.
+- Do not revive tenant-era `tenants`, `task_packs`, `activities`, or generic `submissions.payload` as production truth.
+- Do not expand frontend/admin workflows before imported data can drive the backend reliably.
 
-Active (M17 importer slice, see `MILESTONE.md`):
+## Final Sequence
 
-5. M17 Slice 1: importer framework + `IndustriesTabImporter` for `RAW_All_Industry_Master` from SRC-001.
-6. M17 Slices 2–6: occupations, tasks, access maps, SWMS workbook (SRC-002/3/4), Global Business Identifiers (SRC-005).
-
-Then:
-
-7. Prove the first runtime path from imported content: worker task session → SWMS step events → signature → prestart submission → evidence/audit/alert records.
-8. Resume frontend/demo work only after the backend path above can create and query v0.3 data reliably.
-
-## Final Recommendation
-
-The project should be developed in a way that supports both:
-
-- a polished product demonstration in the short term
-- a scalable WHS platform in the long term
-
-The correct sequence is:
-
-`Core platform -> Business identity -> Task pack engine -> Worker runtime -> Form runtime -> Compliance output -> Tenant customization`
-
-That sequence keeps the architecture coherent while still producing demo-visible progress at each stage.
+```text
+Schema -> Importer -> Content -> Worker Runtime -> Evidence/Audit -> Output -> UI Expansion
+```

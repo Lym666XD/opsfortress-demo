@@ -1,5 +1,7 @@
 # WHS App — Architecture & Discovery Record
 
+> Status: historical business/product discovery context. For current schema truth, use the Laravel migrations, regenerated DBML, and `docs/README.md`.
+>
 > **Purpose:** Running record of system analysis for the WHS App rebuild.
 > **Last updated:** 2026-05-06 (v14 — Voice call series: worker flow order corrected, configurable pre-start/post-task, training refresh intervals, PDF dual-layer model, Worker-Supervisor-Manager scope hierarchy, Stripe per-seat billing, content template automation, PDF generation mechanism (RMP 1–10), alert escalation chain, minimum read time UX rule, immutable records, peak load window, competitor Siculture.com)
 > **BA:** Yiming (assisted by Claude)
@@ -1895,3 +1897,10 @@ dashboard_rules | submissions | corrective_actions
 ```
 
 *This document will be updated as analysis continues.*
+> Status: business and product background. Last full update 2026-05-06.
+> Schema details predate the v0.3 reset (2026-05-17). For schema truth
+> see the migration files plus the regenerated DBML.
+>
+> 状态：业务与产品背景资料。最后完整更新：2026-05-06。
+> 本文中的数据库细节早于 v0.3 schema reset（2026-05-17）。
+> 当前 schema 以 Laravel migrations 和重新生成的 DBML 为准。

@@ -1,6 +1,6 @@
 # OpsFortress Target Architecture
 
-## 2026-05-17 Addendum — Platform Split and v0.3 Reset
+## 2026-05-23 Addendum — Platform Split and v0.3 Baseline
 
 The latest architecture review and meeting notes clarify a stronger distinction between **OpsFortress** and **WHSAPP**.
 
@@ -24,7 +24,7 @@ file_uploads
 generated_documents
 ```
 
-That schema remains useful as a Laravel implementation reference, but it is no longer the authoritative product model. The v0.3 ERD / Database Spec / Column Mapping / Importer Source Index should drive the next migration set.
+That schema remains useful as a historical Laravel implementation reference, but it is no longer the authoritative product model. The active schema baseline is the v0.3 migration set plus the regenerated DBML.
 
 The recommended next step is:
 
@@ -32,7 +32,7 @@ The recommended next step is:
 v0.3 Schema Reset + Importer-first P0
 ```
 
-2026-05-18 status: the migration-only v0.3 reset has been generated and verified against local PostgreSQL. The next architecture task is to port backend infrastructure, models, account/business/workplace scoping, audit service, seed/dev login, and tests to the v0.3 schema before building importer services or more UI.
+2026-05-23 status: the v0.3 schema baseline, backend infrastructure port, schema reconciliation, runtime demo journey, append-only evidence/audit hardening, and first importer slices are implemented and verified against PostgreSQL. The next architecture task is broader importer coverage, starting with task access maps and then SWMS workbooks.
 
 ### v0.3 Core Modelling Direction
 
@@ -72,7 +72,7 @@ Important corrections:
 
 This document captures the recommended target architecture for the Laravel rebuild of WHS Apps, based on the source material reviewed in:
 
-- `others/WHS_Architecture_Record.md`
+- `docs/WHS_Architecture_Record.md`
 - `others/Work Directory Path.xlsx`
 - `others/FILE_INDEX.md`
 - `others/INTERNS - Business Identity Information 1.docx`
@@ -101,7 +101,7 @@ The source files point to a very specific product shape:
 - `Business Identity` is a foundational onboarding flow with multiple branching legal structures.
 - `SWMS`, `SOP`, `Pre-Start`, `Post-Task`, and training content are different views of the same task-driven content model.
 - `OHSMS` and reporting are not single-purpose modules. They represent a larger form runtime layer with many workflow variants.
-- White-labeling, client-specific deployments, and tenant-specific branding are real requirements.
+- White-labeling, client-specific deployments, and account/customer-specific branding are real requirements.
 - Mobile-first worker execution is a primary use case.
 - OpsFortress should be treated as the reusable platform layer; WHSAPP should be treated as the first vertical app built on top of that layer.
 - The importer is a core architectural component, not an optional utility.
@@ -353,10 +353,11 @@ Core identity and relationship tables:
 - business_identifier_types
 - business_identifiers
 - workplaces
-- workplace_environments
+- workplace_environments (global lookup for Construction / Federal / Mine / Petroleum / Other)
 - users
 - user_business_access
-- user_workplace_access / workplace_user_assignments
+- user_workplace_access
+- user_occupations
 - contractor_relationships
 - industries
 - occupations
@@ -437,7 +438,7 @@ Authorization is layered:
 
 - account-level isolation using context/global scopes;
 - business-level visibility using `user_business_access`;
-- workplace-level visibility using `user_workplace_access` or strengthened `workplace_user_assignments`;
+- workplace-level visibility using `user_workplace_access`;
 - per-record authorization using Laravel Policies;
 - coarse-grained permission roles through a simple role system or Spatie when complexity justifies it.
 
@@ -586,7 +587,7 @@ The system should support:
 
 This does not require separate codebases. It requires strong account configuration and content scoping.
 
-### Tenancy Strategy — Updated Direction (2026-05-17)
+### Tenancy Strategy — Updated Direction (2026-05-23)
 
 Use a single shared PostgreSQL database with row-level account/business/workplace scoping for normal customers. Do not build DB-per-tenant as the default runtime mode.
 
@@ -594,8 +595,8 @@ If a future government contract mandates hard physical isolation, use a dedicate
 
 Enforcement needed:
 
-1. Every tenant/account-scoped domain table carries the appropriate account/business/workplace foreign key.
-2. Context/global scopes handle account-level filtering.
+1. Every account-scoped domain table carries the appropriate account/business/workplace foreign key.
+2. `AccountContext`, `AccountScope`, and `BelongsToAccount` handle account-level filtering.
 3. Policies enforce business and workplace-level visibility.
 4. Background jobs explicitly serialise and restore account context.
 5. Tests assert cross-account, cross-business, and cross-workplace boundaries.
@@ -627,6 +628,8 @@ AI outputs should remain reviewable and versioned before becoming active content
 
 ### Phase 1: Stabilize v0.3 Core Schema
 
+Status: **done as of 2026-05-23**. The schema baseline is the `2026_05_18_*` reset plus `2026_05_23_*` reconciliation migrations.
+
 Build and validate:
 
 - customer accounts
@@ -636,14 +639,18 @@ Build and validate:
 - business identifier types
 - business identifiers
 - workplaces
+- workplace environments as a global lookup
 - users
 - user business access
-- user workplace access / assignments
+- user workplace access
+- user occupations
 - contractor relationships
 - occupations
 - industries
 
 ### Phase 2: Build Importer Foundation
+
+Status: **in progress**. The importer framework and first SRC-001 slices for industries, occupations, and tasks exist; the next work is access maps, broader workbook coverage, and minimal worker-flow data validation.
 
 Implement:
 
@@ -697,21 +704,20 @@ Implement:
 - Do not bury business rules inside React screens.
 - Do not treat OHSMS forms as unrelated special cases.
 - Do not split into microservices early.
-- Do not let public registration bypass tenant/account/business scoping.
+- Do not let public registration bypass account/business/workplace scoping.
 - Do not continue production workflow development on the old scaffold schema after v0.3 has been accepted.
 
 ## Practical Next Step for This Repository
 
-The best next step is to formalize the v0.3 schema reset before building more pages.
+The schema reset and backend hardening are now complete enough to keep moving through importer coverage.
 
 Recommended immediate actions:
 
-1. Convert the v0.3 DBML to readable text if possible.
-2. Generate fresh v0.3 migrations.
-3. Preserve useful infrastructure from the current repo.
-4. Build importer tracking tables early.
-5. Build a minimal importer for approved source tabs.
-6. Prove one imported SWMS worker flow end-to-end.
+1. Build task occupation and task industry access map importers.
+2. Add FK-resolution tests for missing task, occupation, and industry targets.
+3. Import SWMS workbook content after access maps are stable.
+4. Prove one imported SWMS worker flow end-to-end.
+5. Resume admin/worker UI expansion only after imported data drives the runtime path.
 
 ## Final Position
 

@@ -23,7 +23,6 @@ use App\Domain\Whs\Tasks\Models\Task;
  *   task_name            -> tasks.task_name         (NOT NULL)
  *   task_title           -> tasks.task_title
  *   document_type        -> tasks.document_type
- *   trade_industry       -> tasks.trade_industry
  *   task_group           -> tasks.task_group
  *   task_sub_group       -> tasks.task_sub_group
  *   task_leaf            -> tasks.task_leaf
@@ -75,27 +74,27 @@ final class TasksTabImporter implements TabImporter
 
             $externalTaskId = $this->stringOrNull($row['task_id'] ?? null);
             if ($externalTaskId === null) {
-                $this->recordResult($sourceFile, 'error', 'tasks.external_task_id_missing', $rowNumber, 'task_id', null, 'Row skipped: task_id is required (becomes tasks.external_task_id, which is NOT NULL).');
+                $this->recordResult($sourceFile, 'error', 'business:tasks.external_task_id_missing', $rowNumber, 'task_id', null, 'Row skipped: task_id is required (becomes tasks.external_task_id, which is NOT NULL).');
 
                 continue;
             }
 
             $taskName = $this->stringOrNull($row['task_name'] ?? null);
             if ($taskName === null) {
-                $this->recordResult($sourceFile, 'error', 'tasks.task_name_missing', $rowNumber, 'task_name', null, "Row skipped: task_name is required for tasks.external_task_id [{$externalTaskId}].");
+                $this->recordResult($sourceFile, 'error', 'business:tasks.task_name_missing', $rowNumber, 'task_name', null, "Row skipped: task_name is required for tasks.external_task_id [{$externalTaskId}].");
 
                 continue;
             }
 
             $activeRaw = $row['active_status'] ?? null;
             if ($activeRaw !== null && ! $this->isCoercibleActiveStatus($activeRaw)) {
-                $this->recordResult($sourceFile, 'warning', 'tasks.active_status_unrecognised', $rowNumber, 'active_status', (string) $activeRaw, "Unrecognised active_status value [{$activeRaw}]; defaulting to inactive.");
+                $this->recordResult($sourceFile, 'warning', 'business:tasks.active_status_unrecognised', $rowNumber, 'active_status', (string) $activeRaw, "Unrecognised active_status value [{$activeRaw}]; defaulting to inactive.");
             }
 
             // Dedup on external_task_id: strict (DBML unique NOT NULL).
             // Second occurrence is an error, not a coerced warning.
             if (isset($seenExternalIds[$externalTaskId])) {
-                $this->recordResult($sourceFile, 'error', 'tasks.duplicate_external_task_id_in_source', $rowNumber, 'task_id', $externalTaskId, "Row skipped: task_id [{$externalTaskId}] already used by an earlier row in this import.");
+                $this->recordResult($sourceFile, 'error', 'dup:tasks.external_task_id_in_source', $rowNumber, 'task_id', $externalTaskId, "Row skipped: task_id [{$externalTaskId}] already used by an earlier row in this import.");
 
                 continue;
             }
@@ -107,7 +106,7 @@ final class TasksTabImporter implements TabImporter
             $candidateKey = $this->stringOrNull($row['task_candidate_key'] ?? null);
             if ($candidateKey !== null) {
                 if (isset($seenCandidateKeys[$candidateKey])) {
-                    $this->recordResult($sourceFile, 'warning', 'tasks.duplicate_candidate_key_in_source', $rowNumber, 'task_candidate_key', $candidateKey, "task_candidate_key [{$candidateKey}] already used by an earlier row in this import; importing row without task_candidate_key.");
+                    $this->recordResult($sourceFile, 'warning', 'dup:tasks.candidate_key_in_source', $rowNumber, 'task_candidate_key', $candidateKey, "task_candidate_key [{$candidateKey}] already used by an earlier row in this import; importing row without task_candidate_key.");
                     $row['task_candidate_key'] = null;
                 } else {
                     $seenCandidateKeys[$candidateKey] = true;
@@ -131,7 +130,6 @@ final class TasksTabImporter implements TabImporter
                     'task_name' => (string) $row['task_name'],
                     'task_title' => $this->stringOrNull($row['task_title'] ?? null),
                     'document_type' => $this->stringOrNull($row['document_type'] ?? null),
-                    'trade_industry' => $this->stringOrNull($row['trade_industry'] ?? null),
                     'task_group' => $this->stringOrNull($row['task_group'] ?? null),
                     'task_sub_group' => $this->stringOrNull($row['task_sub_group'] ?? null),
                     'task_leaf' => $this->stringOrNull($row['task_leaf'] ?? null),
