@@ -1,0 +1,469 @@
+Word,AUS - SWA,AUS - COMCARE,AUS - ACT,AUS - NSW,AUS - NT,AUS - QLD,AUS - SA,AUS - TAS,AUS - VIC,AUS - WA,CAN - FEDERAL,CAN - ALBERTA,CAN - BRITISH COLUMBIA,CAN - MANITOBA,CAN - NEW BRUNSWICK,CAN - NEWFOUNDLAND AND LABRADOR,CAN - NORTHWEST TERRITORIES,CAN - NOVA SCOTIA,CAN - NUNAVUT,CAN - ONTARIO,CAN - PRINCE EDWARD ISLAND,CAN - QUEBEC,CAN - SASKATCHEWAN,CAN - YUKON,NZ,PNG,SINGAPORE,SOUTH AFRICA,UK,US - FEDERAL,US - ALABAMA,US - ALASKA,US - AMERICAN SAMOA,US - ARIZONA,US - ARKANSAS,US - CALIFORNIA,US - COLORADO,US - CONNECTICUT,US - DELAWARE,US - DISTRICT OF COLUMBIA,US - FLORIDA,US - GEORGIA,US - GUAM,US - HAWAII,US - IDAHO,US - ILLINOIS,US - INDIANA,US - IOWA,US - KANSAS,US - KENTUCKY,US - LOUISIANA,US - MAINE,US - MARYLAND,US - MASSACHUSETTS,US - MICHIGAN,US - MINNESOTA,US - MISSISSIPPI,US - MISSOURI,US - MONTANA,US - NEBRASKA,US - NEVADA,US - NEW HAMPSHIRE,US - NEW JERSEY,US - NEW MEXICO,US - NEW YORK,US - NORTH CAROLINA,US - NORTH DAKOTA,US - NORTHERN MARIANA ISLANDS,US - OHIO,US - OKLAHOMA,US - OREGON,US - PENNSYLVANIA,US - PUERTO RICO,US - RHODE ISLAND,US - SOUTH CAROLINA,US - SOUTH DAKOTA,US - TENNESSEE,US - TEXAS,US - U.S. VIRGIN ISLANDS,US - UTAH,US - VERMONT,US - VIRGINIA,US - WASHINGTON,US - WEST VIRGINIA,US - WISCONSIN,US - WYOMING,MINE - ACT,MINE - NSW,MINE - NT,MINE - QLD,MINE - SA,MINE - TAS,MINE - VIC,MINE - WA,MINE - CAN - ALBERTA,MINE - CAN - BRITISH COLUMBIA,MINE - CAN - MANITOBA,MINE - CAN - NEW BRUNSWICK,MINE - CAN - NEWFOUNDLAND AND LABRADOR,MINE - CAN - NORTHWEST TERRITORIES,MINE - CAN - NOVA SCOTIA,MINE - CAN - NUNAVUT,MINE - CAN - ONTARIO,MINE - CAN - PRINCE EDWARD ISLAND,MINE - CAN - QUEBEC,MINE - CAN - SASKATCHEWAN,MINE - CAN - YUKON,MINE - NZ,MINE - PNG,MINE - SINGAPORE,MINE - SOUTH AFRICA,MINE - UK,MINE - US - FEDERAL,MINE - US - ALABAMA,MINE - US - ALASKA,MINE - US - AMERICAN SAMOA,MINE - US - ARIZONA,MINE - US - ARKANSAS,MINE - US - CALIFORNIA,MINE - US - COLORADO,MINE - US - CONNECTICUT,MINE - US - DELAWARE,MINE - US - DISTRICT OF COLUMBIA,MINE - US - FLORIDA,MINE - US - GEORGIA,MINE - US - GUAM,MINE - US - HAWAII,MINE - US - IDAHO,MINE - US - ILLINOIS,MINE - US - INDIANA,MINE - US - IOWA,MINE - US - KANSAS,MINE - US - KENTUCKY,MINE - US - LOUISIANA,MINE - US - MAINE,MINE - US - MARYLAND,MINE - US - MASSACHUSETTS,MINE - US - MICHIGAN,MINE - US - MINNESOTA,MINE - US - MISSISSIPPI,MINE - US - MISSOURI,MINE - US - MONTANA,MINE - US - NEBRASKA,MINE - US - NEVADA,MINE - US - NEW HAMPSHIRE,MINE - US - NEW JERSEY,MINE - US - NEW MEXICO,MINE - US - NEW YORK,MINE - US - NORTH CAROLINA,MINE - US - NORTH DAKOTA,MINE - US - NORTHERN MARIANA ISLANDS,MINE - US - OHIO,MINE - US - OKLAHOMA,MINE - US - OREGON,MINE - US - PENNSYLVANIA,MINE - US - PUERTO RICO,MINE - US - RHODE ISLAND,MINE - US - SOUTH CAROLINA,MINE - US - SOUTH DAKOTA,MINE - US - TENNESSEE,MINE - US - TEXAS,MINE - US - U.S. VIRGIN ISLANDS,MINE - US - UTAH,MINE - US - VERMONT,MINE - US - VIRGINIA,MINE - US - WASHINGTON,MINE - US - WEST VIRGINIA,MINE - US - WISCONSIN,MINE - US - WYOMING,PET/GAS - ACT,PET/GAS - NSW,PET/GAS - NT,PET/GAS - QLD,PET/GAS - SA,PET/GAS - TAS,PET/GAS - VIC,PET/GAS - WA,PET/GAS - CAN - FEDERAL,PET/GAS - CAN - ALBERTA,PET/GAS - CAN - BRITISH COLUMBIA,PET/GAS - CAN - MANITOBA,PET/GAS - CAN - NEW BRUNSWICK,PET/GAS - CAN - NEWFOUNDLAND AND LABRADOR,PET/GAS - CAN - NORTHWEST TERRITORIES,PET/GAS - CAN - NOVA SCOTIA,PET/GAS - CAN - NUNAVUT,PET/GAS - CAN - ONTARIO,PET/GAS - CAN - PRINCE EDWARD ISLAND,PET/GAS - CAN - QUEBEC,PET/GAS - CAN - SASKATCHEWAN,PET/GAS - CAN - YUKON,PET/GAS - NZ,PET/GAS - PNG,PET/GAS - SINGAPORE,PET/GAS - SOUTH AFRICA,PET/GAS - UK,PET/GAS – US - FEDERAL,PET/GAS - US - ALABAMA,PET/GAS - US - ALASKA,PET/GAS - US - AMERICAN SAMOA,PET/GAS - US - ARIZONA,PET/GAS - US - ARKANSAS,PET/GAS - US - CALIFORNIA,PET/GAS - US - COLORADO,PET/GAS - US - CONNECTICUT,PET/GAS - US - DELAWARE,PET/GAS - US - DISTRICT OF COLUMBIA,PET/GAS - US - FLORIDA,PET/GAS - US - GEORGIA,PET/GAS - US - GUAM,PET/GAS - US - HAWAII,PET/GAS - US - IDAHO,PET/GAS - US - ILLINOIS,PET/GAS - US - INDIANA,US - IOWA,PET/GAS - US - KANSAS,PET/GAS - US - KENTUCKY,PET/GAS - US - LOUISIANA,PET/GAS - US - MICHIGAN,PET/GAS - US - MINNESOTA,PET/GAS - US - MISSISSIPPI,PET/GAS - US - MISSOURI,PET/GAS - US - MONTANA,PET/GAS - US - NEBRASKA,PET/GAS - US - NEVADA,PET/GAS - US - NEW HAMPSHIRE,PET/GAS - US - NEW MEXICO,PET/GAS - US - NEW YORK,PET/GAS - US - NORTH CAROLINA,PET/GAS - US - NORTH DAKOTA,PET/GAS - US - NORTHERN MARINA ISLANDS,PET/GAS - US - OHIO,PET/GAS - US - OKLAHOMA,PET/GAS - US - PENNSYLVANIA,PET/GAS - US - PUERTO RICO,PET/GAS - US - RHODE ISLAND,PET/GAS - US - SOUTH CAROLINA,PET/GAS - US - SOUTH DAKOTA,PET/GAS - US - TENNESSEE,PET/GAS - US - TEXAS,PET/GAS - US - U.S. VIRGIN ISLANDS,PET/GAS - US - UTAH,PET/GAS - US - VERMONT,PET/GAS - US - VIRGINIA,PET/GAS - US - WEST VIRGINIA,PET/GAS - US - WYOMING
+Safe work method statement,,,,,,,,,,,Safe work procedure,,,,,,,,,,,,,,,Task hazard analysis,Method statement,Method statement,Safe system of work,Job hazard analysis,Job safety analysis,Job hazard analysis,Job safety analysis,,,,,,,,,,,Job hazard analysis,Job safety analysis,,Job hazard analysis,Job safety analysis,,Job hazard analysis,Job safety analysis,,Job hazard analysis,Job safety analysis,,Job hazard analysis,Job safety analysis,,,,,,Job hazard analysis,Job safety analysis,,Job hazard analysis,Job safety analysis,,,,,,Job hazard analysis,Job safety analysis,,,Job hazard analysis,Job safety analysis,,Job safety analysis,,Job hazard analysis,Job safety analysis,,,Job hazard analysis,Job safety analysis,,,,,,,,,Task safety analysis,Job safety analysis,,,Safe Work Procedure,Job safety analysis,Safe Work Procedure,,,Méthode de travail sécuritaire,,,,,Mining method statement,Job safety analysis,,,,Job hazard analysis,Job safety analysis,Task hazard analysis,Job safety analysis,Job hazard analysis,Task safety analysis,Job safety analysis,Job safety analysis,Job safety analysis,Job safety analysis,Job hazard analysis,Job safety analysis,Job safety analysis,Task hazard analysis,Job safety analysis,Job hazard analysis,Task safety analysis,Job safety analysis,Job hazard analysis,Task hazard analysis,Job safety analysis,Job hazard analysis,Task safety analysis,Job safety analysis,Job hazard analysis,Job safety analysis,Task hazard analysis,Job safety analysis,Job safety analysis,Job hazard analysis,Job safety analysis,Task safety analysis,Job safety analysis,Job hazard analysis,Task hazard analysis,Job safety analysis,Job safety analysis,Job hazard analysis,Task safety analysis,Job safety analysis,Job hazard analysis,Job safety analysis,Job safety analysis,Task hazard analysis,Job safety analysis,Job hazard analysis,Task safety analysis,Job safety analysis,Job safety analysis,Job safety analysis,Job hazard analysis,Task hazard analysis,Job safety analysis,Job hazard analysis,Task safety analysis,Job safety analysis,,,,,,,,,,Task safety analysis,Job safety analysis,,,Safe Work Procedure,Job safety analysis,Safe Work Procedure,,,Méthode de travail sécuritaire,,,,,,,,,Job hazard analysis,Job safety analysis,Job safety analysis,,Job hazard analysis,Job safety analysis,,Job safety analysis,Job safety analysis,Job safety analysis,Job hazard analysis,,Job safety analysis,Job safety analysis,Job safety analysis,Job hazard analysis,,,Job safety analysis,,,,Job hazard analysis,Job safety analysis,Job hazard analysis,Job safety analysis,,,Job safety analysis,,Job hazard analysis,Job safety analysis,Job hazard analysis,Job safety analysis,Job safety analysis,Job hazard analysis,Job safety analysis,Job safety analysis,Job safety analysis,,,Job hazard analysis,Job safety analysis,Job safety analysis,,Job safety analysis,,,Job hazard analysis
+SWMS,,,,,,,,,,,SWP,,,,,,,,,,,,,,,THA,MS,MS,SSW,JHA,JSA,JHA,JSA,,,,,,,,,,,JHA,JSA,,JHA,JSA,,JHA,JSA,,JHA,JSA,,JHA,JSA,,,,,,JHA,JSA,,JHA,JSA,,,,,,JHA,JSA,,,JHA,JSA,,JSA,,JHA,JSA,,,JHA,JSA,,,,,,,,,TSA,JSA,,,SWP,JSA,SWP,,,MTS,,,,,MMS,JSA,,,,JHA,JSA,THA,JSA,JHA,TSA,JSA,JSA,JSA,JSA,JHA,JSA,JSA,THA,JSA,JHA,TSA,JSA,JHA,THA,JSA,JHA,TSA,JSA,JHA,JSA,THA,JSA,JSA,JHA,JSA,TSA,JSA,JHA,THA,JSA,JSA,JHA,TSA,JSA,JHA,JSA,JSA,THA,JSA,JHA,TSA,JSA,JSA,JSA,JHA,THA,JSA,JHA,TSA,JSA,,,,,,,,,,TSA,JSA,,,SWP,JSA,SWP,,,MTS,,,,,,,,,JHA,JSA,JSA,,JHA,JSA,,JSA,JSA,JSA,JHA,,JSA,JSA,JSA,JHA,,,JSA,,,,JHA,JSA,JHA,JSA,,,JSA,,JHA,JSA,JHA,JSA,JSA,JHA,JSA,JSA,JSA,,,JHA,JSA,JSA,,JSA,,,JHA
+Standard operating procedure,,,,,,,,,,,,,,,,,,,,,,,,,,,Safe work procedure,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,Safe work procedure,,,,,Safe work procedure,,,,,,,,,,Safe work procedure,Procédure opérationnelle,,,,,Safe work procedure,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,Safe work procedure,,,,,Safe work procedure,Safe work procedure,Safe work procedure,Safe work procedure,Safe work procedure,Safe work procedure,,Safe work procedure,,,Safe work procedure,Procédure opérationnelle,,,,,Safe work procedure,,,,Operational safety procedure,,,,Operational safety procedure,,,,,,Operational safety procedure,,,,,Operational safety procedure,,,,,,,Operational safety procedure,,Operational safety procedure,,,,,,Operational safety procedure,,Operational safety procedure,,,Operational safety procedure,,,,,,Operational safety procedure,,,,,,,Operational safety procedure
+SOP,,,,,,,,,,,,,,,,,,,,,,,,,,,SWP,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,SWP,,,,,SWP,,,,,,,,,,SWP,PO,,,,,SWP,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,SWP,,,,,SWP,SWP,SWP,SWP,SWP,SWP,,SWP,,,SWP,PO,,,,,SWP,,,,OSP,,,,OSP,,,,,,OSP,,,,,OSP,,,,,,,OSP,,OSP,,,,,,OSP,,OSP,,,OSP,,,,,,OSP,,,,,,,OSP
+Work health and safety,,,,,,,,,Occupational health and safety,Occupational safety and health,Workplace health and safety,Occupational health and safety,,Workplace safety and health,Occupational health and safety,,,,,,,,,Workplace health and safety,Health and safety,Occupational health and safety,Workplace safety and health,Occupational health and safety,Workplace health and safety,Occupational safety and health,,,,,,,,,,,,,,,,,,,,,,,,Workplace safety and health,Occupational safety and health,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,Occupational health and safety,,Occupational health and safety,Occupational health and safety,Workplace safety and health,Occupational health and safety,,,,,,,,,Workplace health and safety,Health and safety,Occupational health and safety,Workplace safety and health,Occupational health and safety,Workplace health and safety,Occupational safety and health,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,Occupational health and safety,,Occupational health and safety,,Workplace safety and health,Occupational health and safety,,,,,,,,,Workplace health and safety,Health and safety,Occupational health and safety,Workplace safety and health,Occupational health and safety,Workplace health and safety,Occupational safety and health,,,,,,,,,,,,,,,,,,Occupational safety and health,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+WHS,,,,,,,,,OHS,OSH,WHS,OHS,,WSH,OHS,,,,,,,,,WHS,HS,OHS,WSH,OHS,WHS,OSH,,,,,,,,,,,,,,,,,,,,,,,,WSH,OSH,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,OHS,,OHS,OHS,WSH,OHS,,,,,,,,,WHS,HS,OHS,WSH,OHS,WHS,OSH,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,OHS,,OHS,,WSH,OHS,,,,,,,,,WHS,HS,OHS,WSH,OHS,WHS,OSH,,,,,,,,,,,,,,,,,,OSH,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Regulator,Safe Work Australia,ComCare,Worksafe ACT,SafeWork NSW,NT WorkSafe,WorkSafe Qld,SafeWork SA,WorkSafe Tasmania,WorkSafe Victoria,WorkSafe WA,Labour Program,Alberta Occupational Health and Safety,WorkSafeBC,Manitoba Workplace Safety and Health,WorkSafeNB,WorkplaceNL,Workers' Safety and Compensation Commission of the Northwest Territories,Nova Scotia Labour and Advanced Education,Workers' Safety and Compensation Commission,"Ministry of Labour, Training and Skills Development",Workers' Compensation Board,CNESST,WorkSafe Saskatchewan ,Workers’ Safety and Compensation Board,WorkSafe New Zealand,National Department of Labour and Industrial Relations (DLIR),Ministry of Manpower,Department of Employment and Labour,Health and Safety Executive,Occupational Safety and Health Administration (OSHA),Occupational Safety and Health Administration (OSHA),Alaska Occupational Safety and Health (AKOSH),Occupational Safety and Health Administration (OSHA),Arizona Division of Occupational Safety and Health (ADOSH),Occupational Safety and Health Administration (OSHA),Division of Occupational Safety and Health (DOSH),Occupational Safety and Health Administration (OSHA),Connecticut Occupational Safety and Health Division (CONN-OSHA),Occupational Safety and Health Administration (OSHA),Occupational Safety and Health Administration (OSHA),Occupational Safety and Health Administration (OSHA),Occupational Safety and Health Administration (OSHA),Occupational Safety and Health Administration (OSHA),Hawaii Occupational Safety and Health Division (HIOSH),Occupational Safety and Health Administration (OSHA),"Illinois Department of Labor
+Division of Occupational Safety and Health",Indiana Occupational Safety and Health Administration (IOSHA),Iowa Division of Labor Services,Occupational Safety and Health Administration (OSHA),Kentucky Occupational Safety and Health,Occupational Safety and Health Administration (OSHA),"Maine Department of Labor
+Workplace Safety and Health Division",Maryland Occupational Safety and Health (MOSH),"Massachusetts Department of Labor Standards
+Workplace Safety and Health Program",Michigan Occupational Safety & Health Administration (MIOSHA),Minnesota Occupational Safety and Health Administration,Occupational Safety and Health Administration (OSHA),Occupational Safety and Health Administration (OSHA),Occupational Safety and Health Administration (OSHA),Occupational Safety and Health Administration (OSHA),Nevada Occupational Safety and Health Administration,Occupational Safety and Health Administration (OSHA),New Jersey Department of Labor and Workforce Development,New Mexico Occupational Health & Safety Bureau (OHSB),Public Employee Safety and Health (PESH) Bureau,"North Carolina Department of Labor
+Occupational Safety and Health Division",Occupational Safety and Health Administration (OSHA),Occupational Safety and Health Administration (OSHA),Occupational Safety and Health Administration (OSHA),Occupational Safety and Health Administration (OSHA),Oregon Occupational Safety and Health Division (Oregon OSHA),Occupational Safety and Health Administration (OSHA),Puerto Rico Occupational Safety and Health Administration (PR OSHA),Occupational Safety and Health Administration (OSHA),"South Carolina Department of Labor, Licensing & Regulation
+Division of Occupational Safety and Health",Occupational Safety and Health Administration (OSHA),Tennessee Occupational and Safety and Health Administration (TOSHA),Occupational Safety and Health Administration (OSHA),Virgin Islands Division of Occupational Safety and Health (VIDOSH),Utah Occupational Safety and Health Administration (Utah OSHA),Vermont Occupational Safety and Health Administration (VOSHA),Virginia Occupational Safety and Health (VOSH),Division of Occupational Safety and Health (DOSH),Occupational Safety and Health Administration (OSHA),Occupational Safety and Health Administration (OSHA),Wyoming Department of Workforce Services - Wyoming Safety (OSHA),WorkSafe ACT,NSW Resources Regulator,NT WorkSafe,Resources Safety & Health Queensland (RSHQ),SafeWork SA,WorkSafe Tasmania,WorkSafe Victoria,"Department of Mines, Industry Regulation and Safety (DMIRS)",Alberta Occupational Health and Safety,WorkSafeBC,Manitoba Workplace Safety and Health,WorkSafeNB,WorkplaceNL,Workers’ Safety and Compensation Commission (WSCC),Nova Scotia Labour and Advanced Education,Workers’ Safety and Compensation Commission (WSCC),"Ministry of Labour, Training and Skills Development",Workers' Compensation Board,CNESST,WorkSafe Saskatchewan ,Workers’ Safety and Compensation Board,WorkSafe New Zealand,Mineral Resources Authority (MRA),Ministry of Manpower,Department of Employment and Labour,Health and Safety Executive,Mine Safety and Health Administration ,Alabama Department of Environmental Management – Mining,"Alaska Department of Natural Resources – Mining, Land & Water",MSHA (Federal),Arizona State Mine Inspector,Office of the State Geologist,California State Mining and Geology Board,"Colorado Department of Natural Resources – Division of Reclamation, Mining and Safety",MSHA (Federal),MSHA (Federal),MSHA (Federal),"Florida Department of Environmental Protection – Mining, Mitigation and Delineation","Georgia Department of Natural Resources – Environmental Protection Division, Surface Mining",MSHA (Federal),MSHA (Federal),Idaho Department of Lands,Illinois Department of Natural Resources Office of Mines and Minerals,"Indiana Department of Labor, Bureau of Mines",Iowa Department of Agriculture – Mines and Minerals Bureau,Kansas Department of Health and Environment – Surface Mining Section,Kentucky Department of Natural Resources – Division of Mine Safety,"Louisiana Department of Natural Resources – Office of Conservation, Surface Mining Section",Maine Geological Survey – Mining and Quarrying,Maryland Department of the Environment – Mining Program,Massachusetts Executive Office of Labor and Workforce Development – Mine Safety and Health Program,"Michigan Department of Environmental Quality – Mining, Minerals, and Reclamation",Minnesota Department of Natural Resources – Division of Lands and Minerals,MSHA (Federal),Missouri Department of Labor – Mine and Cave Safety,Montana Department of Environmental Quality,MSHA (Federal),Nevada Division of Environmental Protection – Bureau of Mining Regulation and Reclamation,MSHA (Federal),"State of New Jersey Department of Labor and Workforce Development – Safety Compliance Unit, Mine Safety","New Mexico Department of Energy, Minerals, and Natural Resources – Mining and Mineral Division",New York State Department of Environmental Conservation – Mining & Reclamation,North Carolina Department of Environment and Natural Resources – Mining and Energy Commission,North Dakota Geological Survey,MSHA (Federal),Ohio Department of Natural Resources – Division of Mineral Resources,Oklahoma Department of Mines,Oregon Department of Geology and Mineral Industries ,Pennsylvania Department of Environmental Protection – Office of Active and Abandoned Mine Operations,MSHA (Federal),MSHA (Federal),South Carolina Department of Health and Environmental Control – Mining,South Dakota Department of Environment and Natural Resources – Minerals and Mining Program,Tennessee Department of Labor and Workforce Development – Mine Safety Division,Railroad Commission of Texas – Mining & Exploration,MSHA (Federal),"Utah Department of Natural Resources – Division of Oil, Gas, and Mining",MSHA (Federal),"Virginia Department of Mines, Minerals and Energy",Washington State Department of Natural Resources – Mining & Minerals,West Virginia Department of Environmental Protection – Division of Mining and Reclamation,"Wisconsin Department of Natural Resources – Mines, Pits and Quarries",Wyoming State Geological Survey,WorkSafe ACT,SafeWork NSW,NT WorkSafe,Resources Safety & Health Queensland (RSHQ),SafeWork SA,WorkSafe Tasmania,WorkSafe Victoria,"Department of Mines, Industry Regulation and Safety (DMIRS)",Labour Program,Alberta Occupational Health and Safety,WorkSafeBC,Manitoba Workplace Safety and Health,WorkSafeNB,WorkplaceNL,Workers’ Safety and Compensation Commission (WSCC),Nova Scotia Labour and Advanced Education,Workers’ Safety and Compensation Commission (WSCC),"Ministry of Labour, Training and Skills Development",Workers' Compensation Board,CNESST,WorkSafe Saskatchewan ,Workers’ Safety and Compensation Board,WorkSafe New Zealand,Department of Petroleum and Energy,Ministry of Manpower,Department of Employment and Labour,Health and Safety Executive,Occupational Safety and Health Administration (OSHA),Alabama State Oil and Gas Board,Alaska Oil and Gas Conservation Commission (AOGCC),OSHA / BSEE / PHMSA,Arizona Oil and Gas Conservation Commission,Arkansas Oil and Gas Commission (AOGC),California Geologic Energy Management Division (CalGEM),Colorado Oil and Gas Conservation Commission (COGCC),OSHA / BSEE / PHMSA,OSHA / BSEE / PHMSA,OSHA / BSEE / PHMSA,"Florida Department of Environmental Protection (DEP), Oil and Gas Program",Georgia Environmental Protection Division (EPD),OSHA / BSEE / PHMSA,OSHA / BSEE / PHMSA,Idaho Department of Lands (IDL),"Illinois Department of Natural Resources (IDNR), Office of Oil and Gas Resource Management","Indiana Department of Natural Resources (DNR), Division of Oil and Gas","Iowa Occupational Safety and Health Administration (Iowa OSHA), Iowa Workforce Development","Kansas Corporation Commission (KCC), Conservation Division","Kentucky Energy and Environment Cabinet, Division of Oil and Gas","Louisiana Department of Natural Resources (DNR), Office of Conservation","Michigan Department of Environment, Great Lakes, and Energy (EGLE), Oil, Gas, and Minerals Division",Minnesota Department of Natural Resources (DNR),Mississippi State Oil and Gas Board,"Missouri Department of Natural Resources, Oil and Gas Council",Montana Board of Oil and Gas Conservation (BOGC),Nebraska Oil and Gas Conservation Commission (NOGCC),Nevada Division of Minerals,OSHA / BSEE / PHMSA,New Mexico Oil Conservation Division (OCD),"New York State Department of Environmental Conservation (DEC), Division of Mineral Resources","North Carolina Department of Environmental Quality (DEQ), Energy Section","North Dakota Industrial Commission, Department of Mineral Resources, Oil and Gas Division",OSHA / BSEE / PHMSA,"Ohio Department of Natural Resources (ODNR), Division of Oil and Gas Resources Management","Oklahoma Corporation Commission (OCC), Oil and Gas Conservation Division","Pennsylvania Department of Environmental Protection (DEP), Oil and Gas Management Program",OSHA / BSEE / PHMSA,OSHA / BSEE / PHMSA,South Carolina Department of Health and Environmental Control (DHEC),"South Dakota Department of Environment and Natural Resources (DENR), Oil and Gas Section","Tennessee Department of Environment and Conservation (TDEC), Division of Water Resources",Texas Oil and Gas Division (RRC),OSHA / BSEE / PHMSA,"Utah Division of Oil, Gas, and Mining (DOGM)",OSHA / BSEE / PHMSA,"Virginia Department of Mines, Minerals, and Energy (DMME), Division of Gas and Oil","West Virginia Department of Environmental Protection (DEP), Office of Oil and Gas",Wyoming Oil and Gas Conservation Commission (WOGCC)
+Accident reporting,,1300 366 979,13 22 81,13 10 50,1800 019 115,1300 362 128,1300 365 255,1300 366 322,1800 136 089,1300 307 877,1-800-641-4049,1-866-415-8690,1-888-621-7233,1 855-957-7233,1-800-999-9775,1-800-563-5471,1-800-661-0792,1-800-952-2687,1-800-661-0792,1-877-202-0008,1-800-237-5049,1 844 838-0808,1-800-567-7233,1-800-661-0443,0800 030 040,675 301 0200,(+65) 6317 1111,086 010 1018,0345 300 9923,1-800-321-6742,1-800-321-6742,1-800-656-4972,1-800-321-6742,(855) 268-5251,1-800-321-6742,(510) 286-7000,1-800-321-6742,(860) 263-6900,1-800-321-6742,1-800-321-6742,1-800-321-6742,1-800-321-6742,1-800-321-6742,(808) 586-9116,1-800-321-6742,(217) 782-9386,(317) 232-2693,(515) 281-3425,1-800-321-6742,(502) 564-3070,1-800-321-6742,(207) 623-7900,(410) 527-4499,(508) 616-0461 ext. 1,(800) 866-4674,(877) 470-6742,1-800-321-6742,1-800-321-6742,1-800-321-6742,1-800-321-6742,(702) 486-9020,1-800-321-6742,(609) 984-1389,(505) 476-8700,1-844-723-3697,(919) 707-7806,1-800-321-6742,1-800-321-6742,1-800-321-6742,1-800-321-6742,(503) 378-3272,1-800-321-6742,(787) 754-2172,1-800-321-6742,(803) 896-7825,1-800-321-6742,(615) 741-2793,1-800-321-6742,(340) 773-1994,(801) 530-6800,(800) 287-2765,(804) 371-2327,(360) 902-5580,1-800-321-6742,1-800-321-6742,(307) 777-7786,13 22 81,1300 814 609,1800 019 115,1800 331 991,1300 365 255,1300 366 322,1800 136 089,1300 307 877,1-866-415-8690,1-888-621-7233,1 855-957-7233,1-800-999-9775,1-800-563-5471,1-800-661-0792,1-800-952-2687,1-877-404-4407,1-877-202-0008,1-800-237-5049,1-844-838-0808,1-800-567-7233,1-800-661-0443,0800 030 040,675 321 3511,(+65) 6317 1111,086 010 1018,0345 300 9923,1-800-746-1553,1-800-843-0699 	,1-800-770-8973,1-800-746-1553,(602)-542-5971,(501) 296-1877,(916) 322-1082,303.866.3567,1-800-746-1553,1-800-746-1553,1-800-746-1553,850-245-2118,(770) 387-4900,1-800-746-1553,1-800-746-1553,(208) 334-0200,217-782-6302,1-800-457-8283,515-281-5321,785-291-3092,1-877-646-3911,225-342-7591,(207) 287-2801,301-689-1440,(508) 616-0461,906-250-7564,651-296-6157,1-800-746-1553,573-522-2917,(406) 324-4777,1-800-746-1553,(775) 687-4670,1-800-746-1553,(609) 292-2096,(505) 476-3200,(518) 402-8056,919-707-9200,(701) 328-8000,1-800-746-1553,614-265-6565,(405) 427-3859,971-673-1555 ,(717) 783-2300,1-800-746-1553,1-800-746-1553,(803) 898-2000,(605) 773-3151,(423) 566-9709,512-463-6900,1-800-746-1553,(801) 538-5340,1-800-746-1553,(276) 523-8225,(360) 902-1000​,(304) 926-0490,1-888-936-7463,(307) 766-2286,1300 556 728,13 10 50,1800 019 115,1300 631 694,1300 365 255,1300 366 322,13 23 60,1800 678 198,1-800-641-4049,1-866-415-8690,1-888-621-7233,1 855-957-7233,1-800-999-9775,1-800-563-5471,1-800-661-0792,1-800-952-2687,1-877-404-4407,1-877-202-0008,1-800-237-5049,1-844-838-0808,1-800-567-7233,1-800-661-0443,0800 030 040,675 323 9307,(+65) 6317 1111,086 010 1018,0345 300 9923,1-800-746-1553,1-205-247-3680,1-907-279-1433,1-800-321-6742,1-602-771-4501,1-501-683-5814,1-800-852-7550,1-303-894-2100,1-800-321-6742,1-800-321-6742,1-800-321-6742,1-850-245-2118,1-800-241-4113,1-800-321-6742,1-800-321-6742,1-208-334-0200,1-217-782-7756,1-317-232-4055,911,1-785-271-3190,1-502-564-2340,1-225-342-5540,1-517-284-6823,1-888-646-6367,1-601-354-7142,1-573-368-2100,1-406-444-6675,1-308-254-6919,1-775-684-7040,1-800-321-6742,1-505-476-3440,1-800-457-7362,1-919-707-9125,1-701-328-8020,1-800-321-6742,1-614-265-6922,1-405-521-2211,1-800-541-2050,1-800-321-6742,1-800-321-6742,1-888-481-0125,1-605-773-3151,1-888-891-8332,1-844-773-0305,1-800-321-6742,1-801-538-5291,1-800-321-6742,1-276-415-9700,1-304-926-0499,1-307-234-7147
+Act,•        Model Work Health and Safety Act,•        Work Health and Safety Act 2011,"•        Dangerous Goods (Road Transport Act) 2009
+•        Dangerous Substances Act 2004
+•        Machinery Act 1949
+•        Scaffolding and Lifts Act 1912
+•        Work Health and Safety Act 2011",•        Work Health and Safety Act 2011,•        Work Health and Safety (National Uniform Legislation) Act 2011,•        Work Health and Safety Act 2011 (Qld),•        Work Health and Safety Act 2012 (SA),"•        Work Health and Safety Act 2012
+•        Work Health and Safety (Transitional and Consequential Provisions) Act 2012",•        Occupational Health and Safety Act 2004,•        Work Health and Safety Act 2020,•        Canada Labour Code (Part II),•        Occupational Health and Safety Act,•        Workers Compensation Act - OHS Provisions,•        Workplace Safety and Health Act,•        Occupational Health and Safety Act,•        Occupational Health and Safety Act,•        Safety Act,•        Occupational Health and Safety Act,•        Safety Act,•        Occupational Health and Safety Act,•        Occupational Health and Safety Act,•        Act Respecting Occupational Health and Safety,•        The Saskatchewan Employment Act,•        Workers’ Safety and Compensation Act,•        Health and Safety at Work Act 2015,"•        Industrial Safety, Health, and Welfare Act 1961",•        Workplace Safety and Health Act (WSHA),"•        Occupational Health and Safety Act, 1993
+•        Hazardous Substances Act, 1973",•        Health and Safety at Work etc. Act 1974,•        Occupational Safety and Health Act of 1970,•        Occupational Safety and Health Act of 1970,•        Occupational Safety and Health Act of 1970,•        Occupational Safety and Health Act of 1970,•        Arizona Occupational Safety and Health Act of 1972,•        Occupational Safety and Health Act of 1970,•        California Occupational Safety and Health Act of 1973,•        Occupational Safety and Health Act of 1970,•        Connecticut Occupational Safety and Health Act Of 1973,•        Occupational Safety and Health Act of 1970,•        Occupational Safety and Health Act of 1970,•        Occupational Safety and Health Act of 1970,•        Occupational Safety and Health Act of 1970,•        Occupational Safety and Health Act of 1970,•        Chapter 396 - Occupational Safety and Health,•        Occupational Safety and Health Act of 1970,•        Illinois Occupational Safety and Health Act [820 ILCS 219],•        Indianna Occupational Safety and Health Act of 1974,•        Occupational Safety and Health Act of 1970,•        Occupational Safety and Health Act of 1970,•        Occupational Safety and Health Act of 1970,•        Occupational Safety and Health Act of 1970,•        Occupational Safety and Health Act of 1970,•        Maryland Occupational Safety and Health Act of 1973,•        Occupational Safety and Health Act of 1970,•        Michigan Occupational Safety and Health Act. Act 154 of 1974,•        Minnesota Occupational Safety and Health Act of 1973,•        Occupational Safety and Health Act of 1970,•        Occupational Safety and Health Act of 1970,•        Occupational Safety and Health Act of 1970,•        Occupational Safety and Health Act of 1970,"•        Nevada Occupational Safety and Health Act, NRS Chapter 618",•        Occupational Safety and Health Act of 1970,•        New Jersey Public Employees' Occupational Safety and Health Act ,•        New Mexico Occupational Health and Safety Act,•        Occupational Safety and Health Act of 1970,•        North Carolina Occupational Safety and Health Act,•        Occupational Safety and Health Act of 1970,•        Occupational Safety and Health Act of 1970,•        Occupational Safety and Health Act of 1970,•        Occupational Safety and Health Act of 1970,•        Oregon Safe Employment Act (OSEA),•        Occupational Safety and Health Act of 1970,•        Puerto Rico Occupational Safety and Health Act,•        Occupational Safety and Health Act of 1970,•        South Carolina Occupational Safety and Health Act,•        Occupational Safety and Health Act of 1970,•        Tennessee Occupational Safety and Health Act of 1972,•        Occupational Safety and Health Act of 1970,•        Virgin Islands Occupational Safety and Health Act,•        Utah Occupational Safety and Health Act of 1973,•        Occupational Safety and Health Act of 1970,•        Occupational Safety and Health Act of 1970,"•        Washington Industrial Safety and Health Act (WISHA), Chapter 49.17 RCW",•        Occupational Safety and Health Act of 1970,•        Occupational Safety and Health Act of 1970,•	Wyoming Occupational Health and Safety Act,•        Work Health and Safety Act 2011,•        Work Health and Safety Act 2011 No 10,•        Work Health and Safety (National Uniform Legislation) Act 2011 ,"•        Work Health and Safety Act 2011
+•        Mining and Quarrying Safety and Health Act 1999
+•        Coal Mining Safety and Health Act 1999","•        Work Health and Safety Act 2012
+•        Mines and Works Inspection Act 1920","•        Work Health and Safety Act 2012
+•        Mines Work Health and Safety (Supplementary Requirements) Act 2012",•        Occupational Health and Safety Act 1985,•        Mining Act 1978,•        Occupational Health and Safety Act,•        Workers Compensation Act - OHS Provisions,•        Workplace Safety and Health Act,•        Occupational Health and Safety Act,•        Occupational Health and Safety Act,•        Mine Health and Safety Act,•        Occupational Health and Safety Act,•        Mine Health and Safety Act,•        Occupational Health and Safety Act,•        Occupational Health and Safety Act,•        Act Respecting Occupational Health and Safety (S-2.1),•        The Saskatchewan Employment Act,•        Workers’ Safety and Compensation Act,•        Health and Safety at Work Act 2015,•        Mineral Resources Authority Act 2018,•        Workplace Safety and Health Act (WSHA),•        Mine Health and Safety Act 29 of 1996,•        Health and Safety at Work etc. Act 1974,"•	Federal Mine Safety and Health Act of 1977 (Mine Act)
+•	Mine Improvement and New Emergency Response (MINER) Act of 2006",•        Alabama Surface Mining Act of 1969,•        Alaska Surface Coal Mining Control and Reclamation Act,•        Federal Mine Safety and Health Act of 1977,•        Arizona Mined Land Reclamation Act,•        Arkansas Surface Coal Mining and Reclamation Act,•        California Surface Mining and Reclamation Act (SMARA) of 1975,•        Colorado Mined Land Reclamation Act,•        Federal Mine Safety and Health Act of 1977,•        Federal Mine Safety and Health Act of 1977,•        Federal Mine Safety and Health Act of 1977,•        Florida Phosphate Mining and Land Reclamation Act,•        Georgia Surface Mining Act of 1968,•        Federal Mine Safety and Health Act of 1977,•        Federal Mine Safety and Health Act of 1977,•        Idaho Surface Mining Act,•        Illinois Surface Coal Mining Land Conservation and Reclamation Act,•        Indiana Surface Coal Mining and Reclamation Act,•        Iowa Code Chapter 207,•        Surface Mining Land Conservation and Reclamation Act (SMLCRA),•        Kentucky Surface Mining Control and Reclamation Act (KSMCRA),•        Louisiana Surface Mining and Reclamation Act,•        Maine Metallic Mineral Mining Act,•        Maryland Surface Mining Control and Reclamation Act,"•        Massachusetts General Laws, Chapter 149, Section 129B",•        Michigan Nonferrous Metallic Mineral Mining Law,•        Minnesota Mining Laws and Regulations,•        Federal Mine Safety and Health Act of 1977,•        Missouri Surface Mining Law,•        Montana Strip and Underground Mine Reclamation Act,•        Federal Mine Safety and Health Act of 1977,•        Nevada Revised Statutes (NRS) Chapter 519A,•        Federal Mine Safety and Health Act of 1977,•        New Jersey Surface Mining Law,•        New Mexico Mining Act,"•        ECL Article 23, Title 27 (Mined Land Reclamation Law)",•        North Carolina Mining Act of 1971,•        North Dakota Surface Mining and Reclamation Act,•        Federal Mine Safety and Health Act of 1977,•        Ohio Surface Mining and Reclamation Act,•        Oklahoma Mining Commission Act,•        Oregon Surface Mining Act,•        Pennsylvania Bituminous Mine Subsidence and Land Conservation Act,•        Federal Mine Safety and Health Act of 1977,•        Federal Mine Safety and Health Act of 1977,•        South Carolina Mining Act,•        South Dakota Mining Law,•        Tennessee Surface Mining Law,•        Texas Surface Coal Mining and Reclamation Act,•        Federal Mine Safety and Health Act of 1977,•        Utah Coal Mining Act,•        Federal Mine Safety and Health Act of 1977,•        Virginia Coal Surface Mining Control and Reclamation Act,•        Washington Surface Mining Act,•        West Virginia Surface Coal Mining and Reclamation Act,•        Wisconsin Metallic Mining Regulations,•        Wyoming Environmental Quality Act – Land Quality Division,•        Dangerous Substances Act 2004,"•	Petroleum (Onshore) Act 1991
+•	Work Health and Safety Act 2011","•        Petroleum Act 1984
+•        Work Health and Safety (National Uniform Legislation) Act 2011","•	Petroleum and Gas (Production and Safety) Act 2004
+•	Work Health and Safety Act 2011","•	Petroleum and Geothermal Energy Act 2000
+•	Work Health and Safety Act 2012","•	Gas Safety Act 2019
+•	Work Health and Safety Act 2012","•	Petroleum Act 1998
+•	Occupational Health and Safety Act 2004","•	Petroleum and Geothermal Energy Resources Act 1967
+•	Work Health and Safety Act 2020","•        Canada Oil and Gas Operations Act (COGOA)
+•        Canada Petroleum Resources Act (CPRA)
+•        Canada Labour Code Part II (Occupational Health and Safety)","•        Occupational Health and Safety Act
+•        Oil and Gas Conservation Act","•        Oil and Gas Activities Act
+•        Workers Compensation Act - OHS Provisions","•	Workplace Safety and Health Act
+•	Oil and Gas Act","•        Occupational Health and Safety Act
+•        Oil and Natural Gas Act",•        Occupational Health and Safety Act,•        Occupational Health and Safety Act (NWT),•        Occupational Health and Safety Act,•        Occupational Health and Safety Act (Nunavut),•        Occupational Health and Safety Act,"•        Occupational Health and Safety Act
+•        Oil and Natural Gas Act",•        Act Respecting Occupational Health and Safety (S-2.1),"•        Occupational Health and Safety Act
+•        Oil and Gas Conservation Act","•        Oil and Gas Act
+•        Occupational Health and Safety Act",•        Health and Safety at Work Act 2015,"•        Oil and Gas Act 1998
+•        Unconventional Hydrocarbons Act 2015","•	Petroleum Act
+•	Workplace Safety and Health Act (WSHA)","•	Mineral and Petroleum Resources Development Act 2002
+•	Occupational Health and Safety Act 1993","•        Health and Safety at Work etc. Act 1974 (Application outside Great Britain) Order 2013
+•        Offshore Safety Act 1992",•        Occupational Safety and Health Act of 1970,"•        Code of Alabama Title 9, Chapter 17",•        Alaska Statutes Title 31,•        Occupational Safety and Health Act of 1970,"•        Arizona Revised Statutes Title 27, Chapter 4","•        Arkansas Code Title 15, Chapter 71","•        California Public Resources Code, Division 3","•        Colorado Revised Statutes Title 34, Article 60",•        Occupational Safety and Health Act of 1970,•        Occupational Safety and Health Act of 1970,•        Occupational Safety and Health Act of 1970,•        Florida Statutes Chapter 377,"•        Georgia Code Title 12, Chapter 4",•        Occupational Safety and Health Act of 1970,•        Occupational Safety and Health Act of 1970,"•        Idaho Code, Title 47, Chapter 3","•        Illinois Oil and Gas Act, 225 ILCS 725","•        Indiana Code (IC), Title 14, Article 37 - The Indiana Oil and Gas Act",Iowa Occupational Safety and Health Act (Iowa Code Chapter 88),•        Kansas Statutes Annotated (K.S.A.) Chapter 55,•        Kentucky Revised Statutes (KRS) Chapter 353,•        Louisiana Revised Statutes Title 30,"•        Michigan Natural Resources and Environmental Protection Act (NREPA), Part 615","•        Minnesota Statutes, Chapter 103I - Wells, Borings, and Underground Uses","•        Mississippi Code, Title 53, Chapter 1 - The Mississippi Oil and Gas Conservation Act","•        Missouri Revised Statutes (RSMo), Chapter 259 - The Oil and Gas Conservation Law","•        Montana Code Annotated, Title 82","•        Nebraska Revised Statutes, Chapter 57 - The Nebraska Oil and Gas Conservation Act","•        Nevada Revised Statutes, Chapter 522",•        Occupational Safety and Health Act of 1970,"•        New Mexico Statutes Annotated, Chapter 70","•        New York Environmental Conservation Law, Article 23","•        North Carolina General Statutes, Chapter 113","•        North Dakota Century Code, Title 38",•        Occupational Safety and Health Act of 1970,"•        Ohio Revised Code, Title 15, Chapter 1509",•        Oklahoma Statutes Title 52,•        Pennsylvania Consolidated Statutes Title 58,•        Occupational Safety and Health Act of 1970,•        Occupational Safety and Health Act of 1970,"•        South Carolina Code of Laws, Title 48, Chapter 43 - The Oil and Gas Exploration, Drilling, Transportation, and Production Act","•        South Dakota Codified Laws, Title 45, Chapter 9 - Oil and Gas Conservation","•        Tennessee Code Annotated (TCA), Title 60 - Oil and Gas","•        Texas Natural Resources Code, Title 3 - Oil and Gas",•        Occupational Safety and Health Act of 1970,•        Utah Code Title 40,•        Occupational Safety and Health Act of 1970,"•        Virginia Code Title 45.1, Chapter 22.1","•        West Virginia Code, Chapter 22, Article 6",•        Wyoming Statutes Title 30
+Regulations,•        Model Work Health and Safety Regulation,•        Work Health and Safety Regulations 2011,"•        Boilers and Pressure Vessels Regulation 1954, Machinery Regulation 1950
+•        Dangerous Goods (Road Transport) Regulation 2010
+•        Scaffolding and Lifts Regulation 1950
+•        Work Health and Safety Regulation 2011",•        Work Health and Safety Regulation 2017,•        Work Health and Safety (National Uniform Legislation) Regulations 2011,•        Work Health and Safety Regulation 2011,•        Work Health and Safety Regulations 2012 (SA),"•        Work Health and Safety Regulations 2022
+•        Work Health and Safety (Transitional) Regulations 2022",•        Occupational Health and Safety Regulations 2017,•        Work Health and Safety (General) Regulations 2022,"•	Canadian Occupational Health and Safety Regulations (COHSR)
+•	Canada Occupational Health and Safety (COHS) Regulations",•        Occupational Health and Safety Regulation,•        Occupational Health & Safety Regulation,•        Workplace Safety and Health Regulation,•        General Regulation,•        Occupational Health and Safety Regulations,•        Occupational Health and Safety Regulations,•        Occupational Safety General Regulations,•        Occupational Health and Safety Regulations,"•        O. Reg. 213/91 Construction projects 
+•        O. Reg. 278/05 Designated substance - asbestos on construction projects and in buildings and repair operations
+•        O. Reg. 297/13 Occupational health and safety awareness and training
+•        O. Reg. 381/15 Noise
+•        O. Reg. 490/09 Designated substances
+•        R.R.O. 1990, Reg. 860 Workplace hazardous materials information system (WHMIS)","•        General Regulations
+•        Fall Protection Regulations
+•        Scaffolding Regulations
+•        Workplace Hazardous Materials Information System Regulations",•        Regulation Respecting Occupational Health and Safety,"•        The Occupational Health and Safety Regulations, 2020",•        Workplace Health and Safety Regulations,•        Health and Safety at Work (General Risk and Workplace Management) Regulations 2016,"•        Industrial Safety, Health, and Welfare Regulation 1965","•        Workplace Safety and Health (General Provisions) Regulations
+•        Workplace Safety and Health (Risk Management) Regulations
+•        Workplace Safety and Health (Incident Reporting) Regulations
+•        Workplace Safety and Health (Work at Heights) Regulations
+•        Workplace Safety and Health (Construction) Regulations
+•        Workplace Safety and Health (Noise) Regulations","•        Construction Regulations, 2014
+•        General Safety Regulations
+•        Environmental Regulations for Workplaces
+•        Noise-Induced Hearing Loss Regulations","•        Construction (Design and Management) Regulations 2015
+•        Control of Substances Hazardous to Health Regulations 2002
+•        Health and Safety (Consultation with Employees) Regulations 1996
+•        Lifting Operations and Lifting Equipment Regulations 1998
+•        Management of Health and Safety at Work Regulations 1999
+•        Provision and Use of Work Equipment Regulations 1998
+•        Work at Height Regulations 2005","•        Part 1904 - Recording and reporting occupational injuries and illnesses
+•        Part 1908 - Consultation agreements
+•        Part 1910 - Occupational safety and health standards
+•        Part 1926 - Safety and health regulations for construction","•        Part 1904 - Recording and reporting occupational injuries and illnesses
+•        Part 1908 - Consultation agreements
+•        Part 1910 - Occupational safety and health standards
+•        Part 1926 - Safety and health regulations for construction","•	Alaska Administrative Code (AAC) Title 8, Chapter 61
+
+OSHA Standards
+
+•	Part 1904 - Recording and reporting occupational injuries and illnesses
+•	Part 1908 - Consultation agreements
+•	Part 1910 - Occupational safety and health standards
+•	Part 1926 - Safety and health regulations for construction","•        Part 1904 - Recording and reporting occupational injuries and illnesses
+•        Part 1908 - Consultation agreements
+•        Part 1910 - Occupational safety and health standards
+•        Part 1926 - Safety and health regulations for construction","•        Arizona Revised Statutes (ARS) Title 23, Chapter 2, Article 10
+
+OSHA Standards
+
+•        Part 1904 - Recording and reporting occupational injuries and illnesses
+•        Part 1908 - Consultation agreements
+•        Part 1910 - Occupational safety and health standards
+•        Part 1926 - Safety and health regulations for construction","•        Part 1904 - Recording and reporting occupational injuries and illnesses
+•        Part 1908 - Consultation agreements
+•        Part 1910 - Occupational safety and health standards
+•        Part 1926 - Safety and health regulations for construction","•        California Code of Regulations (CCR), Title 8
+
+OSHA Standards
+
+•        Part 1904 - Recording and reporting occupational injuries and illnesses
+•        Part 1908 - Consultation agreements
+•        Part 1910 - Occupational safety and health standards
+•        Part 1926 - Safety and health regulations for construction","•        Part 1904 - Recording and reporting occupational injuries and illnesses
+•        Part 1908 - Consultation agreements
+•        Part 1910 - Occupational safety and health standards
+•        Part 1926 - Safety and health regulations for construction","•	Regulations of Connecticut State Agencies (RCSA) Title 31
+
+OSHA Standards
+
+•	Part 1904 - Recording and reporting occupational injuries and illnesses
+•	Part 1908 - Consultation agreements
+•	Part 1910 - Occupational safety and health standards
+•	Part 1926 - Safety and health regulations for construction","•        Part 1904 - Recording and reporting occupational injuries and illnesses
+•        Part 1908 - Consultation agreements
+•        Part 1910 - Occupational safety and health standards
+•        Part 1926 - Safety and health regulations for construction","•        Part 1904 - Recording and reporting occupational injuries and illnesses
+•        Part 1908 - Consultation agreements
+•        Part 1910 - Occupational safety and health standards
+•        Part 1926 - Safety and health regulations for construction","•        Part 1904 - Recording and reporting occupational injuries and illnesses
+•        Part 1908 - Consultation agreements
+•        Part 1910 - Occupational safety and health standards
+•        Part 1926 - Safety and health regulations for construction","•        Part 1904 - Recording and reporting occupational injuries and illnesses
+•        Part 1908 - Consultation agreements
+•        Part 1910 - Occupational safety and health standards
+•        Part 1926 - Safety and health regulations for construction","•        Part 1904 - Recording and reporting occupational injuries and illnesses
+•        Part 1908 - Consultation agreements
+•        Part 1910 - Occupational safety and health standards
+•        Part 1926 - Safety and health regulations for construction","•	Hawaii Administrative Rules (HAR) Title 12, Chapter 60
+
+OSHA Standards
+
+•	Part 1904 - Recording and reporting occupational injuries and illnesses
+•	Part 1908 - Consultation agreements
+•	Part 1910 - Occupational safety and health standards
+•	Part 1926 - Safety and health regulations for construction","•        Part 1904 - Recording and reporting occupational injuries and illnesses
+•        Part 1908 - Consultation agreements
+•        Part 1910 - Occupational safety and health standards
+•        Part 1926 - Safety and health regulations for construction","•	Illinois Administrative Code (IAC) Title 56
+
+OSHA Standards
+
+•	Part 1904 - Recording and reporting occupational injuries and illnesses
+•	Part 1908 - Consultation agreements
+•	Part 1910 - Occupational safety and health standards
+•	Part 1926 - Safety and health regulations for construction","•	Indiana Code (IC) Title 22, Article 8
+
+OSHA Standards
+
+•	Part 1904 - Recording and reporting occupational injuries and illnesses
+•	Part 1908 - Consultation agreements
+•	Part 1910 - Occupational safety and health standards
+•	Part 1926 - Safety and health regulations for construction","•	Iowa Administrative Code (IAC) 875
+
+OSHA Standards
+
+•	Part 1904 - Recording and reporting occupational injuries and illnesses
+•	Part 1908 - Consultation agreements
+•	Part 1910 - Occupational safety and health standards
+•	Part 1926 - Safety and health regulations for construction","•        Part 1904 - Recording and reporting occupational injuries and illnesses
+•        Part 1908 - Consultation agreements
+•        Part 1910 - Occupational safety and health standards
+•        Part 1926 - Safety and health regulations for construction","•       Kentucky Administrative Regulations (KAR) Title 803
+
+OSHA Standards
+
+•	Part 1904 - Recording and reporting occupational injuries and illnesses
+•	Part 1908 - Consultation agreements
+•	Part 1910 - Occupational safety and health standards
+•	Part 1926 - Safety and health regulations for construction","•        Part 1904 - Recording and reporting occupational injuries and illnesses
+•        Part 1908 - Consultation agreements
+•        Part 1910 - Occupational safety and health standards
+•        Part 1926 - Safety and health regulations for construction","•	Maine Department of Labor Regulations
+
+OSHA Standards
+
+•	Part 1904 - Recording and reporting occupational injuries and illnesses
+•	Part 1908 - Consultation agreements
+•	Part 1910 - Occupational safety and health standards
+•	Part 1926 - Safety and health regulations for construction","•        Code of Maryland Regulations (COMAR) Title 09, Subtitle 12
+
+OSHA Standards
+
+•        Part 1904 - Recording and reporting occupational injuries and illnesses
+•        Part 1908 - Consultation agreements
+•        Part 1910 - Occupational safety and health standards
+•        Part 1926 - Safety and health regulations for construction","OSHA Standards
+
+•        Part 1904 - Recording and reporting occupational injuries and illnesses
+•        Part 1908 - Consultation agreements
+•        Part 1910 - Occupational safety and health standards
+•        Part 1926 - Safety and health regulations for construction","State Plan Standards 
+
+Construction
+
+•        First aid
+•        Illumination
+•        Hazard communication
+•        Personal protective equipment
+•        Fire protection
+•        Signals and barricades
+•        Materials handling
+•        Hand power tools, including lock-out/tagout
+•        Electrical hazards
+•        Scaffolds
+•        Mobile equipment
+•        Excavations
+•        Concrete and masonry construction
+•        Steel erection
+•        Demolition
+•        Stairways and ladders
+•        Toxic substances
+•        Walking-working surfaces
+•        Telecommunications
+
+OSHA Standards
+
+•        Part 1904 - Recording and reporting occupational injuries and illnesses
+•        Part 1908 - Consultation agreements
+•        Part 1910 - Occupational safety and health standards
+•        Part 1926 - Safety and health regulations for construction","•	Minnesota Rules (MR) Chapter 5205
+
+OSHA Standards
+
+•	Part 1904 - Recording and reporting occupational injuries and illnesses
+•	Part 1908 - Consultation agreements
+•	Part 1910 - Occupational safety and health standards
+•	Part 1926 - Safety and health regulations for construction","•        Part 1904 - Recording and reporting occupational injuries and illnesses
+•        Part 1908 - Consultation agreements
+•        Part 1910 - Occupational safety and health standards
+•        Part 1926 - Safety and health regulations for construction","•        Part 1904 - Recording and reporting occupational injuries and illnesses
+•        Part 1908 - Consultation agreements
+•        Part 1910 - Occupational safety and health standards
+•        Part 1926 - Safety and health regulations for construction","•        Part 1904 - Recording and reporting occupational injuries and illnesses
+•        Part 1908 - Consultation agreements
+•        Part 1910 - Occupational safety and health standards
+•        Part 1926 - Safety and health regulations for construction","•        Part 1904 - Recording and reporting occupational injuries and illnesses
+•        Part 1908 - Consultation agreements
+•        Part 1910 - Occupational safety and health standards
+•        Part 1926 - Safety and health regulations for construction","•        Nevada Administrative Code (NAC) Chapter 618
+
+OSHA Standards
+
+•        Part 1904 - Recording and reporting occupational injuries and illnesses
+•        Part 1908 - Consultation agreements
+•        Part 1910 - Occupational safety and health standards
+•        Part 1926 - Safety and health regulations for construction","•        Part 1904 - Recording and reporting occupational injuries and illnesses
+•        Part 1908 - Consultation agreements
+•        Part 1910 - Occupational safety and health standards
+•        Part 1926 - Safety and health regulations for construction","•	New Jersey Administrative Code (NJAC) Title 12
+
+OSHA Standards
+
+•	Part 1904 - Recording and reporting occupational injuries and illnesses
+•	Part 1908 - Consultation agreements
+•	Part 1910 - Occupational safety and health standards
+•	Part 1926 - Safety and health regulations for construction","•        New Mexico Administrative Code (NMAC) Title 11, Chapter 5
+
+OSHA Standards
+
+•        Part 1904 - Recording and reporting occupational injuries and illnesses
+•        Part 1908 - Consultation agreements
+•        Part 1910 - Occupational safety and health standards
+•        Part 1926 - Safety and health regulations for construction","•	New York Codes, Rules and Regulations (NYCRR) Title 12
+
+OSHA Standards
+
+•	Part 1904 - Recording and reporting occupational injuries and illnesses
+•	Part 1908 - Consultation agreements
+•	Part 1910 - Occupational safety and health standards
+•	Part 1926 - Safety and health regulations for construction","•	North Carolina Administrative Code (NCAC) Title 13
+
+OSHA Standards
+
+•	Part 1904 - Recording and reporting occupational injuries and illnesses
+•	Part 1908 - Consultation agreements
+•	Part 1910 - Occupational safety and health standards
+•	Part 1926 - Safety and health regulations for construction","•        Part 1904 - Recording and reporting occupational injuries and illnesses
+•        Part 1908 - Consultation agreements
+•        Part 1910 - Occupational safety and health standards
+•        Part 1926 - Safety and health regulations for construction","•        Part 1904 - Recording and reporting occupational injuries and illnesses
+•        Part 1908 - Consultation agreements
+•        Part 1910 - Occupational safety and health standards
+•        Part 1926 - Safety and health regulations for construction","•        Part 1904 - Recording and reporting occupational injuries and illnesses
+•        Part 1908 - Consultation agreements
+•        Part 1910 - Occupational safety and health standards
+•        Part 1926 - Safety and health regulations for construction","•        Part 1904 - Recording and reporting occupational injuries and illnesses
+•        Part 1908 - Consultation agreements
+•        Part 1910 - Occupational safety and health standards
+•        Part 1926 - Safety and health regulations for construction","•	Oregon Administrative Rules (OAR) Chapter 437
+
+OSHA Standards
+
+•	Part 1904 - Recording and reporting occupational injuries and illnesses
+•	Part 1908 - Consultation agreements
+•	Part 1910 - Occupational safety and health standards
+•	Part 1926 - Safety and health regulations for construction","•        Part 1904 - Recording and reporting occupational injuries and illnesses
+•        Part 1908 - Consultation agreements
+•        Part 1910 - Occupational safety and health standards
+•        Part 1926 - Safety and health regulations for construction","OSHA Standards
+
+•        Part 1904 - Recording and reporting occupational injuries and illnesses
+•        Part 1908 - Consultation agreements
+•        Part 1910 - Occupational safety and health standards
+•        Part 1926 - Safety and health regulations for construction","•        Part 1904 - Recording and reporting occupational injuries and illnesses
+•        Part 1908 - Consultation agreements
+•        Part 1910 - Occupational safety and health standards
+•        Part 1926 - Safety and health regulations for construction","•	South Carolina Code of Regulations (SCCR) Chapter 71
+
+OSHA Standards
+
+•	Part 1904 - Recording and reporting occupational injuries and illnesses
+•	Part 1908 - Consultation agreements
+•	Part 1910 - Occupational safety and health standards
+•	Part 1926 - Safety and health regulations for construction","•        Part 1904 - Recording and reporting occupational injuries and illnesses
+•        Part 1908 - Consultation agreements
+•        Part 1910 - Occupational safety and health standards
+•        Part 1926 - Safety and health regulations for construction","•	Tennessee Occupational Safety and Health Standards (TOSHS)
+
+OSHA Standards
+
+•	Part 1904 - Recording and reporting occupational injuries and illnesses
+•	Part 1908 - Consultation agreements
+•	Part 1910 - Occupational safety and health standards
+•	Part 1926 - Safety and health regulations for construction","•        Part 1904 - Recording and reporting occupational injuries and illnesses
+•        Part 1908 - Consultation agreements
+•        Part 1910 - Occupational safety and health standards
+•        Part 1926 - Safety and health regulations for construction","•	Virgin Islands Occupational Safety and Health Regulations
+
+OSHA Standards
+
+•	Part 1904 - Recording and reporting occupational injuries and illnesses
+•	Part 1908 - Consultation agreements
+•	Part 1910 - Occupational safety and health standards
+•	Part 1926 - Safety and health regulations for construction","•	Utah Administrative Code (UAC) R614
+
+OSHA Standards
+
+•	Part 1904 - Recording and reporting occupational injuries and illnesses
+•	Part 1908 - Consultation agreements
+•	Part 1910 - Occupational safety and health standards
+•	Part 1926 - Safety and health regulations for construction","•	Vermont Occupational Safety and Health Regulations (VOSHR)
+
+OSHA Standards
+
+•	Part 1904 - Recording and reporting occupational injuries and illnesses
+•	Part 1908 - Consultation agreements
+•	Part 1910 - Occupational safety and health standards
+•	Part 1926 - Safety and health regulations for construction","•	Virginia Administrative Code (VAC) Title 16
+
+OSHA Standards
+
+•	Part 1904 - Recording and reporting occupational injuries and illnesses
+•	Part 1908 - Consultation agreements
+•	Part 1910 - Occupational safety and health standards
+•	Part 1926 - Safety and health regulations for construction","•	Washington Administrative Code (WAC) Title 296
+
+OSHA Standards
+
+•	Part 1904 - Recording and reporting occupational injuries and illnesses
+•	Part 1908 - Consultation agreements
+•	Part 1910 - Occupational safety and health standards
+•	Part 1926 - Safety and health regulations for construction","•        Part 1904 - Recording and reporting occupational injuries and illnesses
+•        Part 1908 - Consultation agreements
+•        Part 1910 - Occupational safety and health standards
+•        Part 1926 - Safety and health regulations for construction","•        Part 1904 - Recording and reporting occupational injuries and illnesses
+•        Part 1908 - Consultation agreements
+•        Part 1910 - Occupational safety and health standards
+•        Part 1926 - Safety and health regulations for construction","•	Wyoming OSHA Standards
+
+OSHA Standards
+
+•	Part 1904 - Recording and reporting occupational injuries and illnesses
+•	Part 1908 - Consultation agreements
+•	Part 1910 - Occupational safety and health standards
+•	Part 1926 - Safety and health regulations for construction",•        Work Health and Safety Regulation 2011,"•        Work Health and Safety Regulation 2017
+•        Work Health and Safety (Mines and Petroleum Sites) Regulation 2022",•        Work Health and Safety (National Uniform Legislation) Regulations 2011 ,"•        Work Health and Safety Regulation 2011
+•        Mining and Quarrying Safety and Health Regulation 2017
+•        Coal Mining Safety and Health Regulation 2017","•        Work Health and Safety Regulations 2012
+•        Mines and Works Inspection Regulations 2013","•        Work Health and Safety Regulations 2022
+•        Mines Work Health and Safety (Supplementary Requirements) Regulations 2022",•        Occupational Health and Safety Regulations 2017,"•        Work Health and Safety (General) Regulations 2022
+•        Work Health and Safety (Mines) Regulations 2022",•        Occupational Health and Safety Regulation,•        Occupational Health & Safety Regulation,•        Workplace Safety and Health Regulation,•        General Regulation,•        Occupational Health and Safety Regulations,•        Mine Health and Safety Regulations,•        Occupational Safety General Regulations,•        Mine Health and Safety Regulations (Consolidated),"•	O. Reg. 297/13 Occupational health and safety awareness and training
+•	O. Reg. 381/15 Noise
+•	O. Reg. 490/09 Designated substances
+•	R.R.O. 1990, Reg. 854 	Mines and mining plants
+•	R.R.O. 1990, Reg. 860 	Workplace hazardous materials information system (WHMIS)",•        General Regulations,•        Regulation Respecting Occupational Health and Safety in Mines (r. 14 under S-2.1),"•        The Occupational Health and Safety Regulations, 2020",•        Workplace Health and Safety Regulations,•        Health and Safety at Work (Mining Operations and Quarrying Operations) Regulations 2016 ,"•        Mining Act 1992
+•        Mining (Safety) Act 1977
+•        Mining (Bougainville Copper Agreement) Act 1967","•        Workplace Safety and Health (General Provisions) Regulations
+•        Workplace Safety and Health (Risk Management) Regulations
+•        Workplace Safety and Health (Incident Reporting) Regulations
+•        Workplace Safety and Health (Work at Heights) Regulations
+•        Workplace Safety and Health (Noise) Regulations",•	Mine Health and Safety Regulations,"•        Control of Noise at Work Regulations 2005
+•        Control of Substances Hazardous to Health Regulations 2002
+•        Control of Vibration at Work Regulations 2005 
+•        Dangerous Substances and Explosives Atmospheres Regulations 2002
+•        Electricity at Work Regulations 1989
+•        Explosives Regulations 2014
+•        Health and Safety (First Aid) Regulations 1981 
+•        Lifting Operations and Lifting Equipment Regulations 1998
+•        Management of Health and Safety at Work Regulations 1999
+•        Mines Regulations 2014
+•        Personal Protective Equipment at Work Regulations 1992 
+•        Provision and Use of Work Equipment Regulations 1998
+•        Reporting of Injuries, Diseases and Dangerous Occurrences Regulations 2013
+•        Workplace (Health, Safety and Welfare) Regulations 1992",•        Code of Federal Regulations (CFR) Title 30: Mineral Resources,•        Alabama Surface Mining Commission (ASMC) regulations,•        Alaska Department of Natural Resources (DNR) regulations,•        MSHA Regulations (Title 30 Code of Federal Regulations – Safety & Health Standards),•        Arizona State Mine Inspector regulations,•        Arkansas Department of Environmental Quality (ADEQ) regulations,"•        California Department of Conservation, Division of Mine Reclamation (DMR) regulations","•        Colorado Division of Reclamation, Mining, and Safety (DRMS) regulations",•        MSHA Regulations (Title 30 Code of Federal Regulations – Safety & Health Standards),•        MSHA Regulations (Title 30 Code of Federal Regulations – Safety & Health Standards),•        MSHA Regulations (Title 30 Code of Federal Regulations – Safety & Health Standards),•        Florida Department of Environmental Protection (FDEP) regulations,•        Georgia Environmental Protection Division (EPD) regulations,•        MSHA Regulations (Title 30 Code of Federal Regulations – Safety & Health Standards),•        MSHA Regulations (Title 30 Code of Federal Regulations – Safety & Health Standards),•        Idaho Department of Lands regulations,•        Illinois Department of Natural Resources (IDNR) regulations,"•        Indiana Department of Natural Resources, Division of Reclamation regulations",•        Iowa Administrative Code Chapter 60 - Soil Conservation and Water Quality Division Rules on Mineral Mining Operations,•        Kansas Administrative Regulations Chapter 47 - Surface Mining of Coal and Reclamation Activities,•        Kentucky Department for Natural Resources regulations,"•        Louisiana Administrative Code Title 43, Part XV - Surface Mining and Reclamation","•        Maine Revised Statutes Annotated Title 38, Chapter 3, Subchapter 1, Article 9 - Mining and Quarrying Regulations","•        Code of Maryland Regulations Title 26, Subtitle 21 - Surface Mining",•        Code of Massachusetts Regulations Title 454 - Mine Safety and Health Regulations,"•        Michigan Department of Environment, Great Lakes, and Energy (EGLE) regulations",•        Minnesota Department of Natural Resources (DNR) regulations,•        MSHA Regulations (Title 30 Code of Federal Regulations – Safety & Health Standards),•        Missouri Department of Natural Resources (DNR) regulations,•        Montana Department of Environmental Quality (DEQ) regulations,•        MSHA Regulations (Title 30 Code of Federal Regulations – Safety & Health Standards),•        Nevada Division of Minerals regulations,•        MSHA Regulations (Title 30 Code of Federal Regulations – Safety & Health Standards),•        New Jersey Department of Environmental Protection (DEP) regulations,"•        New Mexico Energy, Minerals and Natural Resources Department (EMNRD) regulations",•        6 NYCRR Parts 420–425,•        North Carolina Department of Environmental Quality (DEQ) regulations,•        North Dakota Public Service Commission regulations,•        MSHA Regulations (Title 30 Code of Federal Regulations – Safety & Health Standards),"•        Ohio Department of Natural Resources, Division of Mineral Resources Management regulations",•        Oklahoma Department of Mines regulations,•        Oregon Department of Geology and Mineral Industries (DOGAMI) regulations,•        Pennsylvania Department of Environmental Protection (DEP) regulations,•        MSHA Regulations (Title 30 Code of Federal Regulations – Safety & Health Standards),•        MSHA Regulations (Title 30 Code of Federal Regulations – Safety & Health Standards),•        South Carolina Department of Health and Environmental Control (DHEC) regulations,•        South Dakota Department of Environment and Natural Resources (DENR) regulations,•        Tennessee Department of Environment and Conservation (TDEC) regulations,•        Texas Railroad Commission regulations,•        MSHA Regulations (Title 30 Code of Federal Regulations – Safety & Health Standards),"•        Utah Division of Oil, Gas, and Mining (DOGM) regulations",•        MSHA Regulations (Title 30 Code of Federal Regulations – Safety & Health Standards),"•        Virginia Department of Mines, Minerals, and Energy (DMME) regulations",•        Washington Department of Natural Resources (DNR) regulations,•        West Virginia Department of Environmental Protection (DEP) regulations,•        Wisconsin Department of Natural Resources (DNR) regulations,•        Wyoming Department of Environmental Quality (DEQ) regulations,•        Dangerous Substances (General) Regulation 2004,"•	Petroleum (Onshore) Regulation 2016
+•	Work Health and Safety Regulation 2017
+•	Work Health and Safety (Mines and Petroleum Sites) Regulation 2022","•	Petroleum (Environment) Regulations 2016
+•	Work Health and Safety (National Uniform Legislation) Regulations 2011","•	Petroleum and Gas (Safety) Regulation 2018
+•	Work Health and Safety Regulation 2011","•	Petroleum and Geothermal Energy Regulations 2013
+•	Work Health and Safety Regulations 2012","•	Gas Safety Regulations 2019
+•	Work Health and Safety Regulations 2012","•	Petroleum Regulations 2021
+•	Occupational Health and Safety Regulations 2017","•	Petroleum and Geothermal Energy Resources (Occupational Safety and Health) Regulations 2010
+•	Work Health and Safety (General) Regulations 2022","•        Canada Oil and Gas Operations Regulations (SOR/83‑149)
+•        Oil and Gas Occupational Safety and Health Regulations (OGOSHR, SOR/87‑612)",•        Oil and Gas Conservation Rules (Alta Reg 151/71),•        Occupational Health and Safety Regulation (BC Reg 296/97),"•        Workplace Safety and Health Regulation
+•        Operation of Mines Regulation
+•        Drilling and Production Regulation (M.R. 111/94)
+•        Gas Pipeline Excavations Regulation","•        General Regulation (NB Reg 91‑191)
+•        Regulation 2001‑66","•        Occupational Health and Safety Regulations 
+•        Offshore Petroleum Drilling and Production Regulations",•        Oil and Gas Occupational Health and Safety Regulations,•        Offshore Petroleum Drilling and Production Regulations,•        Oil and Gas Occupational Health and Safety Regulations,"•        Occupational Health and Safety (OHS) Regulations, NWT Reg 039‑2015
+•        Oil and Gas Occupational Safety and Health Regulations (R‑044‑2014, amended by R‑125‑2018)","•        Workplace Hazardous Materials Information System (WHMIS) Regulations
+•        Fall Protection Regulations
+•        Scaffolding Regulations
+•        Oil and Gas Conservation Regulations","•        Regulation respecting petroleum exploration, production and storage (S-34.1, r.2)","•        Occupational Health and Safety Regulations, 2020 (RRS c S‑15.1 Reg 10)
+•        Oil and Gas Conservation Regulations, 2012","•        Oil and Gas Disposition Regulations
+•        Oil and Gas Geoscience and Exploration Regulations
+•        Oil and Gas Drilling and Production Regulations
+•        Gas Processing Plant Regulation
+•        Workplace Health and Safety Regulations (O.I.C. 2006/178)",•        Health and Safety at Work (Petroleum Exploration and Extraction) Regulations 2016 ,"•	Oil and Gas Regulation 2002
+•	Unconventional Hydrocarbons Regulation 2015","•	Petroleum (Safety Measures) Regulations
+•	Workplace Safety and Health (Petroleum) Regulations",•	Mineral and Petroleum Resources Development Regulations,"•        Borehole Sites and Operations Regulations 1995
+•        Diving at Work Regulations 1997 
+•        Offshore Installations (Offshore Safety Directive) (Safety Case etc) Regulations 2015 
+•        Offshore Installations (Prevention of Fire and Explosion, and Emergency Response) Regulations 1995
+•        Offshore Installations (Safety Case) Regulations 2005
+•        Offshore Installations (Safety Representatives and Safety Committees) Regulations 1989
+•        Offshore Installations and Pipeline Works (First-Aid) Regulations 1989
+•        Offshore Installations and Pipeline Works (Management and Administration) Regulations 1995
+•        Offshore Installations and Wells (Design and Construction, etc) Regulations 1996 
+•        Offshore Safety (Repeals and Modifications) Regulations 1993
+•        Pipelines Safety Regulations ","•        Part 1904 - Recording and Reporting Occupational Injuries and Illnesses. 
+•        Part 1910 - Occupational Safety and Health Standards (General Industry). 
+•        Part 1926 - Safety and Health Regulations for Construction. ","•        Alabama Administrative Code, Chapter 400-1","•        Alaska Administrative Code, Title 20, Chapter 25","•        OSHA - 29 CFR 1910 (General Industry).
+•        PHSMA - 49 CFR 190-199.
+•        BSEE - 30 CFR 250.","•        Arizona Administrative Code (A.A.C.), Title 12, Chapter 7",•        Arkansas Oil and Gas Commission Rules,"•        California Code of Regulations, Title 14, Division 2",•        Colorado Code of Regulations 2 CCR 404-1,"•        OSHA - 29 CFR 1910 (General Industry).
+•        PHSMA - 49 CFR 190-199.
+•        BSEE - 30 CFR 250.","•        OSHA - 29 CFR 1910 (General Industry).
+•        PHSMA - 49 CFR 190-199.
+•        BSEE - 30 CFR 250.","•        OSHA - 29 CFR 1910 (General Industry).
+•        PHSMA - 49 CFR 190-199.
+•        BSEE - 30 CFR 250.","•        Florida Administrative Code, Chapter 62C-25",•        Chapter 391-3-13 Rules for Oil and Gas and Deep Drilling,"•        OSHA - 29 CFR 1910 (General Industry).
+•        PHSMA - 49 CFR 190-199.
+•        BSEE - 30 CFR 250.","•        OSHA - 29 CFR 1910 (General Industry).
+•        PHSMA - 49 CFR 190-199.
+•        BSEE - 30 CFR 250.","•        Idaho Administrative Code, Title 20, Chapter 7","•        Illinois Administrative Code, Title 62, Chapter I, Part 240 - The Illinois Oil and Gas Act Rules","•        Indiana Administrative Code (IAC), Title 312, Article 16 - Oil and Gas Operations","Iowa Administrative Code 875 (Iowa OSHA Rules, adopting 29 CFR with state variations)",•        Kansas Administrative Regulations (K.A.R.) Chapter 55,"•        Kentucky Administrative Regulations (KAR) Title 805, Chapter 1","•        Louisiana Administrative Code, Title 43, Part XIX","•        Michigan Administrative Code, Part 615","•        Minnesota Administrative Rules, Chapters 6130 and 6132",•        Mississippi State Oil and Gas Board Rules,"•        Missouri Code of State Regulations, Title 10, Division 50 - Oil and Gas Conservation","•        Administrative Rules of Montana, Title 36, Chapter 22","•        Nebraska Administrative Code (NAC), Title 267 - Rules and Regulations of the Nebraska Oil and Gas Conservation Commission","•        Nevada Administrative Code, Chapter 522","•        OSHA - 29 CFR 1910 (General Industry).
+•        PHSMA - 49 CFR 190-199.
+•        BSEE - 30 CFR 250.","•        New Mexico Administrative Code, Title 19, Chapter 15","•        New York Codes, Rules, and Regulations Title 6, Part 550","•        North Carolina Administrative Code, Title 15A, Chapter 5","•        North Dakota Administrative Code, Title 43-02","•        OSHA - 29 CFR 1910 (General Industry).
+•        PHSMA - 49 CFR 190-199.
+•        BSEE - 30 CFR 250.","•        Ohio Administrative Code, Chapter 1501:9","•        Oklahoma Administrative Code, Title 165, Chapter 10","•        Pennsylvania Code Title 25, Chapter 78","•        OSHA - 29 CFR 1910 (General Industry).
+•        PHSMA - 49 CFR 190-199.
+•        BSEE - 30 CFR 250.","•        OSHA - 29 CFR 1910 (General Industry).
+•        PHSMA - 49 CFR 190-199.
+•        BSEE - 30 CFR 250.","•        South Carolina Code of Regulations, Chapter 121 - Department of Health and Environmental Control Regulations, focusing on environmental and operational safety","•        South Dakota Administrative Rules, Article 74:12 - Oil and Gas Conservation","•        Tennessee Comprehensive Rules and Regulations, Chapter 0400-54-02 - Oil and Gas Operations","•        Texas Administrative Code (TAC), Title 16, Part 1, Chapter 3 - Railroad Commission of Texas Oil and Gas Division Regulations","•        OSHA - 29 CFR 1910 (General Industry).
+•        PHSMA - 49 CFR 190-199.
+•        BSEE - 30 CFR 250.",•        Utah Administrative Code R649,"•        OSHA - 29 CFR 1910 (General Industry).
+•        PHSMA - 49 CFR 190-199.
+•        BSEE - 30 CFR 250.","•        Virginia Administrative Code Title 4, Agency 25, Chapter 150","•        West Virginia Code of State Rules, Title 35, Series 4","•        Wyoming Administrative Rules, Chapter 3"

@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Whs\Runtime\Models;
+namespace App\Domain\Shared\Documents\Models;
 
 use App\Domain\OpsFortress\BusinessEntities\Models\BusinessEntity;
+use App\Domain\OpsFortress\Jurisdictions\Models\JurisdictionRegulatoryProfile;
 use App\Domain\OpsFortress\Workplaces\Models\Workplace;
 use App\Domain\Shared\Context\BelongsToAccount;
 use App\Domain\Whs\Swms\Models\SwmsVersion;
@@ -14,18 +15,18 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-class WorkerTaskSession extends Model
+class GeneratedDocument extends Model
 {
-    use BelongsToAccount, UsesUuidPrimaryKey;
+    use BelongsToAccount, SoftDeletes, UsesUuidPrimaryKey;
 
     protected $guarded = [];
 
     protected function casts(): array
     {
         return [
-            'started_at' => 'datetime',
-            'completed_at' => 'datetime',
+            'generated_at' => 'datetime',
             'metadata' => 'array',
         ];
     }
@@ -50,23 +51,18 @@ class WorkerTaskSession extends Model
         return $this->belongsTo(SwmsVersion::class);
     }
 
-    public function worker(): BelongsTo
+    public function jurisdictionRegulatoryProfile(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'worker_user_id');
+        return $this->belongsTo(JurisdictionRegulatoryProfile::class);
     }
 
-    public function swmsStepEvents(): HasMany
+    public function generatedBy(): BelongsTo
     {
-        return $this->hasMany(SwmsStepEvent::class);
+        return $this->belongsTo(User::class, 'generated_by_user_id');
     }
 
-    public function prestartSubmissions(): HasMany
+    public function deliveryEvents(): HasMany
     {
-        return $this->hasMany(PrestartSubmission::class);
-    }
-
-    public function selectedAssets(): HasMany
-    {
-        return $this->hasMany(WorkerTaskSessionAsset::class);
+        return $this->hasMany(DocumentDeliveryEvent::class);
     }
 }

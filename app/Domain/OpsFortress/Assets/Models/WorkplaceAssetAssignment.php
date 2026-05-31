@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\OpsFortress\Workplaces\Models;
+namespace App\Domain\OpsFortress\Assets\Models;
 
+use App\Domain\OpsFortress\Workplaces\Models\Workplace;
 use App\Domain\Shared\Context\BelongsToAccount;
 use App\Models\Concerns\UsesUuidPrimaryKey;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Workplace extends Model
+class WorkplaceAssetAssignment extends Model
 {
     use BelongsToAccount, SoftDeletes, UsesUuidPrimaryKey;
 
@@ -20,19 +20,21 @@ class Workplace extends Model
     protected function casts(): array
     {
         return [
-            'latitude' => 'decimal:7',
-            'longitude' => 'decimal:7',
+            'assigned_from' => 'date',
+            'assigned_to' => 'date',
+            'is_primary' => 'boolean',
+            'active_status' => 'boolean',
             'metadata' => 'array',
         ];
     }
 
-    public function environment(): BelongsTo
+    public function workplace(): BelongsTo
     {
-        return $this->belongsTo(WorkplaceEnvironment::class, 'environment_id');
+        return $this->belongsTo(Workplace::class);
     }
 
-    public function externalParties(): HasMany
+    public function asset(): BelongsTo
     {
-        return $this->hasMany(WorkplaceExternalParty::class);
+        return $this->belongsTo(Asset::class);
     }
 }

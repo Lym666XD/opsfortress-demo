@@ -76,7 +76,6 @@ final class V03SchemaContractTest extends TestCase
             'activities',
             'submissions',
             'file_uploads',
-            'generated_documents',
             'workplace_user_assignments',
             'roles',
             'user_roles',
@@ -138,7 +137,7 @@ final class V03SchemaContractTest extends TestCase
         $this->assertIndexExists('task_occupation_access_active_unique', 'WHERE (deleted_at IS NULL)');
         $this->assertIndexExists('task_industry_access_active_unique', 'WHERE (deleted_at IS NULL)');
         $this->assertIndexExists('swms_activity_steps_number_unique', 'WHERE (deleted_at IS NULL)');
-        $this->assertIndexExists('prestart_questions_number_unique', 'WHERE (deleted_at IS NULL)');
+        $this->assertIndexExists('prestart_questions_number_unique', 'swms_version_id IS NULL');
         $this->assertIndexExists('workplace_task_settings_active_unique', 'WHERE (deleted_at IS NULL)');
         $this->assertIndexExists('audit_events_chain_sequence_unique');
 

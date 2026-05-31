@@ -4,17 +4,19 @@
 
 This repository contains the Laravel / PostgreSQL / React / Inertia technical scaffold for the OpsFortress / WHSAPP rebuild.
 
-The current codebase is a **v0.3 schema-reset prototype**, not a finished WHS workflow app. As of the 2026-05-23 refactor, the Laravel migrations and regenerated DBML are the co-authoritative schema reference.
+The current codebase is a **v0.3 schema-reset prototype with a v0.5 foundation schema extension**, not a finished WHS workflow app. As of the 2026-05-31 foundation update, the Laravel migrations and regenerated DBML are the co-authoritative schema reference.
 
 ## Current Source of Truth
 
 Use these sources in this order:
 
-1. `database/migrations/2026_05_18_*` and `database/migrations/2026_05_23_*`
+1. `database/migrations/2026_05_18_*`, `database/migrations/2026_05_23_*`, and `database/migrations/2026_05_31_*`
 2. `docs/OpsFortress_MVP_ERD_v0_3_Updated.dbml`
 3. `tests/Feature/Database/V03SchemaContractTest.php`
-4. `database/seeders/V03DemoSeeder.php`
-5. `docs/CHANGELOG_2026_05_23_REFACTOR.md`
+4. `tests/Feature/Database/V05FoundationSchemaTest.php`
+5. `database/seeders/V03DemoSeeder.php`
+6. `docs/CHANGELOG_2026_05_23_REFACTOR.md`
+7. `docs/CHANGELOG_2026_05_31_V0_5_FOUNDATION.md`
 
 Older architecture notes and archived prompts are useful context only. They are not schema authority.
 
@@ -29,6 +31,7 @@ Older architecture notes and archived prompts are useful context only. They are 
 - Hash-chained `AuditService` with canonical JSON, SHA-256 hashes, row locking, and `worker_task_session_id` linkage
 - Append-only database triggers for `audit_events`, `signatures`, and `evidence_files`
 - Importer framework and first SRC-001 slices for industries, occupations, and tasks
+- v0.5 foundation schema for jurisdiction/regulatory profiles, workplace external parties, asset registers, worker-session asset selections, generated documents, delivery events, and version-aware prestart/posttask templates
 
 ## v0.3 Direction
 
@@ -109,16 +112,18 @@ DB_DATABASE=opsfortress_demo
 
 ## Verification
 
-Latest 2026-05-23 verification:
+Latest 2026-05-31 verification:
 
 - `php artisan migrate:fresh --seed` passed against PostgreSQL.
-- `php artisan test` passed: 71 tests / 470 assertions / 8 skipped.
+- `php artisan migrate:rollback --step=1 && php artisan migrate` passed.
+- `php artisan test` passed against PostgreSQL: 78 tests / 672 assertions / 8 skipped.
 - `php vendor/bin/pint --test` passed.
 - `php artisan route:list` passed with 36 routes.
 
 Targeted database/importer checks also passed:
 
 - `V03SchemaContractTest`
+- `V05FoundationSchemaTest`
 - `V03DevSeederTest`
 - `AppendOnlyEnforcementTest`
 - Industries, occupations, and tasks importer tests

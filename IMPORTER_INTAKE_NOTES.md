@@ -75,6 +75,62 @@ are local working copies.
 
 ## Workbook intake log
 
+### 2026-05-31 — v0.5 revised workbook/spec + Word Exchange CSV
+
+Received/downloaded for v0.5 design review:
+
+- `docs/OpsFortress_35_Tab_Workbook_Framework_v0_5_REVISED.xlsx`
+- `docs/OpsFortress_Workbook_Framework_Spec_v0_5_REVISED.xlsx`
+- `docs/LUKE 14.08.24 Word Exchange - Word Exchange.csv`
+
+Detailed DB review: `docs/V0_5_DB_DESIGN_REVIEW_2026_05_31.md`.
+
+**Workbook shape**: 35 tabs. The revised workbook is mostly a locked
+header template: control tabs contain some rows, while most import/data
+tabs contain row 1 headers only. The six new v0.5 extension tabs are:
+
+- `OPSF_Jurisdiction_Profile`
+- `OPSF_PDF_Generation_Rules`
+- `OPSF_External_Parties`
+- `OPSF_Asset_Register`
+- `OPSF_Offline_Sync_Rules`
+- `OPSF_Versioning_Rules`
+
+**Spec shape**: 19 tabs. Important implementation tabs include:
+
+- `DB_Backend_Alignment_Rules`
+- `Recommended_Tabs_v0_5`
+- `Excel_to_DB_Mapping`
+- `Jurisdiction_Regulator_Model`
+- `PDF_Generation_Workflow`
+- `External_Party_Model`
+- `Asset_Model`
+- `Offline_Sync_Model`
+- `Versioning_Worker_Actions`
+- `Runtime_Boundary`
+- `Importer_Slices_v0_5`
+- `Open_Questions`
+
+**Key finding**: `Header_Lock_Register` is effectively empty even though
+the v0.5 validation checklist says row 1 headers must match it. Before a
+production importer uses v0.5 headers as a strict contract, Damon should
+populate this register or we should generate a canonical lock register
+from the workbook headers.
+
+**Word Exchange shape**: the CSV is a wide matrix, not a row-shaped
+jurisdiction profile table. It has `Word` plus 246 jurisdiction/context
+columns and rows such as `Safe work method statement`, `SWMS`,
+`Regulator`, `Accident reporting`, `Act`, and `Regulations`. It needs a
+transform step before it can become jurisdiction/regulatory profile data.
+
+**Working recommendation**: do not update the database broadly from v0.5
+yet. Finish M17.4 access-map importers first, then prepare a small v0.5
+foundation migration batch after Kevin/Damon confirm the DB deltas:
+versioned question templates, workplace external parties/PDF recipients,
+jurisdiction regulatory profiles, generated document records, and minimum
+asset foundations. Offline sync should remain design/config until the
+worker mobile/PWA runtime is underway.
+
 ### 2026-05-23 — `WHS_App_OpsFortress_SWMS_Only_Mixing_of_mortar_v4_user_example_aligned.xlsm`
 
 Received from Kevin as a sample SWMS workbook aligned to v0.3 spec.

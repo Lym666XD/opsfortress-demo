@@ -1,5 +1,5 @@
-// OpsFortress MVP ERD v0.3
-// Regenerated 2026-05-23 from Laravel migrations through 2026_05_23_*.
+// OpsFortress MVP ERD v0.3 + v0.5 foundation
+// Regenerated/extended 2026-05-31 from Laravel migrations through 2026_05_31_*.
 // Schema authority: Laravel migrations + this regenerated DBML.
 
 TableGroup "Core Platform / Onboarding P0" {
@@ -56,6 +56,17 @@ TableGroup "P1 Expansion" {
   training_attempts
   training_responses
   worker_training_completions
+}
+
+TableGroup "v0.5 Foundation" {
+  jurisdiction_regulatory_profiles
+  workplace_external_parties
+  asset_types
+  assets
+  workplace_asset_assignments
+  worker_task_session_assets
+  generated_documents
+  document_delivery_events
 }
 
 Table customer_accounts {
@@ -426,6 +437,7 @@ Table swms_activity_steps {
 Table prestart_questions {
   id uuid [pk, default: `gen_random_uuid()`]
   task_id uuid [not null]
+  swms_version_id uuid
   question_number smallint [not null]
   prompt text [not null]
   question_type varchar [not null, default: 'yes_no']
@@ -681,6 +693,7 @@ Table alerts {
 Table posttask_questions {
   id uuid [pk, default: `gen_random_uuid()`]
   task_id uuid [not null]
+  swms_version_id uuid
   question_number smallint [not null]
   prompt text [not null]
   question_type varchar [not null, default: 'yes_no']
@@ -813,6 +826,174 @@ Table worker_training_completions {
   updated_at timestamp
 }
 
+Table jurisdiction_regulatory_profiles {
+  id uuid [pk, default: `gen_random_uuid()`]
+  country_id uuid
+  profile_code varchar
+  country_code varchar
+  country_name varchar
+  state_territory_province varchar
+  workplace_type varchar
+  task_category varchar
+  document_type_name varchar
+  document_type_acronym varchar
+  safety_terminology_name varchar
+  safety_terminology_acronym varchar
+  regulator_name varchar
+  regulator_contact_name varchar
+  regulator_phone varchar
+  regulator_email varchar
+  regulator_website varchar
+  emergency_reporting_contact varchar
+  incident_reporting_instructions text
+  legislation_references jsonb
+  codes_of_practice jsonb
+  source_reference text
+  last_reviewed_at date
+  active_status boolean [not null, default: true]
+  metadata jsonb
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+}
+
+Table workplace_external_parties {
+  id uuid [pk, default: `gen_random_uuid()`]
+  account_id uuid [not null]
+  business_entity_id uuid [not null]
+  workplace_id uuid [not null]
+  external_business_entity_id uuid
+  external_party_type varchar [not null]
+  business_name varchar
+  business_identifier varchar
+  contact_given_name varchar
+  contact_family_name varchar
+  contact_role varchar
+  contact_email varchar
+  contact_phone varchar
+  reporting_responsibility text
+  pdf_recipient boolean [not null, default: false]
+  effective_from date
+  effective_to date
+  active_status boolean [not null, default: true]
+  metadata jsonb
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+}
+
+Table asset_types {
+  id uuid [pk, default: `gen_random_uuid()`]
+  asset_type_code varchar
+  name varchar [not null]
+  asset_category varchar
+  inspection_required boolean [not null, default: false]
+  prestart_required boolean [not null, default: false]
+  posttask_required boolean [not null, default: false]
+  maintenance_trigger_required boolean [not null, default: false]
+  evidence_required boolean [not null, default: false]
+  active_status boolean [not null, default: true]
+  metadata jsonb
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+}
+
+Table assets {
+  id uuid [pk, default: `gen_random_uuid()`]
+  account_id uuid [not null]
+  business_entity_id uuid [not null]
+  asset_type_id uuid
+  asset_code varchar
+  asset_name varchar [not null]
+  asset_category varchar
+  make_model varchar
+  serial_number varchar
+  registration_number varchar
+  asset_status varchar [not null, default: 'active']
+  inspection_required boolean [not null, default: false]
+  prestart_required boolean [not null, default: false]
+  posttask_required boolean [not null, default: false]
+  maintenance_trigger_required boolean [not null, default: false]
+  evidence_required boolean [not null, default: false]
+  metadata jsonb
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+}
+
+Table workplace_asset_assignments {
+  id uuid [pk, default: `gen_random_uuid()`]
+  account_id uuid [not null]
+  workplace_id uuid [not null]
+  asset_id uuid [not null]
+  assigned_from date
+  assigned_to date
+  is_primary boolean [not null, default: false]
+  active_status boolean [not null, default: true]
+  metadata jsonb
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+}
+
+Table worker_task_session_assets {
+  id uuid [pk, default: `gen_random_uuid()`]
+  worker_task_session_id uuid [not null]
+  asset_id uuid [not null]
+  selected_by_user_id uuid
+  selection_reason varchar
+  selected_at timestamp
+  metadata jsonb
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table generated_documents {
+  id uuid [pk, default: `gen_random_uuid()`]
+  account_id uuid [not null]
+  business_entity_id uuid
+  workplace_id uuid
+  task_id uuid
+  swms_version_id uuid
+  jurisdiction_regulatory_profile_id uuid
+  document_type varchar [not null]
+  document_title varchar
+  version_label varchar
+  generation_trigger varchar
+  bundle_key varchar
+  status varchar [not null, default: 'draft']
+  disk varchar
+  path varchar
+  file_hash varchar
+  file_hash_algorithm varchar [not null, default: 'sha256']
+  generated_by_user_id uuid
+  generated_at timestamp
+  metadata jsonb
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+}
+
+Table document_delivery_events {
+  id uuid [pk, default: `gen_random_uuid()`]
+  generated_document_id uuid [not null]
+  workplace_external_party_id uuid
+  recipient_user_id uuid
+  recipient_name varchar
+  recipient_email varchar
+  recipient_type varchar
+  delivery_channel varchar [not null, default: 'email']
+  status varchar [not null, default: 'pending']
+  sent_at timestamp
+  delivered_at timestamp
+  failed_at timestamp
+  failure_message text
+  metadata jsonb
+  created_at timestamp
+  updated_at timestamp
+}
+
 Ref: business_identifier_types.country_id > countries.id
 Ref: business_entities.country_id > countries.id
 Ref: account_businesses.account_id > customer_accounts.id
@@ -855,6 +1036,7 @@ Ref: swms_versions.approved_by_user_id > users.id
 Ref: swms_versions.supersedes_id > swms_versions.id
 Ref: swms_activity_steps.swms_version_id > swms_versions.id
 Ref: prestart_questions.task_id > tasks.id
+Ref: prestart_questions.swms_version_id > swms_versions.id
 Ref: workplace_task_settings.account_id > customer_accounts.id
 Ref: workplace_task_settings.business_entity_id > business_entities.id
 Ref: workplace_task_settings.workplace_id > workplaces.id
@@ -918,6 +1100,7 @@ Ref: alerts.triggered_by_user_id > users.id
 Ref: alerts.assigned_to_user_id > users.id
 Ref: alerts.supersedes_id > alerts.id
 Ref: posttask_questions.task_id > tasks.id
+Ref: posttask_questions.swms_version_id > swms_versions.id
 Ref: posttask_submissions.worker_task_session_id > worker_task_sessions.id
 Ref: posttask_submissions.account_id > customer_accounts.id
 Ref: posttask_submissions.business_entity_id > business_entities.id
@@ -949,3 +1132,27 @@ Ref: worker_training_completions.workplace_id > workplaces.id
 Ref: worker_training_completions.task_id > tasks.id
 Ref: worker_training_completions.worker_user_id > users.id
 Ref: worker_training_completions.latest_training_attempt_id > training_attempts.id
+Ref: jurisdiction_regulatory_profiles.country_id > countries.id
+Ref: workplace_external_parties.account_id > customer_accounts.id
+Ref: workplace_external_parties.business_entity_id > business_entities.id
+Ref: workplace_external_parties.workplace_id > workplaces.id
+Ref: workplace_external_parties.external_business_entity_id > business_entities.id
+Ref: assets.account_id > customer_accounts.id
+Ref: assets.business_entity_id > business_entities.id
+Ref: assets.asset_type_id > asset_types.id
+Ref: workplace_asset_assignments.account_id > customer_accounts.id
+Ref: workplace_asset_assignments.workplace_id > workplaces.id
+Ref: workplace_asset_assignments.asset_id > assets.id
+Ref: worker_task_session_assets.worker_task_session_id > worker_task_sessions.id
+Ref: worker_task_session_assets.asset_id > assets.id
+Ref: worker_task_session_assets.selected_by_user_id > users.id
+Ref: generated_documents.account_id > customer_accounts.id
+Ref: generated_documents.business_entity_id > business_entities.id
+Ref: generated_documents.workplace_id > workplaces.id
+Ref: generated_documents.task_id > tasks.id
+Ref: generated_documents.swms_version_id > swms_versions.id
+Ref: generated_documents.jurisdiction_regulatory_profile_id > jurisdiction_regulatory_profiles.id
+Ref: generated_documents.generated_by_user_id > users.id
+Ref: document_delivery_events.generated_document_id > generated_documents.id
+Ref: document_delivery_events.workplace_external_party_id > workplace_external_parties.id
+Ref: document_delivery_events.recipient_user_id > users.id

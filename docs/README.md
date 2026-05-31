@@ -9,6 +9,8 @@ Use these documents for current work:
 - `../IMPLEMENTATION_ROADMAP.md` — active delivery sequence
 - `../TARGET_ARCHITECTURE.md` — target architecture and anti-patterns
 - `../IMPORTER_INTAKE_NOTES.md` — importer source-file notes, rule-code namespaces, and open importer questions
+- `V0_5_DB_DESIGN_REVIEW_2026_05_31.md` — v0.5 workbook/spec DB delta review and recommended migration sequence
+- `CHANGELOG_2026_05_31_V0_5_FOUNDATION.md` — audit trail for the first v0.5 foundation schema migration
 - `CHANGELOG_2026_05_23_REFACTOR.md` — audit trail for the v0.3 schema/docs refactor
 - `OpsFortress_MVP_ERD_v0_3_Updated.dbml` — regenerated visual schema reference
 - `Role_Architecture_Notes.md` — active role/identity/access interpretation

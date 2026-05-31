@@ -16,7 +16,7 @@ It is intentionally current-state focused. Historical prompt, review, and schema
 
 ## Locked Decisions
 
-- **Schema authority:** `database/migrations/2026_05_18_*`, `database/migrations/2026_05_23_*`, and `docs/OpsFortress_MVP_ERD_v0_3_Updated.dbml`.
+- **Schema authority:** `database/migrations/2026_05_18_*`, `database/migrations/2026_05_23_*`, `database/migrations/2026_05_31_*`, and `docs/OpsFortress_MVP_ERD_v0_3_Updated.dbml`.
 - **Row isolation:** use `AccountContext`, `AccountScope`, and `BelongsToAccount`; the old `tenant_id` / `BelongsToTenant` stack is superseded.
 - **Business model:** `customer_accounts` own access scope; `business_entities` represent legal entities; `account_businesses` links them.
 - **Task content model:** use `tasks`, `swms_versions`, `swms_activity_steps`, prestart tables, and access maps; do not revive `task_packs`.
@@ -37,6 +37,7 @@ Scope:
 - schema contract tests
 - account/business/workplace/user/task/runtime/evidence tables
 - append-only and cross-account consistency constraints
+- v0.5 foundation tables for jurisdiction/regulatory lookup, workplace external parties, assets, generated documents, delivery events, and version-aware pre/post question templates
 
 Exit criteria:
 

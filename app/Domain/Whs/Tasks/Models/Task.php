@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Whs\Tasks\Models;
 
+use App\Domain\Whs\Swms\Models\PosttaskQuestion;
 use App\Domain\Whs\Swms\Models\PrestartQuestion;
 use App\Domain\Whs\Swms\Models\SwmsVersion;
 use App\Models\Concerns\UsesUuidPrimaryKey;
@@ -33,5 +34,10 @@ class Task extends Model
     public function prestartQuestions(): HasMany
     {
         return $this->hasMany(PrestartQuestion::class);
+    }
+
+    public function posttaskQuestions(): HasMany
+    {
+        return $this->hasMany(PosttaskQuestion::class);
     }
 }
